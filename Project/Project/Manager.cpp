@@ -29,6 +29,8 @@ void Manager::init()
 
 	//Make sure events are passed though engine input manager
 	glfwSetKeyCallback(win, Input::keyCallback);
+	glfwSetCursorPosCallback(win, Input::cursorCallback);
+	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
 
 	//State can now be changed
 	state = programState::Running;
@@ -50,9 +52,11 @@ void Manager::input()
 	glfwPollEvents();
 
 	//Check for space bar
-	if (Input::getKey(GLFW_KEY_SPACE).down) printf("Space down!\n");
-	if (Input::getKey(GLFW_KEY_SPACE).held) printf("Space held!\n");
-	if (Input::getKey(GLFW_KEY_SPACE).released) printf("Space released!\n\n");
+	if (Input::getMouseClick(GLFW_MOUSE_BUTTON_1).down) printf("Click down!\n");
+	if (Input::getMouseClick(GLFW_MOUSE_BUTTON_1).held) printf("Click held!\n");
+	if (Input::getMouseClick(GLFW_MOUSE_BUTTON_1).up) printf("Click released!\n\n");
+
+	if (Input::movedMouse) printf("X: %d    y: %d\n", Input::mousePos.x, Input::mousePos.y);
 }
 
 //Draw the game using engine

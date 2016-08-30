@@ -2,6 +2,9 @@
 #include <unordered_map>
 #include <map>
 
+//Uses vector's
+#include "Vector2.h"
+
 //Needs GLFW
 #include <GLFW\glfw3.h>
 
@@ -33,10 +36,44 @@ namespace Input
 		}
 	};
 
+	//Stores the mouse position
+	Vec2 mousePos(0.0f, 0.0f);
+	bool movedMouse = false;
+
 	//A hash map of key events where:
 	//First: keycode
 	//Second: key data
 	std::unordered_map<int, keyEvent> _keyMap;
+
+	//States of the mouse
+	class mouseEvent
+	{
+	public:
+		//Specific
+		int button;
+		int action;
+		int mods;
+
+		//States
+		bool up;
+		bool down;
+		bool held;
+
+		//Constructors
+		mouseEvent() : button(-1), action(-1), mods(0) { up = false; down = false; held = false; }
+		mouseEvent(int b, int a, int m) : button(b), action(a), mods(m) 
+		{ 
+			if (action == GLFW_PRESS) { down = true; up = false; held = true; }
+			if (action == GLFW_RELEASE) { down = false; up = true; held = false; }
+			//else { down = false; up = false; }
+		}
+	};
+
+	//A hash map of mouse button events
+	//First: button
+	//Second: mouseEvent
+	std::unordered_map<int, mouseEvent> _mouseMap;
+
 
 	//Called by GLFW when a keyboard event occurs
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -45,6 +82,24 @@ namespace Input
 		keyEvent result(key, scancode, action, mods);
 
 		_keyMap[key] = result;
+	}
+	
+	//Called by GLFW when the mouse moves
+	static void cursorCallback(GLFWwindow* window, double xpos, double ypos)
+	{
+		//Set
+		mousePos.x = xpos;
+		mousePos.y = ypos;
+
+		movedMouse = true;
+	}
+
+	//Called when a mouse button is clicked
+	static void mouseClickCallback(GLFWwindow* window, int button, int action, int mods)
+	{
+		//Set unordered_map position
+		mouseEvent result(button, action, mods);
+		_mouseMap[button] = result;
 	}
 
 	//Gets keys
@@ -58,9 +113,34 @@ namespace Input
 		else return keyEvent();
 	}
 
+	//Get mouse button
+	static mouseEvent getMouseClick(int button)
+	{
+		//Chcek if it is in the map
+		auto it = _mouseMap.find(button);
+
+		//Return data
+		if (it != _mouseMap.end()) return it->second;
+		else return mouseEvent();
+	}
+
 	//Input updates at the end of the frame
 	static void update()
 	{
+		//No longer moving mouse
+		movedMouse = false;
+
+		//Clean out mouse events
+		for (auto m : _mouseMap)
+		{
+			//Change
+			if (m.second.down) m.second.down = false;
+			if (m.second.up) m.second.up = false;
+
+			//Update
+			_mouseMap[m.first] = m.second;
+		}
+
 		//Clean out all down and release events
 		for (auto k : _keyMap)
 		{

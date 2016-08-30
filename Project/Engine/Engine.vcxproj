@@ -76,6 +76,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="Vector2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

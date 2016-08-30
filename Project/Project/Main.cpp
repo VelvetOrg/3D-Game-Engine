@@ -1,22 +1,25 @@
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
+//Rely on manager
+#include "Manager.h"
 
+//Enter program
 int main(int argc, char** argv)
 {
-	if (!glfwInit()) return -1;
+	//Create manager object and call sequential functions
+	Manager manager;
+	manager.init();
 
-	GLFWwindow *win;
-
-	win = glfwCreateWindow(1280, 720, "Test", NULL, NULL);
-
-	if (!win) { glfwTerminate(); return -1; }
-
-	glfwMakeContextCurrent(win);
-
-	while (!glfwWindowShouldClose(win))
+	//Enter main loop
+	while (manager.state != programState::Closing)
 	{
-		glfwPollEvents();
+		//Call frame functions chronologically
+		manager.clear();
+		manager.input();
+		manager.logic();
+		manager.draw();
+		manager.late();
 	}
 
+	//Done
+	manager.quit();
 	return 0;
 }

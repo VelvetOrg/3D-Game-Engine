@@ -1,3 +1,4 @@
+#include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
 int main(int argc, char** argv)
@@ -10,7 +11,9 @@ int main(int argc, char** argv)
 
 	if (!win) { glfwTerminate(); return -1; }
 
-	while (glfwWindowShouldClose)
+	glfwMakeContextCurrent(win);
+
+	while (!glfwWindowShouldClose(win))
 	{
 		glfwPollEvents();
 	}

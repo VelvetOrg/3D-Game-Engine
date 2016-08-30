@@ -18,5 +18,11 @@
     <ClInclude Include="Console.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

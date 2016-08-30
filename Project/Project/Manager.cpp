@@ -2,7 +2,8 @@
 #include "Manager.h"
 #include "Externs.h"
 
-//For error handling
+//Engien specific
+#include <Engine\Input.h>
 #include <Engine\Console.h>
 
 //Create memory for window
@@ -26,6 +27,9 @@ void Manager::init()
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
 
+	//Make sure events are passed though engine input manager
+	glfwSetKeyCallback(win, Input::keyCallback);
+
 	//State can now be changed
 	state = programState::Running;
 
@@ -44,6 +48,11 @@ void Manager::input()
 {
 	//Make sure all events are read
 	glfwPollEvents();
+
+	//Check for space bar
+	if (Input::getKey(GLFW_KEY_SPACE).down) printf("Space down!\n");
+	if (Input::getKey(GLFW_KEY_SPACE).held) printf("Space held!\n");
+	if (Input::getKey(GLFW_KEY_SPACE).released) printf("Space released!\n\n");
 }
 
 //Draw the game using engine
@@ -52,7 +61,11 @@ void Manager::draw() {}
 //Any post drawing things
 void Manager::late()
 {
+	//Set stae of program
 	if (glfwWindowShouldClose(win)) state = programState::Closing;
+
+	//Update input manager
+	Input::update();
 }
 
 //Close and clean up memory

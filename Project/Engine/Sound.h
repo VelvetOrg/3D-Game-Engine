@@ -1,0 +1,4 @@
+namespace Sound
+{
+	//Good luck...
+}

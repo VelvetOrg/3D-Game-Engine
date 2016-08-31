@@ -1,0 +1,9 @@
+#version 150 core
+
+in vec3 vertCol;
+out vec4 outColour;
+
+void main() 
+{
+	outColour = vec4(vertCol, 1.0);
+}

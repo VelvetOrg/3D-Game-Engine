@@ -15,8 +15,9 @@ namespace Graphics
 
 	//Will create OPEN GL buffers for the vericicies
 	//Parsing vers directly is temporary
-	void createBuffers(GLuint &vao, GLuint &vbo, GLfloat* verts);
+	// Later it will take a mesh renderer
+	void createBuffers(GLuint &vao, GLuint &vbo, GLuint &ebo, GLfloat verts[], GLuint elements[]);
 
 	//Actually draws the loaded vericies, in main loop
-	void draw(GLuint &vbo);
+	void draw(GLuint &vbo, GLuint &shader_program);
 };

@@ -88,8 +88,8 @@ namespace Input
 	static void cursorCallback(GLFWwindow* window, double xpos, double ypos)
 	{
 		//Set
-		mousePos.x = xpos;
-		mousePos.y = ypos;
+		mousePos.x = (float)xpos;
+		mousePos.y = (float)ypos;
 
 		movedMouse = true;
 	}

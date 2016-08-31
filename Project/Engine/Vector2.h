@@ -1,3 +1,5 @@
+//Temporary class
+
 class Vec2
 {
 public:

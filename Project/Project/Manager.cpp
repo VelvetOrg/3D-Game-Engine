@@ -21,6 +21,9 @@ void Manager::init()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
+	//For compiling on mac - uncomment this:
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+
 	//Only use modern OPEN GL (All legacy functions will return an error)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -38,6 +41,7 @@ void Manager::init()
 	glfwMakeContextCurrent(win);
 	
 	//Init GLEW
+	glewExperimental = GL_TRUE;
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
@@ -47,6 +51,9 @@ void Manager::init()
 	glfwSetCursorPosCallback(win, Input::cursorCallback);
 	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
 
+	//Create OPEN GL viewport
+	glViewport(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
 	//State can now be changed
 	state = programState::Running;
 
@@ -55,7 +62,13 @@ void Manager::init()
 }
 
 //Start of update
-void Manager::clear() {}
+void Manager::clear() 
+{
+	//Clear colours on screen
+	//glClearColor(GAME_BG.r, GAME_BG.g, GAME_BG.b, GAME_BG.a);
+	glClearColor(0.0f, 1.0f, 0.5f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+}
 
 //Main game logic
 void Manager::logic() {}
@@ -71,7 +84,16 @@ void Manager::input()
 }
 
 //Draw the game using engine
-void Manager::draw() {}
+void Manager::draw() 
+{
+	//Rendering functions go here...
+	//...
+	//...
+
+	//Swap the OPEN GL buffers:
+	//Uese double buffering to prevent flickers
+	glfwSwapBuffers(win);
+}
 
 //Any post drawing things
 void Manager::late()

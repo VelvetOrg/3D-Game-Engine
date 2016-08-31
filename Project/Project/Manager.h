@@ -5,6 +5,9 @@
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
 
+//Engine
+#include <Engine\MeshRenderer.h>
+
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };
 
@@ -25,4 +28,8 @@ public:
 
 	//Stores the state of the program
 	programState state;
+
+private:
+	//Temporaily define a mesh renderer
+	MeshRenderer _mesh_renderer;
 };

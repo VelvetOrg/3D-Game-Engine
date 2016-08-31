@@ -2,12 +2,15 @@
 #include "Manager.h"
 #include "Externs.h"
 
-//Engien specific
+//Engine specific
 #include <Engine\Input.h>
 #include <Engine\Console.h>
+#include <Engine\Graphics.h>
 
-//Create memory for window
+//Create memory for externs that are not set, oly declared
 GLFWwindow *win;
+GLuint vao;
+GLuint vbo;
 
 //Setup all of the program
 void Manager::init() 
@@ -54,6 +57,12 @@ void Manager::init()
 	//Create OPEN GL viewport
 	glViewport(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
+	//Parse the mesh renderer mesh data from the externs header
+	_mesh_renderer.setVerticies(sizeof(vbo_data) / sizeof(GLfloat), vbo_data);
+
+	//Create buffers
+	Graphics::createBuffers(vao, vbo, _mesh_renderer.getVerticies());
+
 	//State can now be changed
 	state = programState::Running;
 
@@ -89,6 +98,9 @@ void Manager::draw()
 	//Rendering functions go here...
 	//...
 	//...
+
+	//Draw
+	Graphics::draw(vbo);
 
 	//Swap the OPEN GL buffers:
 	//Uese double buffering to prevent flickers

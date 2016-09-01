@@ -12,7 +12,7 @@ To do this the following dependencies are used:
 
 1. `GLFW` - For creating the window and handling OS-specific operations
 2. `GLEW` - The OpenGL Extension Wrangler
-3. `OpenGL` - Allows for drawwing of graphics via the GPU
+3. `OpenGL` - Allows for drawing of graphics via the GPU
 4. `OpenAL` - For 3D audio managment
 5. `libogg` - Upacking .ogg file
 6. `libvorbis` - Decoder of .ogg files

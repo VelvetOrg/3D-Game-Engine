@@ -73,7 +73,7 @@ namespace Shader
 		}
 
 		//Done return the compiled shader
-		Console::message(("Loaded the shader: " + std::string(filePath)).c_str());
+		Console::message(("Loaded the shader: " + std::string(filePath) + "\nCode:\n" + shader_code).c_str());
 		return shader_ID;
 	}
 

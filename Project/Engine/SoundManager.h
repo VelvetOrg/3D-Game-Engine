@@ -1,3 +1,4 @@
+/*
 //Protection
 #pragma once
 
@@ -58,3 +59,4 @@ namespace SoundManager
 	//Clean up
 	void Kill();
 }
+*/

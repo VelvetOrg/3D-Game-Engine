@@ -1,3 +1,4 @@
+/*
 #include "SoundManager.h"
 
 void SoundManager::Init(Vec3 listener_pos = Vec3(0, 0, 0), Vec3 listener_velocity = Vec3(0, 0, 0), Vec3 listener_orientation = Vec3(0, 0, -1))
@@ -199,3 +200,4 @@ void SoundManager::Kill()
 	alcCloseDevice(device);
 	Console::message("SoundManger ended. OpenAL Device has been closed and the OpenAL Context has been destroyed");
 }
+*/

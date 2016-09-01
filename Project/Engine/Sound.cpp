@@ -1,3 +1,4 @@
+/*
 #include "Sound.h"
 
 Sound::Sound()
@@ -75,3 +76,4 @@ Sound::~Sound()
 	alcCloseDevice(device);
 	alcDestroyContext(context);
 }
+*/

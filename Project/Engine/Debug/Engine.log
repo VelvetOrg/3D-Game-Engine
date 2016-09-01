@@ -1,12 +1,20 @@
-﻿  SoundManager.cpp
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(28): warning C4101: 'size' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(27): warning C4101: 'data' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(23): warning C4101: 'sourceID' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(21): warning C4101: 'state' : unreferenced local variable
-  Sound.cpp
-  Shader.cpp
-  Graphics.cpp
-  Generating Code...
-glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
-glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
-  Engine.vcxproj -> C:\Users\Ruchir\Documents\GitHub\Velvet Org\3D-Game\Project\Deps\Libs\Engine.lib
+﻿Build started 01-Sep-16 4:09:56 PM.
+     1>Project "D:\Code\Github\3D-Game\Project\Engine\Engine.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         D:\Programs\VisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Sound.cpp SoundManager.cpp
+         SoundManager.cpp
+         Sound.cpp
+         Generating Code...
+       Lib:
+         D:\Programs\VisualStudio\VC\bin\Lib.exe /OUT:"D:\Code\Github\3D-Game\Project\Deps\Libs\Engine.lib" opengl32.lib glew32.lib glfw3.lib /NOLOGO Debug\Graphics.obj
+         Debug\Shader.obj
+         Debug\Sound.obj
+         Debug\SoundManager.obj
+     1>glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+     1>glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+         Engine.vcxproj -> D:\Code\Github\3D-Game\Project\Deps\Libs\Engine.lib
+     1>Done Building Project "D:\Code\Github\3D-Game\Project\Engine\Engine.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.25

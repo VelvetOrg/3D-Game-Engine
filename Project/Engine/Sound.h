@@ -1,3 +1,4 @@
+/*
 #pragma once
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
@@ -36,3 +37,4 @@ public:
 	bool LoadOGG(string path, vector<char> &buffer, ALenum &format, ALsizei &frequency);
 };
 
+*/

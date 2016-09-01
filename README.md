@@ -19,7 +19,8 @@ To do this the following dependencies are used:
 
 ---
 
-##### This project has the follow goal to be implemented (add if you wish)
+This project has goals to be implemented:
+
 - [x] Input manager
 - [x] Sound system with Open AL
 - [x] Vertex based graphics support

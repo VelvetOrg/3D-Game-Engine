@@ -6,6 +6,7 @@
 #include <GLFW\glfw3.h>
 
 //Engine
+#include <Engine\Camera.h>
 #include <Engine\MeshRenderer.h>
 
 //Enum shows all the possible states of the program
@@ -33,7 +34,11 @@ private:
 	//Temporaily define a mesh renderer
 	MeshRenderer _mesh_renderer;
 
+	//Needs a camera
+	Camera _cam;
+
 	//Shader attributes
-	GLint vertex_pos_location;
-	GLint vertex_col_location;
+	GLint vertex_pos_location; //Vertex position input
+	GLint vertex_col_location; //Vertex colour input
+	GLuint model_view_projection_location; //Stores MVP matrix location
 };

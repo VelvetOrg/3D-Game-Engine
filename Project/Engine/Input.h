@@ -3,7 +3,7 @@
 #include <map>
 
 //Uses vector's
-#include "Vector2.h"
+#include <glm\vec2.hpp>
 
 //Needs GLFW
 #include <GLFW\glfw3.h>
@@ -37,7 +37,7 @@ namespace Input
 	};
 
 	//Stores the mouse position
-	Vec2 mousePos(0.0f, 0.0f);
+	glm::vec2 mousePos(0.0f, 0.0f);
 	bool movedMouse = false;
 
 	//A hash map of key events where:

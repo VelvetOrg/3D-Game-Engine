@@ -13,6 +13,11 @@ extern const char* GAME_TITLE = "3D";
 extern const char* VERTEX_PATH = "vertex.txt";
 extern const char* FRAGMENT_PATH = "fragment.txt";
 
+//Camera properties
+extern const float FOV = 60.0f;
+extern const float NEAR_CLIPPING = 0.1f;
+extern const float FAR_CLIPPING = 100.0f;
+
 //Shape properties - temp
 extern GLfloat VERT_DATA[] = {
 	// x      y   red  green  blue

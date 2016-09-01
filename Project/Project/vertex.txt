@@ -3,8 +3,10 @@ attribute vec3 vertColour;
 
 varying vec3 colour;
 
+uniform mat4 mvp;
+
 void main() 
 {
-	gl_Position = vec4(vertPosition, 0.0, 1.0);
+	gl_Position = mvp * vec4(vertPosition, 0.0, 1.0);
 	colour = vertColour;
 }

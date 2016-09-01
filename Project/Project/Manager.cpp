@@ -60,29 +60,17 @@ void Manager::init()
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
 	
+	//Create the camera
+	_cam.Init(glm::vec3(4, 3, 3), //Starting position
+		glm::vec3(0, 0, 0),       //Looking at the origin
+		_cam.Perspective,		  //Use perspective matrix
+		FOV,					  //Degrees FOV
+		NEAR_CLIPPING,			  //Closest distance allowed to the camera
+		FAR_CLIPPING);			  //Furthest distance allowed to the camera
+
 	//Parse the mesh renderer mesh data from the externs header
 	_mesh_renderer.elements = ELEMENT_DATA;
 	_mesh_renderer.verticies = VERT_DATA;
-
-	//Create buffers
-	//Graphics::createBuffers(&vao, &vbo, &ebo, VERT_DATA, ELEMENT_DATA);
-
-	/*ULTRA TEMP!!!
-
-	//Create vertex array object
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	//Create the vertex buffer object
-	glGenBuffers(1, &vbo); //Tell OPEN GL of vbo existance
-	glBindBuffer(GL_ARRAY_BUFFER, vbo); //Store VBO in array buffer
-	glBufferData(GL_ARRAY_BUFFER, sizeof(VERT_DATA), VERT_DATA, GL_STATIC_DRAW); //Parse vertex data to array buffer
-
-	//Bind element buffer
-	glGenBuffers(1, &ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ELEMENT_DATA), ELEMENT_DATA, GL_STATIC_DRAW);
-	//END ULTRA TEMP!!*/
 
 	Graphics::createBuffers(&vao, &vbo, &ebo, sizeof(VERT_DATA), VERT_DATA, sizeof(ELEMENT_DATA), ELEMENT_DATA);
 
@@ -95,8 +83,9 @@ void Manager::init()
 
 	//  -------- Get uniforms from shader -------- 
 	
-	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition");
-	vertex_col_location = glGetAttribLocation(shader_program, "vertColour");
+	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition"); //Vertex position input
+	vertex_col_location = glGetAttribLocation(shader_program, "vertColour"); //Vertex colour input
+	model_view_projection_location = glGetUniformLocation(shader_program, "mvp"); //Model view projection
 
 	glEnableVertexAttribArray(vertex_pos_location);
 	glVertexAttribPointer(vertex_pos_location, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) 0);
@@ -144,6 +133,9 @@ void Manager::draw()
 	//Rendering functions go here...
 	//...
 	//...
+
+	//Set the shader uniforms
+	glUniformMatrix4fv(model_view_projection_location, 1, GL_FALSE, &_cam.getMVP()[0][0]); //Set view matrix based on camera object
 
 	//Draw
 	Graphics::draw(vbo, shader_program);

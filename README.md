@@ -1,5 +1,5 @@
 # 3D-Game
-> This is a C++ based 3D game. Currently the idea and gamplay of this project is yet to be decided - but some basic features have already been implemented including:
+> This is a C++ based 3D game. Currently the idea and gamplay of this project is yet to be decided, but some basic features have already been implemented including:
 
 1. Input managment - Mouse and keyboard including modifiers and all key states
 2. Sound managment - 3D and 2D audio. Including audio listeners, SFX and music
@@ -10,8 +10,8 @@
 
 To do this the following dependencies are used:
 
-1. `GLFW` - For creating the window and gandeling OS specific operations
-2. `GLEW` - The extension rangler for OPEN GL
+1. `GLFW` - For creating the window and handling OS-specific operations
+2. `GLEW` - The OpenGL Extension Wrangler
 3. `OpenGL` - Allows for drawwing of graphics via the GPU
 4. `OpenAL` - For 3D audio managment
 5. `libogg` - Upacking .ogg file
@@ -19,7 +19,7 @@ To do this the following dependencies are used:
 
 ---
 
-This project has goals to be implemented:
+This project's goals to be implemented:
 
 - [x] Input manager
 - [x] Sound system with Open AL

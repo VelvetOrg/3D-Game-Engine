@@ -1,62 +1,74 @@
-/*
-//Protection
 #pragma once
-
-//TO prevent arning from stopping compilation
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE
+#endif
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
-
-//Engine files
+#endif
 #include "Console.h"
 #include "Vector3.h"
-
-//OPEN AL files
+#include <glm\gtc\quaternion.hpp>
+#include <glm\glm.hpp>
 #include <AL\al.h>
 #include <AL\alc.h>
 #include <AL\alut.h>
-
-//SDT
 #include <unordered_map>
-
-//Storing oggs
+#include <vector>
+#include <string>
 #include <libvorbis\vorbisfile.h>
-
-//Namespaces - please don't use namespaces like this!
 using std::string;
 using std::unordered_map;
 using std::vector;
-
-//Static so it can be inside a namesapce
 namespace SoundManager
 {
-	//Holds file extension
-	string oggextension = ".ogg";
-	vector<char> buffer;
-	
-	//Has map of sound buffers
-	unordered_map<string, ALuint> song_map;
-	unordered_map<string, ALuint> sfx_map;
-	
-	//Open AL buffers
-	ALCcontext *context;
-	ALCdevice *device;
-	
-	//Adds file to the hash maps
-	bool AddSong(string key, string path);
-	bool AddSFX(string key, string path);
-	
-	//Play the loaded sounds - Ruchir: Please use optional paramters for this
-	void PlaySong(string song_key, Vec3 position_song, Vec3 velocity_song, bool loop, bool is3D, float pitch, float gain);
-	void PlaySFX(string sfx_key, Vec3 position_sfx, Vec3 velocity_sfx, bool is3D, float pitch, float gain);
-	
-	//OGG loading
-	ALvoid* ConvertOGG(string path, ALenum &format, ALsizei &frequency);
-	void LoadOGG(string fileName, vector<char> &buffer, ALenum &format, ALsizei &freq);
-	
-	//Setup
-	void Init(Vec3 listener_pos, Vec3 listener_velocity, Vec3 listener_orientation);
-	
-	//Clean up
-	void Kill();
+#define MAX_AUDIO_BUFFERS 64
+#define MAX_AUDIO_SOURCES 16
+#ifndef _SOUND_MANAGER_H
+#define _SOUND_MANAGER_H
+	typedef __int16 SAMPLES;
+	static bool isInit;
+	static  ALCdevice *Device;
+	static  ALCcontext *Context;
+	static string AudioPath;
+	static  bool isSoundOn;
+	static ALfloat Position[3];
+	static ALfloat Velocity[3];
+	static ALfloat Orientation[6];
+
+	static unsigned int AudioSourcesInUseCount;
+	static vector<ALuint> AudioSources;
+	static vector<bool> AudioSourcesInUse;
+
+	static unsigned int AudioBuffersInUseCount;
+	static vector<ALuint> AudioBuffers;
+	static vector<bool> AudioBuffersInUse;
+	static vector<string> AudioBufferFileName;
+
+	static int LocateAudioBuffer(string path);
+	static int LoadAudioToBuffer(string path);
+	static bool LoadOGG(string path, ALuint destinationAudioBuffer);
+
+	static void Init(Vec3 listener_pos, Vec3 listener_velocity, Vec3 listener_orientation_dir, Vec3 listener_orientation_dir_up);
+	static void Kill();
+
+	static inline bool IsSoundOn() { return isSoundOn; };
+	static void SetAudioPath(string path) { AudioPath = path; };
+
+	static string ListAvailableDevices();
+
+	static bool LoadAudio(string path, unsigned int *audioID, bool loop);
+	static bool ReleaseAudio(unsigned int audioID);
+	static bool PlayAudio(unsigned int audioID, bool forceRestart);
+	static bool StopAudio(unsigned int audioID);
+	static bool StopAllAudio();
+
+	static bool PauseAudio(unsigned int audioID);
+	static bool PauseAllAudio();
+	static bool ResumeAudio(unsigned int audioID);
+	static bool ResumeAllAudio();
+	static bool SetSoundPosition(unsigned int audioID, Vec3 position);
+	static bool SetSoundPosition(unsigned int audioID, Vec3 position, Vec3 velocity, Vec3 direction);
+	static bool SetSound(unsigned int audioID, Vec3 position, Vec3 velocity, Vec3 direction, float maxDistance, bool playNow, bool loop, float minGain);
+	static bool SetListenerPosition(Vec3 position, Vec3 velocity, glm::quat orientation);
+#endif
 }
-*/

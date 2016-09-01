@@ -8,6 +8,7 @@
 //Engine
 #include <Engine\Camera.h>
 #include <Engine\MeshRenderer.h>
+#include <Engine\SoundManager.h>
 
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };

@@ -43,29 +43,48 @@ void Manager::init()
 	win = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, GAME_TITLE, NULL, NULL);
 	if (!win) Console::error("Could not create the game window.");
 
+	//Make sure events are passed though engine input manager
+	glfwSetKeyCallback(win, Input::keyCallback);
+	glfwSetCursorPosCallback(win, Input::cursorCallback);
+	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
+	
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
+
+	//Set double buffer interval
+	glfwSwapInterval(1);
 	
 	//Init GLEW
 	glewExperimental = GL_TRUE;
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
-
-	//Make sure events are passed though engine input manager
-	glfwSetKeyCallback(win, Input::keyCallback);
-	glfwSetCursorPosCallback(win, Input::cursorCallback);
-	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
-
-	//Create OPEN GL viewport
-	glViewport(0, 0, GAME_WIDTH, GAME_HEIGHT);
 	
 	//Parse the mesh renderer mesh data from the externs header
 	_mesh_renderer.elements = ELEMENT_DATA;
 	_mesh_renderer.verticies = VERT_DATA;
 
 	//Create buffers
-	Graphics::createBuffers(vao, vbo, ebo, _mesh_renderer.verticies, _mesh_renderer.elements);
+	//Graphics::createBuffers(&vao, &vbo, &ebo, VERT_DATA, ELEMENT_DATA);
+
+	/*ULTRA TEMP!!!
+
+	//Create vertex array object
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+
+	//Create the vertex buffer object
+	glGenBuffers(1, &vbo); //Tell OPEN GL of vbo existance
+	glBindBuffer(GL_ARRAY_BUFFER, vbo); //Store VBO in array buffer
+	glBufferData(GL_ARRAY_BUFFER, sizeof(VERT_DATA), VERT_DATA, GL_STATIC_DRAW); //Parse vertex data to array buffer
+
+	//Bind element buffer
+	glGenBuffers(1, &ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(ELEMENT_DATA), ELEMENT_DATA, GL_STATIC_DRAW);
+	//END ULTRA TEMP!!*/
+
+	Graphics::createBuffers(&vao, &vbo, &ebo, sizeof(VERT_DATA), VERT_DATA, sizeof(ELEMENT_DATA), ELEMENT_DATA);
 
 	//Load shaders
 	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -76,13 +95,14 @@ void Manager::init()
 
 	//  -------- Get uniforms from shader -------- 
 	
-	GLint positionAttribute = glGetAttribLocation(shader_program, "position");
-	glEnableVertexAttribArray(positionAttribute);
-	glVertexAttribPointer(positionAttribute, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), 0);
+	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition");
+	vertex_col_location = glGetAttribLocation(shader_program, "vertColour");
 
-	GLint colourAttribute = glGetAttribLocation(shader_program, "colour");
-	glEnableVertexAttribArray(colourAttribute);
-	glVertexAttribPointer(colourAttribute, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(2 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(vertex_pos_location);
+	glVertexAttribPointer(vertex_pos_location, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) 0);
+
+	glEnableVertexAttribArray(vertex_col_location);
+	glVertexAttribPointer(vertex_col_location, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (sizeof(GLfloat) * 2));
 
 	// -------- Done -------- 
 
@@ -94,26 +114,29 @@ void Manager::init()
 }
 
 //Start of update
-void Manager::clear() 
+void Manager::clear()
 {
+	//Recreate viewport
+	int width, height;
+
+	glfwGetFramebufferSize(win, &width, &height);
+	glViewport(0, 0, width, height);
+
 	//Clear colours on screen
 	//glClearColor(GAME_BG.r, GAME_BG.g, GAME_BG.b, GAME_BG.a);
 	glClearColor(0.0f, 25.0f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
-//Main game logic
-void Manager::logic() {}
-
 //Get input from user
-void Manager::input() 
+void Manager::input()
 {
-	//Make sure all events are read
-	glfwPollEvents();
-
 	//Close on escape
 	if (Input::getKey(GLFW_KEY_ESCAPE).released) quit();
 }
+
+//Main game logic
+void Manager::logic() {}
 
 //Draw the game using engine
 void Manager::draw() 
@@ -138,6 +161,9 @@ void Manager::late()
 	//Swap the OPEN GL buffers:
 	//Uese double buffering to prevent flickers
 	glfwSwapBuffers(win);
+
+	//Make sure all events are read
+	glfwPollEvents();
 }
 
 //Close and clean up memory

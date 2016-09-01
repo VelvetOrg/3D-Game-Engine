@@ -17,9 +17,9 @@ int main(int argc, char** argv)
 	while (manager.state != programState::Closing)
 	{
 		//Call frame functions chronologically
+		manager.clear();
 		manager.input();
 		manager.logic();
-		manager.clear();
 		manager.draw();
 		manager.late();
 	}

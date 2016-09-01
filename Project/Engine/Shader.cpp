@@ -120,11 +120,11 @@ namespace Shader
 		glUseProgram(program_ID);
 
 		//Shaders are no longer needed
-		glDetachShader(program_ID, vertex);
-		glDetachShader(program_ID, fragment);
+		//glDetachShader(program_ID, vertex);
+		//glDetachShader(program_ID, fragment);
 
-		glDeleteShader(vertex);
-		glDeleteShader(fragment);
+		//glDeleteShader(vertex);
+		//glDeleteShader(fragment);
 
 		//Return the program
 		return program_ID;

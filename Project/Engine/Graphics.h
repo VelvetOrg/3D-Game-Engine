@@ -13,10 +13,12 @@ namespace Graphics
 		VBO: Allows mesh data to be uploaded to GPU
 	*/
 
+	//Holds arrays
+
 	//Will create OPEN GL buffers for the vericicies
 	//Parsing vers directly is temporary
 	// Later it will take a mesh renderer
-	void createBuffers(GLuint &vao, GLuint &vbo, GLuint &ebo, GLfloat verts[], GLuint elements[]);
+	void createBuffers(GLuint* vao, GLuint* vbo, GLuint* ebo, int verts_size, GLfloat verts[], int elements_size, GLuint elements[]);
 
 	//Actually draws the loaded vericies, in main loop
 	void draw(GLuint &vbo, GLuint &shader_program);

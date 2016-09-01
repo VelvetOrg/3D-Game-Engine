@@ -32,4 +32,8 @@ public:
 private:
 	//Temporaily define a mesh renderer
 	MeshRenderer _mesh_renderer;
+
+	//Shader attributes
+	GLint vertex_pos_location;
+	GLint vertex_col_location;
 };

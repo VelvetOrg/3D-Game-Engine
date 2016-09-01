@@ -124,7 +124,7 @@ void Manager::clear()
 
 	//Clear colours on screen
 	//glClearColor(GAME_BG.r, GAME_BG.g, GAME_BG.b, GAME_BG.a);
-	glClearColor(0.0f, 25.0f, 0.6f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

@@ -8,9 +8,9 @@ int main(int argc, char** argv)
 	//Create manager object and call sequential functions
 	Manager manager;
 	manager.init();
-	SoundManager::Init(Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, -1));
-	SoundManager::AddSFX("LDTune", "Assets/LD_Tune.wav");
-	SoundManager::PlaySFX("LDTune", Vec3(0, 0, 0), Vec3(0, 0, 0), true, 1, 1);
+	unsigned int soundIDTAG;
+	SoundManager::LoadAudio("Bomb.ogg", &soundIDTAG, true);
+	SoundManager::PlayAudio(soundIDTAG, true);
 	//Enter main loop
 	while (manager.state != programState::Closing)
 	{

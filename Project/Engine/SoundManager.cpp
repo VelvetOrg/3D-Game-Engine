@@ -1,201 +1,507 @@
 #include "SoundManager.h"
 
-void SoundManager::Init(Vec3 listener_pos = Vec3(0, 0, 0), Vec3 listener_velocity = Vec3(0, 0, 0), Vec3 listener_orientation = Vec3(0, 0, -1))
+void SoundManager::Init(Vec3 listener_pos, Vec3 listener_velocity, Vec3 listener_orientation_dir, Vec3 listener_orientation_dir_up)
 {
-	context = NULL;
-	device = alcOpenDevice(0);
-	if (device == nullptr) Console::error("OpenAL Device was not created!");
-	context = alcCreateContext(device, 0);
-	if (context == nullptr)
-	{
-		alcCloseDevice(device);
-		Console::error("OpenAL Context was not created! OpenAL Device has been deleted.");
-	}
-	alListener3f(AL_POSITION, listener_pos.x, listener_pos.y, listener_pos.z);
-	alListener3f(AL_VELOCITY, listener_velocity.x, listener_velocity.y, listener_velocity.z);
-	alListener3f(AL_ORIENTATION, listener_orientation.x, listener_orientation.y, listener_orientation.z);
-}
-
-bool SoundManager::AddSFX(string key, string path)
-{
-	ALint state;                            // The state of the sound source
-	ALuint bufferID;                        // The OpenAL sound buffer ID
-	ALuint sourceID;                        // The OpenAL sound source
-	ALenum format;                          // The sound data format
-	ALsizei frequency;                      // The frequency of the sound data
-	vector<char> bufferData;                // The sound buffer data from file
-	ALvoid* data;
-	ALsizei size;
-	if (device == nullptr) Console::error("OpenAL Device not found!");
-	if (context == nullptr) Console::error("OpenAL Context not found!");
-	if (path.empty()) Console::error("The specified Sound filepath could not be found or the filepath was empty!");
-	alGenBuffers(1, &bufferID);
-	//Enter de-coding and conversion to raw audio data
-	if (path.length() >= oggextension.length()) { // if it is a .ogg
-		if (0 == path.compare(path.length() - oggextension.length(), oggextension.length(), oggextension))
-		{
-			LoadOGG(path.c_str(), bufferData, format, frequency);
-			alBufferData(bufferID, format, &bufferData, static_cast<ALsizei>(buffer.size()), frequency);
-			Console::message("WAV is in memory! :)");
-			//alBufferData(bufferID, format, ConvertOGG(path, format, frequency), buffer.size(), frequency);
-		}
-	}
-	else // if it is not a .ogg
-	{
-		//alutLoadWAVFile((ALbyte*)path.c_str(), &format, &data, &size, &frequency, (ALboolean*)false);
-		//alBufferData(bufferID, format, data, size, frequency);
-		bufferID = alutCreateBufferFromFile(path.c_str());
-		if (!bufferID) Console::error("WAV File Buffer did not get created!");
-	}
-	//Continue flow
-	//sfx_map.insert({ key,  bufferID});
-	sfx_map[key] = bufferID;
-	alDeleteBuffers(1, &bufferID);
-	return true;
-}
-
-bool SoundManager::AddSong(string key, string path)
-{
+	isInit = false;
+	isSoundOn = false;
+	Device = NULL;
+	Context = NULL;
+	AudioPath = "";
 	
-	return true;
-}
+	Position[0] = listener_pos.x;
+	Position[1] = listener_pos.y;
+	Position[2] = listener_pos.z;
 
-void SoundManager::PlaySFX(string sfx_key, Vec3 position_sfx = Vec3(0, 0, 0), Vec3 velocity_sfx = Vec3(0, 0, 0), bool is3D = true, float pitch = 1, float gain = 1)
-{
-	ALuint source;
-	alGenSources(1, &source);
-	alSourcei(source, AL_BUFFER, sfx_map[sfx_key]);
-	alSourcef(source, AL_PITCH, pitch);
-	alSourcef(source, AL_GAIN, gain);
-	alSource3f(source, AL_POSITION, position_sfx.x, position_sfx.y, position_sfx.z);
-	alSource3f(source, AL_VELOCITY, velocity_sfx.x, velocity_sfx.y, velocity_sfx.z);
-	alSourcei(source, AL_LOOPING, AL_FALSE);
-	alSourcei(source, AL_SOURCE_RELATIVE, (is3D == true) ? AL_FALSE : AL_TRUE);
-	alSourcePlay(source);
-	alDeleteSources(1, &source);
-}
+	Velocity[0] = listener_velocity.x;
+	Velocity[1] = listener_velocity.y;
+	Velocity[2] = listener_velocity.z;
 
-void SoundManager::PlaySong(string song_key, Vec3 position_song = Vec3(0, 0, 0), Vec3 velocity_song = Vec3(0, 0, 0), bool loop = true, bool is3D = true, float pitch = 1, float gain = 1)
-{
-	ALuint source;
-	alGenSources(1, &source);
+	Orientation[0] = listener_orientation_dir.x;
+	Orientation[1] = listener_orientation_dir.y;
+	Orientation[2] = listener_orientation_dir.z;
+	Orientation[3] = listener_orientation_dir_up.x;
+	Orientation[4] = listener_orientation_dir_up.y;
+	Orientation[5] = listener_orientation_dir_up.z;
 
-	alSourcef(source, AL_PITCH, pitch);
-	alSourcef(source, AL_GAIN, gain);
-	alSource3f(source, AL_POSITION, position_song.x, position_song.y, position_song.z);
-	alSource3f(source, AL_VELOCITY, velocity_song.x, velocity_song.y, velocity_song.z);
-	alSourcei(source, AL_LOOPING, (loop == true) ? AL_TRUE : AL_FALSE);
-	alSourcei(source, AL_SOURCE_RELATIVE, (is3D == true) ? AL_FALSE : AL_TRUE);
-	alSourcePlay(source);
-	alDeleteSources(1, &source);
+	AudioBuffersInUseCount = 0;
+	AudioSourcesInUseCount = 0;
 
-}
-
-ALvoid* SoundManager::ConvertOGG(string path, ALenum &format, ALsizei &frequency)
-{
-	int endian = NULL;
-	int i = 0;
-	int bitStream; // Bit stream
-	long audioBytes; // Bytes of audio
-	char array[32768]; // Local fixed size array
-	FILE *oggFile; // File
-	oggFile = fopen(path.c_str(), "r+");
-	if (oggFile == nullptr) Console::warning("Could not open the file for reading!");
-
-	//Variables for libvorbis SDK
-	vorbis_info *oggFileInformation; // Audio file information
-	OggVorbis_File oggAudioFile;
-	//Pass the filepath and the actual file to the SDK
-	ov_open(oggFile, &oggAudioFile, 0, 0);
-	//Get information about the OGG File
-	oggFileInformation = ov_info(&oggAudioFile, -1);
-	//Use 16-bit channels
-	format = AL_FORMAT_MONO16;
-	//Sampling rate's frequency
-	frequency = oggFileInformation->rate;
-
-	//Decode the OGG into audio data
-	do
+	for (int i = 0; i < MAX_AUDIO_SOURCES; i++)
 	{
-		//Read a buffers decoded sound data
-		audioBytes = ov_read(&oggAudioFile, array, 32768, endian, 2, 1, &bitStream);
-		//Append data to buffer's end
-		buffer.insert(buffer.end(), array, array + audioBytes);
-	} while (audioBytes > 0);
-
-	//Clean up
-	ov_clear(&oggAudioFile);
-	return (ALvoid*)buffer[i++];
-}
-
-void SoundManager::LoadOGG(string fileName, vector<char> &buffer, ALenum &format, ALsizei &freq)
-{
-	int endian = 0;                         // 0 for Little-Endian, 1 for Big-Endian
-	int bitStream;
-	long bytes;
-	char array[32768];                // Local fixed size array
-	FILE *f;
-
-	// Open for binary reading
-	f = fopen(fileName.c_str(), "rb");
-
-	if (f == NULL)
-	{
-		Console::error("FILE is equal to nullptr");
-		exit(-1);
+		AudioSources[i] = 0;
+		AudioSourcesInUse[i] = false;
 	}
-	// end if
 
-	vorbis_info *pInfo;
-	OggVorbis_File oggFile;
-
-	// Try opening the given file
-	if (ov_open(f, &oggFile, NULL, 0) != 0)
+	for (int i = 0; i < MAX_AUDIO_BUFFERS; i++)
 	{
-		Console::error("Could not openn FILE for de-encoding");
-		exit(-1);
+		AudioBuffers[i] = 0;
+		AudioBuffersInUse[i] = false;
 	}
-	// end if
 
-	// Get some information about the OGG file
-	pInfo = ov_info(&oggFile, -1);
-
-	// Check the number of channels... always use 16-bit samples
-	if (pInfo->channels == 1)
-		format = AL_FORMAT_MONO16;
-	else
-		format = AL_FORMAT_STEREO16;
-	// end if
-
-	// The frequency of the sampling rate
-	freq = pInfo->rate;
-
-	// Keep reading until all is read
-	do
+	Device = alcOpenDevice(0);
+	if (!Device) Console::error("OpenAL Device was not created!");
+	Context = alcCreateContext(Device, NULL);
+	if (!Context)Console::error("OpenAL Context was not created!");
+	alcMakeContextCurrent(Context);
+	
+	for (int i = 0; i < MAX_AUDIO_BUFFERS; i++)
 	{
-		// Read up to a buffer's worth of decoded sound data
-		bytes = ov_read(&oggFile, array, 32768, endian, 2, 1, &bitStream);
+		ALuint bufferID = AudioBuffers[i];
+		alGenBuffers(1, &bufferID);
+	}
 
-		if (bytes < 0)
-		{
-			ov_clear(&oggFile);
-			Console::error("Error while de-coding the FILE");
-			exit(-1);
-		}
-		// end if
+	for (int i = 0; i < MAX_AUDIO_SOURCES; i++)
+	{
+		ALuint sourceID = AudioSources[i];
+		alGenBuffers(1, &sourceID);
+	}
 
-		// Append to end of buffer
-		buffer.insert(buffer.end(), array, array + bytes);
-	} while (bytes > 0);
+	alListenerfv(AL_POSITION, Position);
 
-	// Clean up!
-	ov_clear(&oggFile);
+	alListenerfv(AL_VELOCITY, Velocity);
+
+	alListenerfv(AL_ORIENTATION, Orientation);
+
+	alListenerf(AL_GAIN, 1.0);
+
+	alDopplerFactor(1.0);
+	alDopplerVelocity(343.0f);
+
+	isInit = true;
+	isSoundOn = true;
+
+	Console::message("SoundManager initialised.");
 }
 
 void SoundManager::Kill()
 {
+	for (int i = 0; i < AudioSources.size(); i++)
+	{
+		alDeleteSources(1, &AudioSources[i]);
+	}
+
+	for (int i = 0; i < AudioBuffers.size(); i++)
+	{
+		alDeleteSources(1, &AudioBuffers[i]);
+	}
+
+	Context = alcGetCurrentContext();
+	Device = alcGetContextsDevice(Context);
 	alcMakeContextCurrent(0);
-	alcDestroyContext(context);
-	alcCloseDevice(device);
-	Console::message("SoundManger ended. OpenAL Device has been closed and the OpenAL Context has been destroyed");
+	alcDestroyContext(Context);
+	if (Device)
+	{
+		alcCloseDevice(Device);
+	}
+	Console::message("SoundManager killed.");
+}
+
+string SoundManager::ListAvailableDevices()
+{
+	string deviceList = "Sound Devices Available: ";
+	if (alcIsExtensionPresent(0, "AL_ENUMERATION_EXT") == AL_TRUE)
+	{
+		deviceList = "List of devices: ";
+		deviceList += (char*)alcGetString(0, ALC_DEVICE_SPECIFIER);
+		deviceList += "\n";
+	}
+	else
+	{
+		deviceList += "enumeration error.\n";
+	}
+	return deviceList;
+}
+
+bool SoundManager::LoadAudio(string path, unsigned int *audioID, bool loop)
+{
+	if (path.empty())
+		Console::warning("Audio not loaded. Filepath is empty."); return false;
+
+	if (AudioSourcesInUseCount == MAX_AUDIO_SOURCES)
+		Console::error("Out of Audio Source slots! Increase macro size in SoundManager.h to fit more!"); return false;
+	
+	int bufferID, sourceID;
+	bufferID = sourceID = -1;
+	alGetError();
+
+	bufferID = LocateAudioBuffer(path);
+	if (bufferID < 0)
+	{
+		bufferID = LoadAudioToBuffer(path);
+		if (bufferID < 0)return false;
+	}
+	
+	sourceID = 0;
+	while (AudioSourcesInUse[sourceID] == true)
+		sourceID++;
+
+	*audioID = sourceID;
+	AudioSourcesInUse[sourceID] = true;
+	AudioSourcesInUseCount++;
+
+	alSourcei(AudioSources[sourceID], AL_BUFFER, AudioBuffers[bufferID]);
+	alSourcei(AudioSources[sourceID], AL_LOOPING, ((loop == true) ? AL_TRUE : AL_FALSE));
+
+	return true;
+}
+
+int SoundManager::LocateAudioBuffer(string path)
+{
+	for (unsigned int i = 0; i < MAX_AUDIO_BUFFERS; i++)
+	{
+		if (path == AudioBufferFileName[i])
+		{
+			return (int)i;
+		}
+	}
+	Console::message("File does not already exist in OpenAL buffer");
+	return -1;
+}
+
+int SoundManager::LoadAudioToBuffer(string path)
+{
+	if (path.empty())
+	{
+		return -1;
+	}
+
+	if (AudioBuffersInUseCount == MAX_AUDIO_BUFFERS)
+	{
+		Console::warning("No more available slots for OpenAL Audio Buffers! Increase macro value in SoundManager.h for more slots!");
+		return -1;
+	}
+
+	int bufferID = 0;
+	while (AudioBuffersInUse[bufferID] == true)
+	{
+		bufferID;
+	}
+
+	if (path.find(".ogg", 0) != string::npos)
+	{
+		if (!LoadOGG(path, AudioBuffers[bufferID]))
+		{
+			return -1;
+		}
+	}
+	
+	AudioBuffersInUse[bufferID] = true;
+	AudioBufferFileName[bufferID] = path;
+	AudioBuffersInUseCount++;
+	return bufferID;
+}
+
+bool SoundManager::PlayAudio(unsigned int audioID, bool forceRestart)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+	int sourceAudioState = 0;
+	alGetError();
+	alGetSourcei(AudioSources[audioID], AL_SOURCE_STATE, &sourceAudioState);
+	if (sourceAudioState == AL_PLAYING)
+	{
+		if (forceRestart)
+		{
+			StopAudio(audioID);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	alSourcePlay(AudioSources[audioID]);
+	return true;
+}
+
+bool SoundManager::PauseAudio(unsigned int audioID)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		return false;
+	}
+	alGetError();
+	alSourcePause(AudioSources[audioID]);
+	
+	return true;
+}
+
+bool SoundManager::PauseAllAudio()
+{
+	if (AudioSourcesInUseCount >= MAX_AUDIO_SOURCES)
+	{
+		return false;
+	}
+	alGetError();
+
+	for (int i = 0; i < AudioSources.size(); i++)
+	{
+		alSourcePause(AudioSources[i]);
+	}
+
+	return true;
+}
+
+bool SoundManager::ResumeAudio(unsigned int audioID)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	alGetError();
+
+	alSourcePlay(AudioSources[audioID]);
+
+	return true;
+}
+
+bool SoundManager::ResumeAllAudio()
+{
+	if (AudioSourcesInUseCount >= MAX_AUDIO_SOURCES)
+	{
+		Console::warning("No more audio source slots available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	alGetError();
+
+	int sourceAudioState = 0;
+
+	for (int i = 0; i < AudioSourcesInUseCount; i++)
+	{
+		alGetSourcei(AudioSources[i], AL_SOURCE_STATE, &sourceAudioState);
+		if (sourceAudioState == AL_PAUSED)
+		{
+			ResumeAudio(i);
+		}
+	}
+
+	return true;
+}
+
+bool SoundManager::StopAudio(unsigned int audioID)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	alGetError();
+
+	alSourceStop(AudioSources[audioID]);
+	
+	return true;
+}
+
+bool SoundManager::StopAllAudio()
+{
+	if (AudioSourcesInUseCount >= MAX_AUDIO_SOURCES)
+	{
+		Console::warning("No more audio source slots available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	alGetError();
+
+	for (int i = 0; i < AudioSourcesInUseCount; i++)
+	{
+		StopAudio(i);
+	}
+
+	return true;
+}
+
+bool SoundManager::ReleaseAudio(unsigned int audioID)
+{
+	if (audioID >= MAX_AUDIO_SOURCES)
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+	alGetError();
+	alSourceStop(AudioSources[audioID]);
+	AudioSourcesInUse[audioID] = false;
+	AudioSourcesInUseCount--;
+	
+	return true;
+}
+
+bool SoundManager::SetSound(unsigned int audioID, Vec3 position, Vec3 velocity, Vec3 direction, float maxDistance, bool playNow, bool forceRestart, float minGain)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	ALfloat pos[3] = { position.x, position.y, position.z };
+	alSourcefv(AudioSources[audioID], AL_POSITION, pos);
+
+	ALfloat vel[3] = { velocity.x, velocity.y, velocity.z };
+	alSourcefv(AudioSources[audioID], AL_VELOCITY, vel);
+
+	ALfloat dir[3] = { direction.x, direction.y, direction.z };
+	alSourcefv(AudioSources[audioID], AL_DIRECTION, dir);
+
+	alSourcef(AudioSources[audioID], AL_MAX_DISTANCE, maxDistance);
+	
+	alSourcef(AudioSources[audioID], AL_MAX_DISTANCE, maxDistance);
+	
+	alSourcef(AudioSources[audioID], AL_MIN_GAIN, minGain);
+
+	alSourcef(AudioSources[audioID], AL_MAX_GAIN, 1.0f);
+
+	alSourcef(AudioSources[audioID], AL_ROLLOFF_FACTOR, 1.0f);
+
+	if (playNow)
+	{
+		return PlayAudio(audioID, forceRestart);
+	}
+
+	return true;
+}
+
+bool SoundManager::SetSoundPosition(unsigned int audioID, Vec3 position)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	ALfloat pos[3] = { position.x, position.y, position.z };
+	alSourcefv(AudioSources[audioID], AL_POSITION, pos);
+	
+	return true;
+}
+
+bool SoundManager::SetSoundPosition(unsigned int audioID, Vec3 position, Vec3 velocity, Vec3 direction)
+{
+	if (audioID >= MAX_AUDIO_SOURCES || !AudioSourcesInUse[audioID])
+	{
+		Console::error("Audio ID is not valid and usable OR there are no more audio sources available. Increase macro value in SoundManager.h for more slots!");
+		return false;
+	}
+
+	ALfloat pos[3] = { position.x, position.y, position.z };
+	alSourcefv(AudioSources[audioID], AL_POSITION, pos);
+
+	ALfloat vel[3] = { velocity.x, velocity.y, velocity.z };
+	alSourcefv(AudioSources[audioID], AL_VELOCITY, vel);
+
+	ALfloat dir[3] = { direction.x, direction.y, direction.z };
+	alSourcefv(AudioSources[audioID], AL_DIRECTION, dir);
+
+	return true;
+}
+bool SoundManager::SetListenerPosition(Vec3 position, Vec3 velocity, Vec3 orientation)
+{
+	Vec3 axis;
+
+	ALfloat pos[3] = { position.x, position.y, position.z };
+	alListenerfv(AL_POSITION, pos);
+
+	ALfloat vel[3] = { velocity.x, velocity.y, velocity.z };
+	alListenerfv(AL_VELOCITY, vel);
+
+	axis = Vec3(0, 0, 0);
+	//USE GLM QUATERNIONS
+	//TEMPORARY
+	axis.x = axis.y = axis.z = 0;
+
+	ALfloat dir[3] = { axis.x, axis.y, axis.z };
+	alListenerfv(AL_ORIENTATION, vel);
+
+	alListenerf(AL_MAX_DISTANCE, 10000.0f);
+	alListenerf(AL_MIN_GAIN, 0.0);
+	alListenerf(AL_MIN_GAIN, 1.0);
+
+	return true;
+}
+
+bool SoundManager::LoadOGG(string path, ALuint destinationAudioBuffer)
+{
+	OggVorbis_File oggfile;
+
+	if (ov_fopen(const_cast<char*>(path.c_str()), &oggfile))
+	{
+		Console::error("OggVorbis_File 'LoadOGG' function ERROR : ov_fopen");
+		return false;
+	}
+
+	vorbis_info * fileInformation = ov_info(&oggfile, -1);
+
+	ALenum format;
+
+	switch (fileInformation->channels)
+	{
+	case 1:
+		format = AL_FORMAT_MONO16;
+		break;
+
+	case 2:
+		format = AL_FORMAT_STEREO16;
+		break;
+
+	case 4:
+		format = alGetEnumValue("AL_FORMAT_QUAD16");
+		break;
+
+	case 6:
+		format = alGetEnumValue("AL_FORMAT_51CHN16");
+		break;
+
+	case 7:
+		format = alGetEnumValue("AL_FORMAT_61CHN16");
+		break;
+
+	case 8:
+		format = alGetEnumValue("AL_FORMAT_71CHN16");
+		break;
+	default:
+		format = 0;
+		break;
+	}
+
+	vector<SAMPLES> samples;
+
+	char temporaryBuffer[32768]; // Local temporary array of chars
+
+	int section = 0;
+	bool first = true;
+
+	while (true)
+	{
+		int result = ov_read(&oggfile, temporaryBuffer, 4096, 0, 2, 1, &section); 
+		if (result > 0)
+		{
+			first = false;
+			samples.insert(samples.end(), temporaryBuffer, temporaryBuffer + (result));
+		}
+		else
+		{
+			if (result < 0)
+			{
+				Console::error("OggVorbis_File 'LoadOGG' function ERROR : Loading OGG sound data into buffer failed!");
+			}
+			else
+			{
+				if (first)
+				{
+					return false;
+				}
+				break;
+			}
+		}
+	}
+
+	alBufferData(destinationAudioBuffer, format, &samples[0], ov_pcm_total(&oggfile, -1), fileInformation->rate);
+
+	return true;
 }

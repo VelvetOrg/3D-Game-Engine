@@ -86,6 +86,15 @@ void Manager::init()
 
 	// -------- Done -------- 
 
+	
+	
+	SoundManager::Init(Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 0));
+	cout << SoundManager::ListAvailableDevices() << endl;
+	SoundManager::SetAudioPath("Assets/");
+	
+
+
+
 	//State can now be changed
 	state = programState::Running;
 

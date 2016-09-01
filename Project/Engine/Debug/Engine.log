@@ -1,12 +1,9 @@
 ﻿  SoundManager.cpp
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(28): warning C4101: 'size' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(27): warning C4101: 'data' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(23): warning C4101: 'sourceID' : unreferenced local variable
-c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(21): warning C4101: 'state' : unreferenced local variable
-  Sound.cpp
-  Shader.cpp
-  Graphics.cpp
-  Generating Code...
+c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(78): warning C4018: '<' : signed/unsigned mismatch
+c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(83): warning C4018: '<' : signed/unsigned mismatch
+c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(240): warning C4018: '<' : signed/unsigned mismatch
+c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(275): warning C4018: '<' : signed/unsigned mismatch
+c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.cpp(312): warning C4018: '<' : signed/unsigned mismatch
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
 glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
   Engine.vcxproj -> C:\Users\Ruchir\Documents\GitHub\Velvet Org\3D-Game\Project\Deps\Libs\Engine.lib

@@ -4,10 +4,13 @@
 //Needs to have glfw and glew
 #include <GL\glew.h>
 #include <GLFW\glfw3.h>
+#include <iostream>
+using std::cout;
+using std::endl;
 
 //Engine
 #include <Engine\MeshRenderer.h>
-
+#include <Engine\SoundManager.h>
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };
 

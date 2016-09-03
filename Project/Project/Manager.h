@@ -7,18 +7,19 @@
 
 //Engine
 #include <Engine\Camera.h>
+#include <Engine\GameObject.h>
 #include <Engine\MeshRenderer.h>
-#include <Engine\SoundManager.h>
+//#include <Engine\SoundManager.h>
 
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };
 
 class Manager
 {
-//All methods control the flow of the program
+	//All methods control the flow of the program
 public:
 	//Constructor, sets state
-	Manager() { state = programState::Starting;  }
+	Manager() { state = programState::Starting; }
 
 	void init(); //Setup all of the program
 	void clear(); //Start of update
@@ -32,14 +33,16 @@ public:
 	programState state;
 
 private:
-	//Temporaily define a mesh renderer
-	MeshRenderer _mesh_renderer;
-
 	//Needs a camera
 	Camera _cam;
 
 	//Shader attributes
 	GLint vertex_pos_location; //Vertex position input
 	GLint vertex_col_location; //Vertex colour input
-	GLuint model_view_projection_location; //Stores MVP matrix location
+
+	GLuint model_matrix_projection; //Stores model position matrix
+	GLuint view_projection_location; //Stores view and projection matrix location
+
+	//Create a cube game object
+	GameObject box;
 };

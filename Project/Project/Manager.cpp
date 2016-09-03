@@ -10,13 +10,12 @@
 
 //Create memory for externs that are not set, oly declared
 GLFWwindow *win;
-GLuint vao;
 GLuint vbo;
 GLuint ebo;
 GLuint shader_program;
 
 //Setup all of the program
-void Manager::init() 
+void Manager::init()
 {
 	//Init GLFW
 	GLboolean init_status = glfwInit();
@@ -43,36 +42,48 @@ void Manager::init()
 	win = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, GAME_TITLE, NULL, NULL);
 	if (!win) Console::error("Could not create the game window.");
 
+	//No mouse should be visible
+	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	//Make sure events are passed though engine input manager
 	glfwSetKeyCallback(win, Input::keyCallback);
 	glfwSetCursorPosCallback(win, Input::cursorCallback);
 	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
-	
+
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
 
 	//Set double buffer interval
 	glfwSwapInterval(1);
-	
+
 	//Init GLEW
 	glewExperimental = GL_TRUE;
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
-	
+
 	//Create the camera
-	_cam.Init(glm::vec3(4, 3, 3), //Starting position
+	_cam.Init(glm::vec3(0, 0, -5), //Starting position
 		glm::vec3(0, 0, 0),       //Looking at the origin
 		_cam.Perspective,		  //Use perspective matrix
 		FOV,					  //Degrees FOV
 		NEAR_CLIPPING,			  //Closest distance allowed to the camera
 		FAR_CLIPPING);			  //Furthest distance allowed to the camera
 
-	//Parse the mesh renderer mesh data from the externs header
-	_mesh_renderer.elements = ELEMENT_DATA;
-	_mesh_renderer.verticies = VERT_DATA;
+	//Alert mewsh renderer of the gameobjecft transform
+	box.meshRenderer.objectTransform = &box.transform;
 
-	Graphics::createBuffers(&vao, &vbo, &ebo, sizeof(VERT_DATA), VERT_DATA, sizeof(ELEMENT_DATA), ELEMENT_DATA);
+	//Parse the mesh renderer mesh data from the externs header
+	box.meshRenderer.elements = ELEMENT_DATA;
+	box.meshRenderer.verticies = VERT_DATA;
+
+	box.meshRenderer.vertSize = sizeof(VERT_DATA);
+	box.meshRenderer.elementSize = sizeof(ELEMENT_DATA);
+
+	box.meshRenderer.tris = 12;
+
+	//Create render buffers
+	Graphics::createBuffers(&vbo, &ebo, &box.meshRenderer);
 
 	//Load shaders
 	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -80,18 +91,18 @@ void Manager::init()
 
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
-
 	//  -------- Get uniforms from shader -------- 
-	
+
 	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition"); //Vertex position input
 	vertex_col_location = glGetAttribLocation(shader_program, "vertColour"); //Vertex colour input
-	model_view_projection_location = glGetUniformLocation(shader_program, "mvp"); //Model view projection
+	view_projection_location = glGetUniformLocation(shader_program, "viewProjection"); //Projection and view mat
+	model_matrix_projection = glGetUniformLocation(shader_program, "model");
 
 	glEnableVertexAttribArray(vertex_pos_location);
-	glVertexAttribPointer(vertex_pos_location, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) 0);
+	glVertexAttribPointer(vertex_pos_location, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
 
 	glEnableVertexAttribArray(vertex_col_location);
-	glVertexAttribPointer(vertex_col_location, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*) (sizeof(GLfloat) * 2));
+	glVertexAttribPointer(vertex_col_location, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(sizeof(GLfloat) * 3));
 
 	// -------- Done -------- 
 
@@ -114,31 +125,55 @@ void Manager::clear()
 	//Clear colours on screen
 	//glClearColor(GAME_BG.r, GAME_BG.g, GAME_BG.b, GAME_BG.a);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearDepth(1.0f);
 }
 
 //Get input from user
 void Manager::input()
 {
+	//Lock the cursor - kinda working but dodgy
+	//Input::lockCustorToPos(win, glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2));
+
 	//Close on escape
 	if (Input::getKey(GLFW_KEY_ESCAPE).released) quit();
+
+	//Move camera on input
+	if (Input::getKey(GLFW_KEY_W).held) _cam.transform.position.z += 0.1f;
+	if (Input::getKey(GLFW_KEY_S).held) _cam.transform.position.z -= 0.1f;
+	if (Input::getKey(GLFW_KEY_A).held) _cam.transform.position.x += 0.1f;
+	if (Input::getKey(GLFW_KEY_D).held) _cam.transform.position.x -= 0.1f;
+	if (Input::getKey(GLFW_KEY_SPACE).held) _cam.transform.position.y -= 0.1f;
+	if (Input::getKey(GLFW_KEY_LEFT_SHIFT).held) _cam.transform.position.y += 0.1f;
+
+	//Move box on input
+	if (Input::getKey(GLFW_KEY_UP).held) box.transform.position.y += 0.1f;
+	if (Input::getKey(GLFW_KEY_DOWN).held) box.transform.position.y -= 0.1f;
+	if (Input::getKey(GLFW_KEY_LEFT).held) box.transform.position.x += 0.1f;
+	if (Input::getKey(GLFW_KEY_RIGHT).held) box.transform.position.x -= 0.1f;
 }
 
 //Main game logic
-void Manager::logic() {}
+void Manager::logic()
+{
+	//Rotate the model matrix - nto working yet
+	box.transform.rotation = glm::vec3(45, 0, 0);
+}
 
 //Draw the game using engine
-void Manager::draw() 
+void Manager::draw()
 {
 	//Rendering functions go here...
 	//...
 	//...
 
 	//Set the shader uniforms
-	glUniformMatrix4fv(model_view_projection_location, 1, GL_FALSE, &_cam.getMVP()[0][0]); //Set view matrix based on camera object
+	glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &_cam.getViewProjection()[0][0]); //Set view matrix based on camera object
+	glUniformMatrix4fv(model_matrix_projection, 1, GL_FALSE, &(box.meshRenderer.genModelMatrix()[0][0])); //Set model matrix
 
 	//Draw
-	Graphics::draw(vbo, shader_program);
+	Graphics::draw(shader_program);
+	box.meshRenderer.draw();
 }
 
 //Any post drawing things
@@ -159,14 +194,14 @@ void Manager::late()
 }
 
 //Close and clean up memory
-void Manager::quit() 
+void Manager::quit()
 {
 	//Clean buffers
 	glDeleteProgram(shader_program);
 
+	glDeleteVertexArrays(1, &box.meshRenderer.vao);
 	glDeleteBuffers(1, &ebo);
 	glDeleteBuffers(1, &vbo);
-	glDeleteVertexArrays(1, &vao);
 
 	//Destroy class objects
 	glfwDestroyWindow(win);

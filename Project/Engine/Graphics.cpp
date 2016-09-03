@@ -8,32 +8,31 @@
 namespace Graphics
 {
 	//Stores memory for the verticies
-	void createBuffers(GLuint* vao, GLuint* vbo, GLuint* ebo, int verts_size, GLfloat verts[], int elements_size, GLuint elements[])
+	void createBuffers(GLuint* vbo, GLuint* ebo, MeshRenderer* rend)
 	{
 		//Create vertex array object
-		glGenVertexArrays(1, vao);
-		glBindVertexArray(*vao);
+		glGenVertexArrays(1, &(rend->vao));
+		glBindVertexArray((*rend).vao);
 
 		//Create the vertex buffer object
 		glGenBuffers(1, vbo); //Tell OPEN GL of vbo existance
 		glBindBuffer(GL_ARRAY_BUFFER, *vbo); //Store VBO in array buffer
-		glBufferData(GL_ARRAY_BUFFER, verts_size, verts, GL_STATIC_DRAW); //Parse vertex data to array buffer
+		glBufferData(GL_ARRAY_BUFFER, (*rend).vertSize, (*rend).verticies, GL_STATIC_DRAW); //Parse vertex data to array buffer
 
 		//Bind element buffer
 		glGenBuffers(1, ebo);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements_size, elements, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, (*rend).elementSize, (*rend).elements, GL_STATIC_DRAW);
+
+		//Enable depth testing
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
 	}
 
 	//Temp - assumes that triangles are being drawn
-	void draw(GLuint &vbo, GLuint &shader_program)
+	void draw(GLuint &shader_program)
 	{
 		//Use shaders and parse any varying shader attribs
 		glUseProgram(shader_program);
-
-		//Actually draw
-		//Very temporary
-		//glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }

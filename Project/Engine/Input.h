@@ -1,3 +1,6 @@
+//Include guards
+#pragma once
+
 //STD
 #include <unordered_map>
 #include <map>
@@ -28,8 +31,8 @@ namespace Input
 		//Set on constructor
 		keyEvent() : key(-1), scancode(0), action(0), mods(0) { held = false; down = false; released = false; }
 
-		keyEvent(int k, int s, int a, int m) : key(k), scancode(s), action(a), mods(m) 
-		{ 
+		keyEvent(int k, int s, int a, int m) : key(k), scancode(s), action(a), mods(m)
+		{
 			if (action == GLFW_PRESS) { down = true; released = false; held = true; }
 			if (action == GLFW_REPEAT) { down = false; released = false;  held = true; }
 			if (action == GLFW_RELEASE) { down = false; released = true;  held = false; }
@@ -61,8 +64,8 @@ namespace Input
 
 		//Constructors
 		mouseEvent() : button(-1), action(-1), mods(0) { up = false; down = false; held = false; }
-		mouseEvent(int b, int a, int m) : button(b), action(a), mods(m) 
-		{ 
+		mouseEvent(int b, int a, int m) : button(b), action(a), mods(m)
+		{
 			if (action == GLFW_PRESS) { down = true; up = false; held = true; }
 			if (action == GLFW_RELEASE) { down = false; up = true; held = false; }
 			//else { down = false; up = false; }
@@ -74,7 +77,6 @@ namespace Input
 	//Second: mouseEvent
 	std::unordered_map<int, mouseEvent> _mouseMap;
 
-
 	//Called by GLFW when a keyboard event occurs
 	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
@@ -83,7 +85,7 @@ namespace Input
 
 		_keyMap[key] = result;
 	}
-	
+
 	//Called by GLFW when the mouse moves
 	static void cursorCallback(GLFWwindow* window, double xpos, double ypos)
 	{
@@ -92,6 +94,12 @@ namespace Input
 		mousePos.y = (float)ypos;
 
 		movedMouse = true;
+	}
+
+	//Locks the cursor position
+	static void lockCustorToPos(GLFWwindow* win, glm::vec2 pos)
+	{
+		glfwSetCursorPos(win, (double)pos.x, (double)pos.y);
 	}
 
 	//Called when a mouse button is clicked

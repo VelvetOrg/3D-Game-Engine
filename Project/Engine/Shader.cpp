@@ -73,7 +73,6 @@ namespace Shader
 		}
 
 		//Done return the compiled shader
-		Console::message(("Loaded the shader: " + std::string(filePath) + "\nCode:\n" + shader_code).c_str());
 		return shader_ID;
 	}
 
@@ -86,7 +85,7 @@ namespace Shader
 		//Attach shaders
 		glAttachShader(program_ID, vertex);
 		glAttachShader(program_ID, fragment);
-		
+
 		//Out data from fragment
 		//Temporary
 		glBindFragDataLocation(program_ID, 0, "outColour");
@@ -98,7 +97,7 @@ namespace Shader
 		//Similar to shader error checking
 		GLint link_result = GL_FALSE; //Compile status
 		int info_log; //Stores the size of the error message
-		
+
 		//Check for errors in compilation
 		glGetProgramiv(program_ID, GL_LINK_STATUS, &link_result);
 		glGetShaderiv(program_ID, GL_INFO_LOG_LENGTH, &info_log);

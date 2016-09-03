@@ -22,7 +22,7 @@ To do this the following dependencies are used:
 This project's goals to be implemented:
 
 - [x] Input manager
-- [x] Sound system with Open AL
+- [ ] Sound system with Open AL
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
 - [ ] Loading of model files

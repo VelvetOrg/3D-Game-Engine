@@ -26,7 +26,7 @@ This project's goals to be implemented:
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
 - [ ] Loading of model files
-- [ ] Camera support
-- [ ] Rotation, projection and movement matricies
+- [x] Camera support
+- [x] Rotation, projection and movement matricies
 - [ ] Textures
 - [ ] Shadow mapping

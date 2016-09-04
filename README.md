@@ -1,9 +1,9 @@
 # 3D-Game
 > This is a C++ based 3D game. Currently the idea and gamplay of this project is yet to be decided, but some basic features have already been implemented including:
 
-1. Input managment - Mouse and keyboard including modifiers and all key states
-2. Sound managment - 3D and 2D audio. Including audio listeners, SFX and music
-3. Simple graphics - Drawing an array of vericies
+1. Input management - Mouse and keyboard including modifiers and all key states
+2. Sound management - 3D and 2D audio. Including audio listeners, SFX and music
+3. Simple graphics - Drawing an array of vertices
 4. Shaders - Support for any type of GLSL shader
 
 ---
@@ -25,7 +25,7 @@ This project's goals to be implemented:
 - [ ] Sound system with Open AL
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
-- [ ] Loading of model files
+- [x] Loading of model files
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
 - [ ] Textures

@@ -8,6 +8,7 @@
 #include <Engine\Shader.h>
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
+#include <Engine\ModelLoader.h>
 
 //GLM
 #include <glm\common.hpp>
@@ -77,14 +78,61 @@ void Manager::init()
 	//Alert mesh renderer of the gameobjecft transform
 	box.meshRenderer.objectTransform = &box.transform;
 
+	//Vectors for the .OBJ
+	std::vector<glm::vec3> vertices;
+	std::vector<GLushort> elements;
+	std::vector<glm::vec3> normals; //For lighting, but isn't currently used.
+
+	ModelLoader objLoader; // Create object
+						   //Load the .OBJ 
+	objLoader.LoadOBJ("C:\\Users\\Ruchir\\Documents\\GitHub\\Velvet Org\\3D-Game\\Project\\Assets\\Penguin.obj", vertices, normals, elements);
+
+
+	//Alert mesh renderer of the gameobjecft transform
+	box.meshRenderer.objectTransform = &box.transform;
+
 	//Parse the mesh renderer mesh data from the externs header
-	box.meshRenderer.elements = ELEMENT_DATA;
-	box.meshRenderer.verticies = VERT_DATA;
+	//box.meshRenderer.elements = ELEMENT_DATA;
+	//box.meshRenderer.verticies = VERT_DATA;
 
-	box.meshRenderer.vertSize = sizeof(VERT_DATA);
-	box.meshRenderer.elementSize = sizeof(ELEMENT_DATA);
+	GLushort* tempIndicesArray = new GLushort[elements.size()];
+	GLfloat* tempVerticeArray = new GLfloat[vertices.size() * 3];
+	for (int i = 0; i < elements.size(); i++)
+	{
+		tempIndicesArray[i] = elements[i];
+	}
 
-	box.meshRenderer.tris = 12;
+	for (int i = 0; i < vertices.size() * 3; i += 3)
+	{
+		tempVerticeArray[i] = (vertices[i / 3]).x;
+		tempVerticeArray[i + 1] = (vertices[i / 3]).y;
+		tempVerticeArray[i + 2] = (vertices[i / 3]).z;
+	}
+
+
+
+	box.meshRenderer.elements = tempIndicesArray;
+	box.meshRenderer.verticies = tempVerticeArray;
+
+	box.meshRenderer.vertSize = sizeof(tempVerticeArray);
+	box.meshRenderer.elementSize = sizeof(tempIndicesArray);
+
+	box.meshRenderer.tris = (sizeof(tempIndicesArray) / sizeof(tempIndicesArray[0])) / 3;
+	printf("******************** VERTICES ********************\n");
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		printf("Vertex: (%f)\n", vertices[i]);
+	}
+	/*printf("\n******************** INDICES ********************\n");
+	for (int i = 0; i < elements.size(); i++)
+	{
+	printf("Indice: (%f)\n", elements[i]);
+	}
+	printf("\n******************** NORMALS ********************\n");
+	for (int i = 0; i < normals.size(); i++)
+	{
+	printf("Normal: (%f)\n", normals[i]);
+	}*/
 
 	//Create render buffers
 	Graphics::createBuffers(&vbo, &ebo, &box.meshRenderer);

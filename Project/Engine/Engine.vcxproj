@@ -80,6 +80,7 @@
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MeshRenderer.h" />
+    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Time.h" />

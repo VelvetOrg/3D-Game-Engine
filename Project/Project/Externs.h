@@ -21,6 +21,11 @@ extern const float FOV = 60.0f;
 extern const float NEAR_CLIPPING = 0.1f;
 extern const float FAR_CLIPPING = 100.0f;
 
+//Camera controller consts
+extern const float MOUSE_SENSITIVITY = 10.0f;
+extern const float CAMERA_MOVE_SPEED = 5.0f;
+extern const float BOX_MOVE_SPEED = 5.0f;
+
 //Shape properties - temp
 //Formatting is: x, y, z....
 extern GLfloat VERT_DATA[] = {

@@ -80,6 +80,7 @@ namespace glm
 	{
 		return tmat3x3<T, P>(glm::rotate(angle, normal)) * v;
 	}
+
 	/*
 	template <typename T, precision P>
 	GLM_FUNC_QUALIFIER tvec3<T, P> rotateGTX(
@@ -92,6 +93,7 @@ namespace glm
 		return x * Cos + ((x * normal) * (T(1) - Cos)) * normal + cross(x, normal) * Sin;
 	}
 	*/
+
 	template <typename T, precision P>
 	GLM_FUNC_QUALIFIER tvec4<T, P> rotate
 	(

@@ -9,7 +9,6 @@
 #include <Engine\Camera.h>
 #include <Engine\GameObject.h>
 #include <Engine\MeshRenderer.h>
-//#include <Engine\SoundManager.h>
 
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };
@@ -34,7 +33,7 @@ public:
 
 private:
 	//Needs a camera
-	Camera _cam;
+	Camera cam;
 
 	//Shader attributes
 	GLint vertex_pos_location; //Vertex position input

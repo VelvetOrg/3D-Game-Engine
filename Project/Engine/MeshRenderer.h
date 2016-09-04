@@ -8,6 +8,7 @@
 #include <glm\glm.hpp>
 #include <glm\common.hpp>
 #include <glm\matrix.hpp>
+#include <glm\gtc\quaternion.hpp>
 #include <glm\gtx\rotate_vector.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
@@ -36,17 +37,16 @@ public:
 	//Creates the model matrix
 	glm::mat4 genModelMatrix()
 	{
+		//Calculate the quaternionfor rotation based on euler angles
+		glm::quat rotation = glm::quat(objectTransform->rotation);
+
 		//Move model matrix accordingly
 		model_matrix = glm::translate(-objectTransform->pivot) * //Move to the pivot point, so adjustment can be made around a position
 			glm::scale(objectTransform->scale) * //Scale the matrix - Temp
-			glm::rotate(model_matrix, 0.01f, objectTransform->rotation) * //Calculating rotation doent work yet
+			glm::mat4_cast(rotation) *
 			glm::translate(objectTransform->pivot) * //Actualy move based on transform.position
-			glm::translate(objectTransform->position - _pos); //No longer move to privot point
+			glm::translate(objectTransform->position); //No longer move to privot point
 
-		//Reset
-		//_scale = objectTransform->scale;
-		_pos = objectTransform->position;
-		_rot = objectTransform->rotation;
 
 		//Done
 		return model_matrix;

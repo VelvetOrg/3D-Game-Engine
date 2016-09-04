@@ -71,12 +71,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraController.h" />
     <ClInclude Include="Externs.h" />
     <ClInclude Include="Manager.h" />
   </ItemGroup>

@@ -3,10 +3,17 @@
 #include "Externs.h"
 
 //Engine specific
+#include <Engine\Time.h>
 #include <Engine\Input.h>
 #include <Engine\Shader.h>
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
+
+//GLM
+#include <glm\common.hpp>
+
+//Math
+#include <math.h>
 
 //Create memory for externs that are not set, oly declared
 GLFWwindow *win;
@@ -44,6 +51,8 @@ void Manager::init()
 
 	//No mouse should be visible
 	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetCursorPos(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
+	Input::cursorCallback(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
 	//Make sure events are passed though engine input manager
 	glfwSetKeyCallback(win, Input::keyCallback);
@@ -63,14 +72,9 @@ void Manager::init()
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
 
 	//Create the camera
-	_cam.Init(glm::vec3(0, 0, -5), //Starting position
-		glm::vec3(0, 0, 0),       //Looking at the origin
-		_cam.Perspective,		  //Use perspective matrix
-		FOV,					  //Degrees FOV
-		NEAR_CLIPPING,			  //Closest distance allowed to the camera
-		FAR_CLIPPING);			  //Furthest distance allowed to the camera
+	cam.Init(glm::vec3(0, 0, 5));
 
-	//Alert mewsh renderer of the gameobjecft transform
+	//Alert mesh renderer of the gameobjecft transform
 	box.meshRenderer.objectTransform = &box.transform;
 
 	//Parse the mesh renderer mesh data from the externs header
@@ -96,7 +100,7 @@ void Manager::init()
 	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition"); //Vertex position input
 	vertex_col_location = glGetAttribLocation(shader_program, "vertColour"); //Vertex colour input
 	view_projection_location = glGetUniformLocation(shader_program, "viewProjection"); //Projection and view mat
-	model_matrix_projection = glGetUniformLocation(shader_program, "model");
+	model_matrix_projection = glGetUniformLocation(shader_program, "model"); //Model matrix
 
 	glEnableVertexAttribArray(vertex_pos_location);
 	glVertexAttribPointer(vertex_pos_location, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
@@ -116,6 +120,9 @@ void Manager::init()
 //Start of update
 void Manager::clear()
 {
+	//Timer goes first
+	Time::start();
+
 	//Recreate viewport
 	int width, height;
 
@@ -123,7 +130,6 @@ void Manager::clear()
 	glViewport(0, 0, width, height);
 
 	//Clear colours on screen
-	//glClearColor(GAME_BG.r, GAME_BG.g, GAME_BG.b, GAME_BG.a);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearDepth(1.0f);
@@ -132,32 +138,65 @@ void Manager::clear()
 //Get input from user
 void Manager::input()
 {
-	//Lock the cursor - kinda working but dodgy
-	//Input::lockCustorToPos(win, glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2));
-
 	//Close on escape
 	if (Input::getKey(GLFW_KEY_ESCAPE).released) quit();
+	Input::lockCustorToPos(win, glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2));
 
-	//Move camera on input
-	if (Input::getKey(GLFW_KEY_W).held) _cam.transform.position.z += 0.1f;
-	if (Input::getKey(GLFW_KEY_S).held) _cam.transform.position.z -= 0.1f;
-	if (Input::getKey(GLFW_KEY_A).held) _cam.transform.position.x += 0.1f;
-	if (Input::getKey(GLFW_KEY_D).held) _cam.transform.position.x -= 0.1f;
-	if (Input::getKey(GLFW_KEY_SPACE).held) _cam.transform.position.y -= 0.1f;
-	if (Input::getKey(GLFW_KEY_LEFT_SHIFT).held) _cam.transform.position.y += 0.1f;
+	//Find delta between mouse position
+	glm::vec2 m_pos = Input::mousePos - glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+
+	//Affect cameras rotation
+	cam.pitch -= m_pos.y * Time::delta * MOUSE_SENSITIVITY;
+	cam.yaw += m_pos.x * Time::delta * MOUSE_SENSITIVITY;
+
+	//Fix that strange bug
+	if (cam.pitch > 89.0f) cam.pitch = 89.0f;
+	if (cam.pitch < -89.0f) cam.pitch = -89.0f;
+
+	//Move based on input relative to camera rotation
+	float speed = CAMERA_MOVE_SPEED * Time::delta;
+
+	//Stores the movement axis
+	float horizontal = 0.0f;
+	float vertical = 0.0f;
+	float depth = 0.0f;
+	
+	//Determine the direction of each exis
+	if (Input::getKey(GLFW_KEY_A).held) horizontal -= 1.0f;
+	if (Input::getKey(GLFW_KEY_D).held) horizontal += 1.0f;
+	if (Input::getKey(GLFW_KEY_W).held) vertical += 1.0f;
+	if (Input::getKey(GLFW_KEY_S).held) vertical -= 1.0f;
+	if (Input::getKey(GLFW_KEY_SPACE).held) depth += 1.0f;
+	if (Input::getKey(GLFW_KEY_LEFT_SHIFT).held) depth -= 1.0f;
+
+	//Adjust speed based on how many keys are down
+	float total_val = abs(vertical) + abs(horizontal) + abs(depth);
+
+	//Because diagonal movement should be slower
+	//E.G When two input are pressed speed will be multiplied by 0.7..
+	float direction_mod = 1.0f;
+	if (total_val > 0) direction_mod = 1 / sqrt(total_val);
+
+	//Move camera By the axis
+	cam.transformPos += cam.relativeForward * speed * vertical * direction_mod;
+	cam.transformPos += glm::cross(cam.relativeForward, cam.up) * speed * horizontal * direction_mod;
+	cam.transformPos += cam.relativeUp * speed * depth * direction_mod;
 
 	//Move box on input
-	if (Input::getKey(GLFW_KEY_UP).held) box.transform.position.y += 0.1f;
-	if (Input::getKey(GLFW_KEY_DOWN).held) box.transform.position.y -= 0.1f;
-	if (Input::getKey(GLFW_KEY_LEFT).held) box.transform.position.x += 0.1f;
-	if (Input::getKey(GLFW_KEY_RIGHT).held) box.transform.position.x -= 0.1f;
+	if (Input::getKey(GLFW_KEY_UP).held) box.transform.position.y += Time::delta * BOX_MOVE_SPEED;
+	if (Input::getKey(GLFW_KEY_DOWN).held) box.transform.position.y -= Time::delta * BOX_MOVE_SPEED;
+	if (Input::getKey(GLFW_KEY_LEFT).held) box.transform.position.x += Time::delta * BOX_MOVE_SPEED;
+	if (Input::getKey(GLFW_KEY_RIGHT).held) box.transform.position.x -= Time::delta * BOX_MOVE_SPEED;
 }
 
 //Main game logic
 void Manager::logic()
 {
-	//Rotate the model matrix - nto working yet
-	box.transform.rotation = glm::vec3(45, 0, 0);
+	//Move
+	box.transform.rotation.x += Time::delta;
+
+	//Show fps
+	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
 }
 
 //Draw the game using engine
@@ -168,7 +207,7 @@ void Manager::draw()
 	//...
 
 	//Set the shader uniforms
-	glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &_cam.getViewProjection()[0][0]); //Set view matrix based on camera object
+	glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &cam.getViewProjection()[0][0]); //Set view matrix based on camera object
 	glUniformMatrix4fv(model_matrix_projection, 1, GL_FALSE, &(box.meshRenderer.genModelMatrix()[0][0])); //Set model matrix
 
 	//Draw

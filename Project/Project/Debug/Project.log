@@ -1,16 +1,18 @@
-﻿Build started 1/09/2016 11:57:51 PM.
-     1>Project "C:\Users\Ruchir\Documents\GitHub\Velvet Org\3D-Game\Project\Project\Project.vcxproj" on node 2 (Build target(s)).
+﻿Build started 04-Sep-16 1:44:08 PM.
+     1>Project "D:\Code\Github\3D-Game\Project\Project\Project.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Main.cpp Manager.cpp
-         Main.cpp
-     1>c:\users\ruchir\documents\github\velvet org\3d-game\project\deps\include\glm\detail\func_geometric.inl(68): error C2129: static function 'bool SoundManager::SetListenerPosition(Vec3,Vec3,glm::quat)' declared but not defined
-                 c:\users\ruchir\documents\github\velvet org\3d-game\project\engine\soundmanager.h(72) : see declaration of 'SoundManager::SetListenerPosition'
-         Generating Code...
-         Compiling...
+         D:\Programs\VisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Manager.cpp
          Manager.cpp
-         Generating Code...
-     1>Done Building Project "C:\Users\Ruchir\Documents\GitHub\Velvet Org\3D-Game\Project\Project\Project.vcxproj" (Build target(s)) -- FAILED.
+     1>d:\code\github\3d-game\project\engine\time.h(24): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\engine\time.h(28): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\engine\input.h(93): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\engine\input.h(94): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+       Link:
+         D:\Programs\VisualStudio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\Github\3D-Game\Project\Debug\Project.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\Code\Github\3D-Game\Project\Deps\Libs\\" opengl32.lib glew32.lib glfw3.lib Engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\Github\3D-Game\Project\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\Github\3D-Game\Project\Debug\Project.lib" /MACHINE:X86 Debug\Main.obj
+         Debug\Manager.obj
+         Project.vcxproj -> D:\Code\Github\3D-Game\Project\Debug\Project.exe
+     1>Done Building Project "D:\Code\Github\3D-Game\Project\Project\Project.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:01.45
+Time Elapsed 00:00:01.04

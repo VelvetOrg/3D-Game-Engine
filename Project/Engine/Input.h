@@ -78,7 +78,7 @@ namespace Input
 	std::unordered_map<int, mouseEvent> _mouseMap;
 
 	//Called by GLFW when a keyboard event occurs
-	static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+	inline void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
 		//Add key data to map
 		keyEvent result(key, scancode, action, mods);
@@ -87,23 +87,23 @@ namespace Input
 	}
 
 	//Called by GLFW when the mouse moves
-	static void cursorCallback(GLFWwindow* window, double xpos, double ypos)
+	inline void cursorCallback(GLFWwindow* window, double xpos, double ypos)
 	{
 		//Set
-		mousePos.x = (float)xpos;
-		mousePos.y = (float)ypos;
+		mousePos.x = (xpos) * 1;
+		mousePos.y = (ypos) * 1;
 
 		movedMouse = true;
 	}
 
 	//Locks the cursor position
-	static void lockCustorToPos(GLFWwindow* win, glm::vec2 pos)
+	inline void lockCustorToPos(GLFWwindow* win, glm::vec2 pos)
 	{
 		glfwSetCursorPos(win, (double)pos.x, (double)pos.y);
 	}
 
 	//Called when a mouse button is clicked
-	static void mouseClickCallback(GLFWwindow* window, int button, int action, int mods)
+	inline void mouseClickCallback(GLFWwindow* window, int button, int action, int mods)
 	{
 		//Set unordered_map position
 		mouseEvent result(button, action, mods);
@@ -111,7 +111,7 @@ namespace Input
 	}
 
 	//Gets keys
-	static keyEvent getKey(int keycode)
+	inline keyEvent getKey(int keycode)
 	{
 		//Check if item exists first
 		auto it = _keyMap.find(keycode);
@@ -122,7 +122,7 @@ namespace Input
 	}
 
 	//Get mouse button
-	static mouseEvent getMouseClick(int button)
+	inline mouseEvent getMouseClick(int button)
 	{
 		//Chcek if it is in the map
 		auto it = _mouseMap.find(button);
@@ -133,7 +133,7 @@ namespace Input
 	}
 
 	//Input updates at the end of the frame
-	static void update()
+	inline void update()
 	{
 		//No longer moving mouse
 		movedMouse = false;

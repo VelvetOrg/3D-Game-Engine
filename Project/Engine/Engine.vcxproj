@@ -82,6 +82,7 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="Transform.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>

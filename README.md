@@ -25,8 +25,12 @@ This project's goals to be implemented:
 - [ ] Sound system with Open AL
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
-- [x] Loading of model files
+- [x] Loading of OBJ files
+- [ ] Loading of FBX files
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
-- [ ] Textures
+- [ ] Mutiple unique game objects support
+- [ ] Bullet integrated physics - collision detection
+- [ ] Simple lighting
+- [ ] Textures - probably not nessisary
 - [ ] Shadow mapping

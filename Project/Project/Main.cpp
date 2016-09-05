@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 	while (manager.state != programState::Closing)
 	{
 		//Call frame functions chronologically
-		manager.clear();
+		manager.early();
 		manager.input();
 		manager.logic();
 		manager.draw();

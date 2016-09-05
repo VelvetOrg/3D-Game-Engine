@@ -8,7 +8,7 @@
 #include <Engine\Shader.h>
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
-#include <Engine\ModelLoader.h>
+#include <Engine\Primitives.h>
 
 //GLM
 #include <glm\common.hpp>
@@ -51,7 +51,7 @@ void Manager::init()
 	if (!win) Console::error("Could not create the game window.");
 
 	//No mouse should be visible
-	glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPos(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 	Input::cursorCallback(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
@@ -73,69 +73,33 @@ void Manager::init()
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
 
 	//Create the camera
-	cam.Init(glm::vec3(0, 0, 5));
-
-	//Alert mesh renderer of the gameobjecft transform
-	box.meshRenderer.objectTransform = &box.transform;
-
-	//Vectors for the .OBJ
-	std::vector<glm::vec3> vertices;
-	std::vector<GLushort> elements;
-	std::vector<glm::vec3> normals; //For lighting, but isn't currently used.
-
-	ModelLoader objLoader; // Create object
-						   //Load the .OBJ 
-	objLoader.LoadOBJ("C:\\Users\\Ruchir\\Documents\\GitHub\\Velvet Org\\3D-Game\\Project\\Assets\\Penguin.obj", vertices, normals, elements);
-
-
-	//Alert mesh renderer of the gameobjecft transform
-	box.meshRenderer.objectTransform = &box.transform;
+	cam.Init(glm::vec3(0, 10, 10));
+	cam.pitch = -50;
+	cam.yaw = -90;
 
 	//Parse the mesh renderer mesh data from the externs header
-	//box.meshRenderer.elements = ELEMENT_DATA;
-	//box.meshRenderer.verticies = VERT_DATA;
+	plane.meshRenderer.mesh.Init(sizeof(Primitives::PLANE_VERT_DATA),
+		Primitives::PLANE_VERT_DATA,
+		sizeof(Primitives::PLANE_ELEMENT_DATA),
+		Primitives::PLANE_ELEMENT_DATA);
 
-	GLushort* tempIndicesArray = new GLushort[elements.size()];
-	GLfloat* tempVerticeArray = new GLfloat[vertices.size() * 3];
-	for (int i = 0; i < elements.size(); i++)
-	{
-		tempIndicesArray[i] = elements[i];
-	}
+	plane.transform.scale = glm::vec3(5, 1, 5);
+	plane.transform.position.y = -1.0f;
 
-	for (int i = 0; i < vertices.size() * 3; i += 3)
-	{
-		tempVerticeArray[i] = (vertices[i / 3]).x;
-		tempVerticeArray[i + 1] = (vertices[i / 3]).y;
-		tempVerticeArray[i + 2] = (vertices[i / 3]).z;
-	}
+	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
 
+	box.meshRenderer.mesh.Init(sizeof(Primitives::CUBE_VERT_DATA),
+		Primitives::CUBE_VERT_DATA,
+		sizeof(Primitives::CUBE_ELEMENT_DATA),
+		Primitives::CUBE_ELEMENT_DATA);
 
+	//Store renderers - temp
+	renderers = new MeshRenderer*[NUM_RENDERERS];
 
-	box.meshRenderer.elements = tempIndicesArray;
-	box.meshRenderer.verticies = tempVerticeArray;
+	renderers[0] = &box.meshRenderer;
+	renderers[1] = &plane.meshRenderer;
 
-	box.meshRenderer.vertSize = sizeof(tempVerticeArray);
-	box.meshRenderer.elementSize = sizeof(tempIndicesArray);
-
-	box.meshRenderer.tris = (sizeof(tempIndicesArray) / sizeof(tempIndicesArray[0])) / 3;
-	printf("******************** VERTICES ********************\n");
-	for (int i = 0; i < vertices.size(); i++)
-	{
-		printf("Vertex: (%f)\n", vertices[i]);
-	}
-	/*printf("\n******************** INDICES ********************\n");
-	for (int i = 0; i < elements.size(); i++)
-	{
-	printf("Indice: (%f)\n", elements[i]);
-	}
-	printf("\n******************** NORMALS ********************\n");
-	for (int i = 0; i < normals.size(); i++)
-	{
-	printf("Normal: (%f)\n", normals[i]);
-	}*/
-
-	//Create render buffers
-	Graphics::createBuffers(&vbo, &ebo, &box.meshRenderer);
+	Graphics::createBuffers(&vbo, &ebo, NUM_RENDERERS, renderers);
 
 	//Load shaders
 	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -143,20 +107,7 @@ void Manager::init()
 
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
-	//  -------- Get uniforms from shader -------- 
-
-	vertex_pos_location = glGetAttribLocation(shader_program, "vertPosition"); //Vertex position input
-	vertex_col_location = glGetAttribLocation(shader_program, "vertColour"); //Vertex colour input
-	view_projection_location = glGetUniformLocation(shader_program, "viewProjection"); //Projection and view mat
-	model_matrix_projection = glGetUniformLocation(shader_program, "model"); //Model matrix
-
-	glEnableVertexAttribArray(vertex_pos_location);
-	glVertexAttribPointer(vertex_pos_location, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
-
-	glEnableVertexAttribArray(vertex_col_location);
-	glVertexAttribPointer(vertex_col_location, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(sizeof(GLfloat) * 3));
-
-	// -------- Done -------- 
+	Graphics::bindShaderData(&vbo, &ebo, shader_program, NUM_RENDERERS, renderers);
 
 	//State can now be changed
 	state = programState::Running;
@@ -166,21 +117,10 @@ void Manager::init()
 }
 
 //Start of update
-void Manager::clear()
+void Manager::early()
 {
-	//Timer goes first
+	//Timer timers need to be updated
 	Time::start();
-
-	//Recreate viewport
-	int width, height;
-
-	glfwGetFramebufferSize(win, &width, &height);
-	glViewport(0, 0, width, height);
-
-	//Clear colours on screen
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearDepth(1.0f);
 }
 
 //Get input from user
@@ -194,8 +134,8 @@ void Manager::input()
 	glm::vec2 m_pos = Input::mousePos - glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
 	//Affect cameras rotation
-	cam.pitch -= m_pos.y * Time::delta * MOUSE_SENSITIVITY;
-	cam.yaw += m_pos.x * Time::delta * MOUSE_SENSITIVITY;
+	cam.pitch -= m_pos.y * MOUSE_SENSITIVITY;
+	cam.yaw += m_pos.x * MOUSE_SENSITIVITY;
 
 	//Fix that strange bug
 	if (cam.pitch > 89.0f) cam.pitch = 89.0f;
@@ -208,7 +148,7 @@ void Manager::input()
 	float horizontal = 0.0f;
 	float vertical = 0.0f;
 	float depth = 0.0f;
-	
+
 	//Determine the direction of each exis
 	if (Input::getKey(GLFW_KEY_A).held) horizontal -= 1.0f;
 	if (Input::getKey(GLFW_KEY_D).held) horizontal += 1.0f;
@@ -229,19 +169,13 @@ void Manager::input()
 	cam.transformPos += cam.relativeForward * speed * vertical * direction_mod;
 	cam.transformPos += glm::cross(cam.relativeForward, cam.up) * speed * horizontal * direction_mod;
 	cam.transformPos += cam.relativeUp * speed * depth * direction_mod;
-
-	//Move box on input
-	if (Input::getKey(GLFW_KEY_UP).held) box.transform.position.y += Time::delta * BOX_MOVE_SPEED;
-	if (Input::getKey(GLFW_KEY_DOWN).held) box.transform.position.y -= Time::delta * BOX_MOVE_SPEED;
-	if (Input::getKey(GLFW_KEY_LEFT).held) box.transform.position.x += Time::delta * BOX_MOVE_SPEED;
-	if (Input::getKey(GLFW_KEY_RIGHT).held) box.transform.position.x -= Time::delta * BOX_MOVE_SPEED;
 }
 
 //Main game logic
 void Manager::logic()
 {
-	//Move
-	box.transform.rotation.x += Time::delta;
+	//Rotate the box
+	//box.transform.rotation.y += Time::delta;
 
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
@@ -250,17 +184,11 @@ void Manager::logic()
 //Draw the game using engine
 void Manager::draw()
 {
-	//Rendering functions go here...
-	//...
-	//...
-
 	//Set the shader uniforms
-	glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &cam.getViewProjection()[0][0]); //Set view matrix based on camera object
-	glUniformMatrix4fv(model_matrix_projection, 1, GL_FALSE, &(box.meshRenderer.genModelMatrix()[0][0])); //Set model matrix
+	Graphics::view_projection_mat_value = cam.getViewProjection(); //Set view matrix based on camera object
 
 	//Draw
-	Graphics::draw(shader_program);
-	box.meshRenderer.draw();
+	Graphics::draw(shader_program, NUM_RENDERERS, renderers, glm::vec2(GAME_WIDTH, GAME_HEIGHT));
 }
 
 //Any post drawing things
@@ -286,7 +214,7 @@ void Manager::quit()
 	//Clean buffers
 	glDeleteProgram(shader_program);
 
-	glDeleteVertexArrays(1, &box.meshRenderer.vao);
+	glDeleteVertexArrays(1, &renderers[0]->mesh.vao);
 	glDeleteBuffers(1, &ebo);
 	glDeleteBuffers(1, &vbo);
 

@@ -13,6 +13,7 @@
 #include <istream>
 #include <vector>
 #include <GL\GL.h>
+
 using std::vector;
 using std::string;
 using std::cerr;
@@ -20,6 +21,7 @@ using std::endl;
 using std::ifstream;
 using std::ios;
 using std::istringstream;
+
 class ModelLoader
 {
 public:

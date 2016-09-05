@@ -1,13 +1,13 @@
 attribute vec3 vertPosition;
-attribute vec3 vertColour;
 
 varying vec3 colour;
 
+uniform vec3 modelColour;
 uniform mat4 viewProjection;
 uniform mat4 model;
 
 void main() 
 {
 	gl_Position = viewProjection * model * vec4(vertPosition, 1.0);
-	colour = vertColour;
+	colour = modelColour;
 }

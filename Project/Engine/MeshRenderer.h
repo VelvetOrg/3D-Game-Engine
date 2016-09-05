@@ -1,7 +1,7 @@
 //Include guards
 #pragma once
 
-//Needs GLFloat
+//Needs once
 #include <GL\glew.h>
 
 //GlM
@@ -12,6 +12,9 @@
 #include <glm\gtx\rotate_vector.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 
+//Needs mesh
+#include "Mesh.h"
+
 //Transform
 #include "Transform.h"
 
@@ -19,20 +22,17 @@
 class MeshRenderer
 {
 public:
-	//Public lists
-	GLfloat* verticies;
-	GLushort* elements;
+	//Holds the model matrix
+	glm::mat4 model_matrix = glm::mat4(1.0f);
 
-	int vertSize;
-	int elementSize;
-
-	int tris;
-
-	//Each mesh renderer has it own VAO
-	GLuint vao;
+	//Holds a mesh - temp, will soon store multiple meshes
+	Mesh mesh;
 
 	//Pointer to the objects transform
 	Transform* objectTransform;
+
+	//Temporarily a mesh contains a colour value - (to keep the game from looking trash)
+	glm::vec3 colour = glm::vec3(1, 0, 0.5f);
 
 	//Creates the model matrix
 	glm::mat4 genModelMatrix()
@@ -51,21 +51,4 @@ public:
 		//Done
 		return model_matrix;
 	}
-
-	//Just displays buffers
-	void draw()
-	{
-		//Wrapper for Open GL
-		glDrawElements(GL_TRIANGLES, 3 * tris, GL_UNSIGNED_SHORT, 0);
-	}
-
-private:
-
-	//Holds the model matrix
-	glm::mat4 model_matrix = glm::mat4(1.0f);
-
-	//Needs to store a copy of pos rot and scale so values only affect the frame they are changed
-	glm::vec3 _scale = glm::vec3(0, 0, 0);
-	glm::vec3 _pos = glm::vec3(0, 0, 0);
-	glm::vec3 _rot = glm::vec3(0, 0, 0);
 };

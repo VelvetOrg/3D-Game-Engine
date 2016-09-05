@@ -21,7 +21,7 @@ public:
 	Manager() { state = programState::Starting; }
 
 	void init(); //Setup all of the program
-	void clear(); //Start of update
+	void early(); //Start of update
 	void input(); //Get input from user
 	void logic(); //Main game code and logic
 	void draw(); //Draw the game using engine
@@ -35,13 +35,11 @@ private:
 	//Needs a camera
 	Camera cam;
 
-	//Shader attributes
-	GLint vertex_pos_location; //Vertex position input
-	GLint vertex_col_location; //Vertex colour input
-
-	GLuint model_matrix_projection; //Stores model position matrix
-	GLuint view_projection_location; //Stores view and projection matrix location
-
-	//Create a cube game object
+	//Create a some game objects
+	GameObject plane;
 	GameObject box;
+
+	//Stores all mesh renderers
+	const int NUM_RENDERERS = 2;
+	MeshRenderer** renderers;
 };

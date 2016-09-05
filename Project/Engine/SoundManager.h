@@ -1,4 +1,4 @@
-//Include guards
+/*Include guards
 #pragma once
 
 //To use deprecated functions such as fopen()
@@ -115,3 +115,4 @@ namespace SoundManager
 	//Sets the position of the OpenAL listener, takes in Vec3s for position, velocity and a GLM Quaternion for the orientation
 	extern bool SetListenerPosition(Vec3 position, Vec3 velocity, glm::quat orientation);
 }
+*/

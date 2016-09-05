@@ -16,13 +16,23 @@ namespace Graphics
 	VBO: Allows mesh data to be uploaded to GPU
 	*/
 
-	//Holds arrays
+	//Holds shader locations
+	extern GLint vertex_pos_location; //Vertex position input
+	extern GLint model_colour_location; //Set colour of entire model
+
+	extern GLuint model_matrix_projection; //Stores model position matrix
+	extern GLuint view_projection_location; //Stores view and projection matrix location
+
+	//Holds values inside a uniform shader variable - needs to be set by manager
+	extern glm::mat4 view_projection_mat_value;
 
 	//Will create OPEN GL buffers for the vericicies
 	//Parsing vers directly is temporary
-	// Later it will take a mesh renderer
-	void createBuffers(GLuint* vbo, GLuint* ebo, MeshRenderer* rend);
+	void createBuffers(GLuint* vbo, GLuint* ebo, int renderer_count, MeshRenderer** rends);//, int numberOfRenderers, MeshRenderer** rend);
 
-	//Actually draws the loaded vericies, in main loop
-	void draw(GLuint &shader_program);
+	//Handles communication between shader and model
+	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader, int renderer_count, MeshRenderer** rends);
+
+	//Actually draws the loaded vericies, in main loop - temp
+	void draw(GLuint &shader_program, int render_count, MeshRenderer** rends, glm::vec2 screen_size);//int numberOfRenderers, MeshRenderer** rend);
 };

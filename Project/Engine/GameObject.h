@@ -16,5 +16,10 @@ public:
 	Transform transform;
 	MeshRenderer meshRenderer;
 
-	GameObject() { transform = Transform(); }
+	GameObject()
+	{
+		//Set transform and parse to mesh renderer
+		transform = Transform();
+		meshRenderer.objectTransform = &transform;
+	}
 };

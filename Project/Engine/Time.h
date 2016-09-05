@@ -21,11 +21,11 @@ namespace Time
 	void start()
 	{
 		//Find delta time
-		current_frame = glfwGetTime();
+		current_frame = (float)glfwGetTime();
 		delta = current_frame - last_frame;
-		
+
 		//Update time
-		time = glfwGetTime();
+		time = (float)glfwGetTime();
 
 		//Find FPS
 		fps = framesPassed / time;

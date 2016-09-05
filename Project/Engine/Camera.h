@@ -31,7 +31,7 @@ public:
 	glm::vec3 relativeRight;
 	glm::vec3 relativeUp;
 
-	glm::vec3 forward = glm::vec3(0, 0,0- 1);
+	glm::vec3 forward = glm::vec3(0, 0, 0 - 1);
 	glm::vec3 right = glm::vec3(1, 0, 0);
 	glm::vec3 up = glm::vec3(0, 1, 0);
 
@@ -51,12 +51,12 @@ public:
 		type(cameraType::Perspective),
 		near_clipping(0.1f),
 		far_clipping(100.0f),
-		fov(60) 
-		{
-			relativeForward = forward;
-			relativeRight = right;
-			relativeUp = up;
-		}
+		fov(60)
+	{
+		relativeForward = forward;
+		relativeRight = right;
+		relativeUp = up;
+	}
 
 	void Init(glm::vec3 pos, float y = 0.0f, float p = 0.0f, cameraType t = cameraType::Perspective, float f = 60, float n = 0.1f, float c = 100.0f)
 	{
@@ -68,7 +68,7 @@ public:
 		far_clipping = c;
 		type = t;
 		fov = f;
-		
+
 		relativeForward = forward;
 		relativeRight = right;
 		relativeUp = up;
@@ -86,15 +86,15 @@ public:
 
 		/*Create the camera matrix
 		_view_mat = glm::translate(-(transform.pivot - _previous_transform.pivot)) * //Move to the pivot point, so adjustment can be made around a position
-			//glm::mat4_cast(glm::quat(transform.rotation - _previous_transform.rotation)) *
-			glm::rotate(_view_mat, glm::radians(yaw), glm::vec3(1, 0, 0)) *
-			glm::translate(transform.pivot - _previous_transform.pivot) * //Actualy move based on transform.position
-			glm::translate(_view_mat, transform.position - _previous_transform.position); //No longer move to privot point
+		//glm::mat4_cast(glm::quat(transform.rotation - _previous_transform.rotation)) *
+		glm::rotate(_view_mat, glm::radians(yaw), glm::vec3(1, 0, 0)) *
+		glm::translate(transform.pivot - _previous_transform.pivot) * //Actualy move based on transform.position
+		glm::translate(_view_mat, transform.position - _previous_transform.position); //No longer move to privot point
 		*/
 
 		//Convert yaw and pitch to a vector
 		glm::vec3 temp_front;
-		
+
 		//Use equation
 		temp_front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
 		temp_front.y = sin(glm::radians(pitch));
@@ -113,7 +113,7 @@ public:
 		return _current_MVP;
 	};
 
-//Member vars
+	//Member vars
 private:
 	//Matricies
 	glm::mat4 _current_MVP;

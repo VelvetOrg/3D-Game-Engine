@@ -1,4 +1,4 @@
-
+/*
 #include "SoundManager.h"
 
 namespace SoundManager {
@@ -573,4 +573,4 @@ namespace SoundManager {
 		AudioPath = path;
 	}
 
-}
+} */

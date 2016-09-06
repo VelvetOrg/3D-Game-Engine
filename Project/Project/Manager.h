@@ -38,8 +38,4 @@ private:
 	//Create a some game objects
 	GameObject plane;
 	GameObject torus;
-
-	//Stores all mesh renderers
-	const int NUM_RENDERERS = 2;
-	MeshRenderer** renderers;
 };

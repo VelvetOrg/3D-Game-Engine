@@ -15,14 +15,16 @@ namespace Graphics
 
 	glm::mat4 view_projection_mat_value;
 
+	std::vector<MeshRenderer*> renderers;
+
 	//Stores memory for the verticies
-	void createBuffers(GLuint* vbo, GLuint* ebo, int renderer_count, MeshRenderer** rends)
+	void createBuffers(GLuint* vbo, GLuint* ebo)
 	{
 		//To find the size in bytes of all mesh data
 		int total_vertex_data = 0;
 		int total_element_data = 0;
 
-		for (int i = 0; i < renderer_count; i++) { total_vertex_data += rends[i]->mesh.vertSize; total_element_data += rends[i]->mesh.elementSize; }
+		for (int i = 0; i < renderers.size(); i++) { total_vertex_data += renderers[i]->mesh.vertSize; total_element_data += renderers[i]->mesh.elementSize; }
 		printf("Creating buffers of size: \nVBO: %d\nEBO: %d\n", total_vertex_data, total_element_data);
 
 		//Create a vbo large enough to store every vertex in the call
@@ -34,13 +36,13 @@ namespace Graphics
 		int vertex_data_offset = 0;
 
 		//Finally send data to the vertex array buffer
-		for (int i = 0; i < renderer_count; i++)
+		for (int i = 0; i < renderers.size(); i++)
 		{
 			//Parse
-			glBufferSubData(GL_ARRAY_BUFFER, vertex_data_offset, rends[i]->mesh.vertSize, rends[i]->mesh.verticies);
+			glBufferSubData(GL_ARRAY_BUFFER, vertex_data_offset, renderers[i]->mesh.vertSize, renderers[i]->mesh.verticies);
 
 			//Add previous size of bytes
-			vertex_data_offset += rends[i]->mesh.vertSize;
+			vertex_data_offset += renderers[i]->mesh.vertSize;
 		}
 
 		//Declare the existance of a index buffer
@@ -52,13 +54,13 @@ namespace Graphics
 		int index_starting_byte = 0;
 
 		//Finally send data to the vertex array buffer
-		for (int i = 0; i < renderer_count; i++)
+		for (int i = 0; i < renderers.size(); i++)
 		{
 			//Parse
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, index_starting_byte, rends[i]->mesh.elementSize, rends[i]->mesh.elements);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, index_starting_byte, renderers[i]->mesh.elementSize, renderers[i]->mesh.elements);
 
 			//Add previous size of bytes
-			index_starting_byte += rends[i]->mesh.elementSize;
+			index_starting_byte += renderers[i]->mesh.elementSize;
 		}
 
 		//Enable depth testing
@@ -67,7 +69,7 @@ namespace Graphics
 	}
 
 	//Joins GLSL uniforms and attributes with graphics variables
-	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader, int renderer_count, MeshRenderer** rends)
+	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader)
 	{
 		//Find shader locations
 		Graphics::vertex_pos_location = glGetAttribLocation(shader, "vertPosition"); //Vertex position input
@@ -80,13 +82,13 @@ namespace Graphics
 		int data_offset = 0;
 
 		//Create vertex array object for each renderer
-		for (int i = 0; i < renderer_count; i++) glGenVertexArrays(1, &(rends[i]->mesh.vao));
+		for (int i = 0; i < renderers.size(); i++) glGenVertexArrays(1, &(renderers[i]->mesh.vao));
 
 		//Loop through
-		for (int i = 0; i < renderer_count; i++)
+		for (int i = 0; i < renderers.size(); i++)
 		{
 			//Parse
-			glBindVertexArray(rends[i]->mesh.vao);
+			glBindVertexArray(renderers[i]->mesh.vao);
 
 			//Set vertex formatting
 			glEnableVertexAttribArray(Graphics::vertex_pos_location);
@@ -97,15 +99,16 @@ namespace Graphics
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
 
 			//Add the current offset
-			data_offset += rends[i]->mesh.vertSize;
+			data_offset += renderers[i]->mesh.vertSize;
 		}
 
 		//Delete meshes
+		//Not bothered
 		//....
 	}
 
 	//Temp - assumes that triangles are being drawn
-	void draw(GLuint &shader_program, int render_count, MeshRenderer** rends, glm::vec2 screen_size)
+	void draw(GLuint &shader_program, glm::vec2 screen_size)
 	{
 		//Clear colours on screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -121,27 +124,28 @@ namespace Graphics
 		int draw_offset = 0;
 
 		//Draw meshes
-		for (int i = 0; i < render_count; i++)
+		for (int i = 0; i < renderers.size(); i++)
 		{
 			//Bind the VAO
-			glBindVertexArray(rends[i]->mesh.vao);
+			glBindVertexArray(renderers[i]->mesh.vao);
 
 			//Each individual model has its own model matrix set
-			glUniformMatrix4fv(Graphics::model_matrix_projection, 1, GL_FALSE, &rends[i]->genModelMatrix()[0][0]); //Set model matrix
+			glUniformMatrix4fv(Graphics::model_matrix_projection, 1, GL_FALSE, &renderers[i]->genModelMatrix()[0][0]); //Set model matrix
 			glUniformMatrix4fv(Graphics::view_projection_location, 1, GL_FALSE, &Graphics::view_projection_mat_value[0][0]); //Set view matrix based on camera object
 
 			//Set colour of cont. verts
-			glUniform3f(Graphics::model_colour_location, rends[i]->colour.r, rends[i]->colour.g, rends[i]->colour.b);
+			glUniform3f(Graphics::model_colour_location, renderers[i]->colour.r, renderers[i]->colour.g, renderers[i]->colour.b);
 
 			//Actually draw
-			rends[i]->mesh.draw(draw_offset);
+			renderers[i]->mesh.draw(draw_offset);
 
 			//Addativly increase offset - left to right reading
-			draw_offset += rends[i]->mesh.elementSize;
+			draw_offset += renderers[i]->mesh.elementSize;
 		}
 	}
 }
 
+//Old class
 /*Needs parent header file
 #include "Graphics.h"
 

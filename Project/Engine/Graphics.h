@@ -4,6 +4,9 @@
 //Needs OPEN GL
 #include <GL\glew.h>
 
+//Storing renderer
+#include <vector>
+
 //Needs mesh renderer
 #include "MeshRenderer.h"
 
@@ -15,6 +18,9 @@ namespace Graphics
 	VAO: Stores information about how vertex data is formatted
 	VBO: Allows mesh data to be uploaded to GPU
 	*/
+
+	//Contains all active mesh renderers
+	extern std::vector<MeshRenderer*> renderers;
 
 	//Holds shader locations
 	extern GLint vertex_pos_location; //Vertex position input
@@ -28,11 +34,11 @@ namespace Graphics
 
 	//Will create OPEN GL buffers for the vericicies
 	//Parsing vers directly is temporary
-	void createBuffers(GLuint* vbo, GLuint* ebo, int renderer_count, MeshRenderer** rends);//, int numberOfRenderers, MeshRenderer** rend);
+	void createBuffers(GLuint* vbo, GLuint* ebo);
 
 	//Handles communication between shader and model
-	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader, int renderer_count, MeshRenderer** rends);
+	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader);
 
 	//Actually draws the loaded vericies, in main loop - temp
-	void draw(GLuint &shader_program, int render_count, MeshRenderer** rends, glm::vec2 screen_size);//int numberOfRenderers, MeshRenderer** rend);
+	void draw(GLuint &shader_program, glm::vec2 screen_size);
 };

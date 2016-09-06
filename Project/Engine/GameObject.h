@@ -5,6 +5,8 @@
 #include "Transform.h"
 #include "MeshRenderer.h"
 
+#include "Graphics.h"
+
 //Forward definition
 class Transform;
 class MeshRenderer;
@@ -21,5 +23,8 @@ public:
 		//Set transform and parse to mesh renderer
 		transform = Transform();
 		meshRenderer.objectTransform = &transform;
+
+		//Add the objects mesh renderer to the graphics class
+		Graphics::renderers.push_back(&(this->meshRenderer));
 	}
 };

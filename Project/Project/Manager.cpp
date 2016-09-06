@@ -92,15 +92,8 @@ void Manager::init()
 	torus.meshRenderer.mesh = ModelLoader::load(TORUS_FILE);
 	torus.transform.position.y += 0.5f;
 
-	//Store renderers - temp
-	renderers = new MeshRenderer*[NUM_RENDERERS];
-
-	//renderers[0] = &box.meshRenderer;
-	renderers[0] = &plane.meshRenderer;
-	renderers[1] = &torus.meshRenderer;
-
 	//Create object buffers
-	Graphics::createBuffers(&vbo, &ebo, NUM_RENDERERS, renderers);
+	Graphics::createBuffers(&vbo, &ebo);
 
 	//Load shaders
 	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -108,7 +101,7 @@ void Manager::init()
 
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
-	Graphics::bindShaderData(&vbo, &ebo, shader_program, NUM_RENDERERS, renderers);
+	Graphics::bindShaderData(&vbo, &ebo, shader_program);
 
 	//State can now be changed
 	state = programState::Running;
@@ -189,7 +182,7 @@ void Manager::draw()
 	Graphics::view_projection_mat_value = cam.getViewProjection(); //Set view matrix based on camera object
 
 	//Draw
-	Graphics::draw(shader_program, NUM_RENDERERS, renderers, glm::vec2(GAME_WIDTH, GAME_HEIGHT));
+	Graphics::draw(shader_program, glm::vec2(GAME_WIDTH, GAME_HEIGHT));
 }
 
 //Any post drawing things
@@ -214,8 +207,6 @@ void Manager::quit()
 {
 	//Clean buffers
 	glDeleteProgram(shader_program);
-
-	glDeleteVertexArrays(1, &renderers[0]->mesh.vao);
 	glDeleteBuffers(1, &ebo);
 	glDeleteBuffers(1, &vbo);
 

@@ -47,16 +47,16 @@ public:
 		numElements = numIndicies / sizeof(GLushort);
 		numVerticies = numVers / sizeof(GLfloat);
 
-		/*Set arrs
+		//Set arrs
 		elements = new GLushort[numElements];
 		verticies = new GLfloat[numVerticies];
 
 		for (int e = 0; e < numElements; e++) elements[e] = indicies[e];
 		for (int v = 0; v < numVerticies; v++) verticies[v] = verts[v];
-		*/
+		
 
-		elements = indicies;
-		verticies = verts;
+		//elements = indicies;
+		//verticies = verts;
 
 		printf("Gathered a mesh with: \nvertSize: %i, \nactualNumVerts: %i, \nelementSize: %i, \nactualNumElems: %i\n\n",
 			vertSize, numVerticies, elementSize, numElements);

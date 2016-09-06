@@ -21,6 +21,11 @@ extern const float FOV = 60.0f;
 extern const float NEAR_CLIPPING = 0.1f;
 extern const float FAR_CLIPPING = 100.0f;
 
+//Model data
+const char* TREE_FILE = "../../Assets/Tree.obj";
+const char* TORUS_FILE = "../../Assets/Torus.obj";
+const char* BOX_FILE = "../../Assets/Box.obj";
+
 //Camera controller consts
 extern const float MOUSE_SENSITIVITY = 0.05f;
 extern const float CAMERA_MOVE_SPEED = 5.0f;

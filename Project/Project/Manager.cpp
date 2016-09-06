@@ -9,11 +9,12 @@
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
 #include <Engine\Primitives.h>
+#include <Engine\ModelLoader.h>
 
 //GLM
 #include <glm\common.hpp>
 
-//Math
+//Mahty
 #include <math.h>
 
 //Create memory for externs that are not set, oly declared
@@ -83,22 +84,22 @@ void Manager::init()
 		sizeof(Primitives::PLANE_ELEMENT_DATA),
 		Primitives::PLANE_ELEMENT_DATA);
 
+	//Set properties of the plane
 	plane.transform.scale = glm::vec3(5, 1, 5);
-	plane.transform.position.y = -1.0f;
-
 	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
 
-	box.meshRenderer.mesh.Init(sizeof(Primitives::CUBE_VERT_DATA),
-		Primitives::CUBE_VERT_DATA,
-		sizeof(Primitives::CUBE_ELEMENT_DATA),
-		Primitives::CUBE_ELEMENT_DATA);
+	//Load tree data
+	torus.meshRenderer.mesh = ModelLoader::load(TORUS_FILE);
+	torus.transform.position.y += 0.5f;
 
 	//Store renderers - temp
 	renderers = new MeshRenderer*[NUM_RENDERERS];
 
-	renderers[0] = &box.meshRenderer;
-	renderers[1] = &plane.meshRenderer;
+	//renderers[0] = &box.meshRenderer;
+	renderers[0] = &plane.meshRenderer;
+	renderers[1] = &torus.meshRenderer;
 
+	//Create object buffers
 	Graphics::createBuffers(&vbo, &ebo, NUM_RENDERERS, renderers);
 
 	//Load shaders
@@ -174,9 +175,9 @@ void Manager::input()
 //Main game logic
 void Manager::logic()
 {
-	//Rotate the box
-	//box.transform.rotation.y += Time::delta;
-
+	//Rotate the torus
+	torus.transform.rotation.y += Time::delta;
+	
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
 }

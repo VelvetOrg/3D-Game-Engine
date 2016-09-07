@@ -10,6 +10,7 @@
 #include <Engine\Graphics.h>
 #include <Engine\Primitives.h>
 #include <Engine\ModelLoader.h>
+#include <Engine\SoundManager.h>
 
 //GLM
 #include <glm\common.hpp>
@@ -89,7 +90,7 @@ void Manager::init()
 	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
 
 	//Load tree data
-	torus.meshRenderer.mesh = ModelLoader::load(TORUS_FILE);
+	torus.meshRenderer.mesh = ModelLoader::load(BOX_FILE);
 	torus.transform.position.y += 0.5f;
 
 	//Create object buffers
@@ -102,6 +103,14 @@ void Manager::init()
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
 	Graphics::bindShaderData(&vbo, &ebo, shader_program);
+
+	SoundManager::Init(Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, -1), Vec3(0, 1, 0));
+	unsigned int TEST = 500;
+	SoundManager::LoadAudio("C:\\Users\\Ruchir\\Documents\\GitHub\\Velvet Org\\3D-Game\\Assets\\Bomb.ogg", &TEST, true);
+	SoundManager::SetListenerPosition(Vec3(0, 0, 0), Vec3(0, 0, 0), glm::quat(0, 1, 0, 0));
+	SoundManager::SetSound(TEST, Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 0), 100, true, true, 0.9);
+	SoundManager::PlayAudio(TEST, true);
+	Console::message("THE AUDIO IS PLAYING");
 
 	//State can now be changed
 	state = programState::Running;

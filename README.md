@@ -8,7 +8,7 @@
 
 ---
 
-To do this the following dependencies are used:
+The following dependencies are used:
 
 1. `GLFW` - For creating the window and handling OS-specific operations
 2. `GLEW` - The OpenGL Extension Wrangler
@@ -22,7 +22,7 @@ To do this the following dependencies are used:
 This project's goals to be implemented:
 
 - [x] Input manager
-- [ ] Sound system with Open AL
+- [ ] Sound system with OpenAL
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
 - [x] Loading of OBJ files
@@ -30,7 +30,8 @@ This project's goals to be implemented:
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
 - [ ] Mutiple unique game objects support
-- [ ] Bullet integrated physics - collision detection
+- [ ] Bullet integrated physics for collision detection
 - [ ] Simple lighting
-- [ ] Textures - probably not nessisary
+- [ ] Lightmaps
+- [ ] Textures (but probably won't be necessary)
 - [ ] Shadow mapping

@@ -1,4 +1,4 @@
-/*Include guards
+//Include guards
 #pragma once
 
 //To use deprecated functions such as fopen()
@@ -17,13 +17,19 @@
 //Includes for OpenAL
 #include <AL\al.h>
 #include <AL\alc.h>
-#include <AL\alut.h>
 #include <vector>
+#include <array>
 #include <string>
 //LibVorbis for de-coding ogg files
 #include <libvorbis\vorbisfile.h>
+#include <libogg\ogg.h>
+#include <libvorbis\vorbisenc.h>
+#include <libvorbis\codec.h>
+#include <iostream>
+using namespace std;
 using std::string;
 using std::vector;
+using std::array;
 namespace SoundManager
 {
 	//The maximum number of buffers and audio sources our program will need
@@ -52,18 +58,18 @@ namespace SoundManager
 	//How many audio sources are being used
 	extern unsigned int AudioSourcesInUseCount;
 	//Vector of all the audio sources
-	extern vector<ALuint> AudioSources;
+	extern ALuint AudioSources[MAX_AUDIO_SOURCES];
 	//Vector of the audio sources of which are in use
-	extern vector<bool> AudioSourcesInUse;
+	extern bool AudioSourcesInUse[MAX_AUDIO_SOURCES];
 
 	//How many audio buffers are being used
 	extern unsigned int AudioBuffersInUseCount;
 	//Vector of all the audio buffers
-	extern vector<ALuint> AudioBuffers;
+	extern ALuint AudioBuffers[MAX_AUDIO_BUFFERS];
 	//Vector of the audio buffers of which are in use
-	extern vector<bool> AudioBuffersInUse;
+	extern bool AudioBuffersInUse[MAX_AUDIO_BUFFERS];
 	//Holds the file names (paths) of a sound in the buffer
-	extern vector<string> AudioBufferFileName;
+	extern char AudioBufferFileName[MAX_AUDIO_BUFFERS][120];
 
 	//Function to locate whether a sound has already been loaded to a buffer
 	extern int LocateAudioBuffer(string path);
@@ -115,4 +121,3 @@ namespace SoundManager
 	//Sets the position of the OpenAL listener, takes in Vec3s for position, velocity and a GLM Quaternion for the orientation
 	extern bool SetListenerPosition(Vec3 position, Vec3 velocity, glm::quat orientation);
 }
-*/

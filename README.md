@@ -22,14 +22,14 @@ The following dependencies are used:
 This project's goals to be implemented:
 
 - [x] Input manager
-- [ ] Sound system with OpenAL
+- [x] Sound system with OpenAL
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
 - [x] Loading of OBJ files
 - [ ] Loading of FBX files
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
-- [x] Mutiple unique game objects support
+- [x] Support for multiple unique GameObjects
 - [ ] Bullet integrated physics for collision detection
 - [ ] Simple lighting
 - [ ] Lightmaps

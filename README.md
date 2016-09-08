@@ -29,9 +29,10 @@ This project's goals to be implemented:
 - [ ] Loading of FBX files
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
-- [ ] Mutiple unique game objects support
+- [x] Mutiple unique game objects support
 - [ ] Bullet integrated physics for collision detection
 - [ ] Simple lighting
 - [ ] Lightmaps
+- [ ] Uvs
 - [ ] Textures (but probably won't be necessary)
 - [ ] Shadow mapping

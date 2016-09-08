@@ -3,6 +3,8 @@ Contains all (possible) company names:
 Velvet org
 Purple sky games
 Dead dog games
+Mad Dog Games
+Pointer Studios
 Plastic puppy games
 Red planet games
 Tiny planet games

@@ -1,0 +1,112 @@
+/* Reset CSS */
+body { padding: 0; margin: 0; }
+
+/* Remove decoration */
+a { text-decoration:none; }
+table { border-spacing: 0; }
+img { border: 0; }
+
+ol,ul 
+{
+    list-style: none;
+    margin:0;
+    padding:0;
+}
+
+h1,h2,h3,h4,h5,h6 
+{
+    font-size: 100%;
+    margin:0;
+    padding:0;
+    color:#444;
+}
+
+
+/* Custom CSS */
+body
+{
+    font-family: 'Raleway';
+    color: #F2F2F2;
+}
+
+.raised { display: inline; vertical-align: 11%; }
+
+#simple { font-weight: 100; }
+#complex { font-weight: 600; }
+
+h1 { font-size: 6em; }
+
+p { font-size: 1.2em; }
+
+/* Center text */
+.content
+{
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+/* Section 1 */
+#section0 { background-color: #111; padding: 0; }
+#section0 h1 { color: #fff; }
+
+#section0 p
+{
+    color: #fff;
+    opacity: 0.6;
+}
+
+/* Navigation */
+#fp-nav ul li a span, .fp-slidesNav ul li a span { background-color: #888; }
+
+/* Section 2 */
+#section1 { background-color: #DDD; }
+#section1 h1 { color: #444; }
+#section1 p { color: #444; opacity: 0.8; }
+
+
+/* Spacing */
+.content
+{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+/* Navigation */
+#navigation 
+{ 
+    position:fixed;
+    height: 50px;
+    display:block;
+    width: 100%;
+    background: #111;
+    z-index:9;
+    text-align:center;
+    color: #f2f2f2;
+    padding: 20px 0 0 0;
+    
+    top: 0px; 
+    z-index: 100; 
+}
+
+#navigation ul 
+{
+    top: 50%;
+    list-style: none;
+    margin: 0;
+    padding; 0;
+    overflow: none;
+    
+    margin-right: 10%;
+}
+
+#navigation ul li { float: right; }
+
+#navigation ul li a
+{
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 10px 30px;
+    text-decoration: none;
+}

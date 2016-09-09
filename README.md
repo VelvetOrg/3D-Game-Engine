@@ -16,6 +16,7 @@ The following dependencies are used:
 4. `OpenAL` - For 3D audio managment
 5. `libogg` - Upacking .ogg file
 6. `libvorbis` - Decoder of .ogg files
+7. `SOIL` - For loading images as textures
 
 ---
 

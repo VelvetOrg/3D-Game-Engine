@@ -13,17 +13,15 @@ The following dependencies are used:
 1. `GLFW` - For creating the window and handling OS-specific operations
 2. `GLEW` - The OpenGL Extension Wrangler
 3. `OpenGL` - Allows for drawing of graphics via the GPU
-4. `OpenAL` - For 3D audio managment
-5. `libogg` - Upacking .ogg file
-6. `libvorbis` - Decoder of .ogg files
-7. `SOIL` - For loading images as textures
+4. `AmBIERA irrKlang` - For 3D and 2D audio managment
+5. `SOIL` - For loading images as textures
 
 ---
 
 This project's goals to be implemented:
 
 - [x] Input manager
-- [x] Sound system with OpenAL
+- [x] Sound system with AmBIERA irrKlang
 - [x] Vertex based graphics support
 - [x] Shader loader and compiler
 - [x] Loading of OBJ files
@@ -31,9 +29,10 @@ This project's goals to be implemented:
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
 - [x] Support for multiple unique GameObjects
-- [ ] Bullet integrated physics for collision detection
+- [ ] Bullet's integrated physics for collision detection
+- [ ] RigidBodies
 - [ ] Simple lighting
 - [ ] Lightmaps
-- [x] Uvs
+- [x] UV Mapping
 - [x] Textures
-- [ ] Shadow mapping
+- [ ] Shadow Mapping

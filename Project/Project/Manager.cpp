@@ -10,6 +10,7 @@
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
 #include <Engine\Primitives.h>
+#include <Engine\SoundManager.h>
 
 //GLM
 #include <glm\common.hpp>
@@ -104,6 +105,9 @@ void Manager::init()
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
 	Graphics::bindShaderData(shader_program);
+
+	SoundManager::Init();
+	SoundManager::Play("../../Assets/Bomb.ogg", true);
 
 	//State can now be changed
 	state = programState::Running;

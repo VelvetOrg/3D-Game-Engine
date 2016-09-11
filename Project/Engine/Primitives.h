@@ -23,6 +23,19 @@ namespace Primitives
 		-1, +1, +1,
 	};
 
+	//Holds UV data for the cube
+	extern GLfloat CUBE_UV_DATA[] = {
+		0, 0, //Bottom right
+		1, 0, //Bottom left
+		1, 1, //Top right
+		0, 1, //Top left
+
+		0, 0, //Bottom right
+		1, 0, //Bottom left
+		1, 1, //Top right
+		0, 1 //Top left
+	};
+
 	//Contain faces, by joining verts
 	extern GLushort CUBE_ELEMENT_DATA[] = {
 		//Back face
@@ -52,11 +65,11 @@ namespace Primitives
 
 	//A plane - two tris
 	extern GLfloat PLANE_VERT_DATA[] = {
-		//Top face - white
-		-1, 0, -1,
-		+1, 0, -1,
-		-1, 0, +1,
-		+1, 0, +1
+		//   x  y   z  s  t
+		-1, 0, -1, 0, 0,
+		+1, 0, -1, 1, 0,
+		-1, 0, +1, 0, 1,
+		+1, 0, +1, 1, 1
 	};
 
 	//Join the two tris

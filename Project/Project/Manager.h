@@ -35,7 +35,7 @@ private:
 	//Needs a camera
 	Camera cam;
 
-	//Create a some game objects
+	//Testing
 	GameObject plane;
-	GameObject torus;
+	GameObject man;
 };

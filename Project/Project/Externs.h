@@ -8,8 +8,8 @@
 #include <string>
 
 //Window properties
-extern const int GAME_WIDTH = 768;
-extern const int GAME_HEIGHT = 768;
+extern const int GAME_WIDTH = 720;
+extern const int GAME_HEIGHT = 720;
 extern const char* GAME_TITLE = "3D";
 
 //Location of shader files
@@ -22,13 +22,17 @@ extern const float NEAR_CLIPPING = 0.1f;
 extern const float FAR_CLIPPING = 100.0f;
 
 //Model data
-const char* TREE_FILE = "../../Assets/Tree.obj";
-const char* TORUS_FILE = "../../Assets/Torus.obj";
-const char* BOX_FILE = "../../Assets/Box.obj";
+const char* PLANE_MODEL_FILE = "../../Assets/Plane.obj";
+const char* MAN_MODEL_FILE = "../../Assets/Test.obj";
+
+//Textures
+const char* CHECKER_TEX = "../../Assets/Checker.png";
+const char* MAN_TEX = "../../Assets/Man.png";
 
 //Camera controller consts
 extern const float MOUSE_SENSITIVITY = 0.05f;
 extern const float CAMERA_MOVE_SPEED = 5.0f;
+
 
 //Declare externs and game consts
 //Things that are global to the app

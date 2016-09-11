@@ -78,19 +78,11 @@ public:
 	//Transform transform;
 
 	//Will find the model view projection matrix for this camera
-	glm::mat4 getViewProjection()
+	glm::mat4 getViewProjection(float aspect_ratio = 1.0f)
 	{
 		//Find projection matrix
-		if (type == cameraType::Perspective) _projection_mat = glm::perspective(glm::radians(fov), (float)(720 / 720), near_clipping, far_clipping);
+		if (type == cameraType::Perspective) _projection_mat = glm::perspective(glm::radians(fov), (float)aspect_ratio, near_clipping, far_clipping);
 		if (type == cameraType::Orthographic) _projection_mat = glm::ortho(-fov, fov, -fov, fov, near_clipping, far_clipping);
-
-		/*Create the camera matrix
-		_view_mat = glm::translate(-(transform.pivot - _previous_transform.pivot)) * //Move to the pivot point, so adjustment can be made around a position
-		//glm::mat4_cast(glm::quat(transform.rotation - _previous_transform.rotation)) *
-		glm::rotate(_view_mat, glm::radians(yaw), glm::vec3(1, 0, 0)) *
-		glm::translate(transform.pivot - _previous_transform.pivot) * //Actualy move based on transform.position
-		glm::translate(_view_mat, transform.position - _previous_transform.position); //No longer move to privot point
-		*/
 
 		//Convert yaw and pitch to a vector
 		glm::vec3 temp_front;
@@ -100,7 +92,7 @@ public:
 		temp_front.y = sin(glm::radians(pitch));
 		temp_front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
 
-		//Normalize sot he greatest value can only be one
+		//Normalize so that the greatest value can only be one
 		relativeForward = glm::normalize(temp_front);
 
 		//Apply to view matrix

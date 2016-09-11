@@ -1,20 +1,21 @@
 //This class stores data about a mesh
 #pragma once
 
-//Needs vectros
+//Needs vectors
 #include <glm\glm.hpp>
-
-//Testing
-#include <stdio.h>
 
 //GLEW
 #include <GL\glew.h>
+
+//Printing
+#include <stdio.h>
 
 class Mesh
 {
 public:
 	//Every mesh gets its own VAO
 	GLuint vao;
+	GLuint vbo;
 
 	//Public lists
 	GLfloat *verticies;
@@ -29,9 +30,9 @@ public:
 	//The mode for drawing - not used yet
 	GLenum drawMode = GL_STATIC_DRAW;
 
-
 	//Set data on constructor
 	Mesh() { vertSize = 0; elementSize = 0; }
+	Mesh(int nv, GLfloat* v, int ni, GLushort* i) { Init(nv, v, ni, i); }
 
 	//Sets all members where:
 	//numVerts is the size in BYTES of the vertex array
@@ -47,24 +48,11 @@ public:
 		numElements = numIndicies / sizeof(GLushort);
 		numVerticies = numVers / sizeof(GLfloat);
 
-		//Set arrs
-		elements = new GLushort[numElements];
-		verticies = new GLfloat[numVerticies];
+		//Use new CPP 11 copy (not safe) - temp
+		elements = indicies;
+		verticies = verts;
 
-		for (int e = 0; e < numElements; e++) elements[e] = indicies[e];
-		for (int v = 0; v < numVerticies; v++) verticies[v] = verts[v];
-		
-
-		//elements = indicies;
-		//verticies = verts;
-
-		printf("Gathered a mesh with: \nvertSize: %i, \nactualNumVerts: %i, \nelementSize: %i, \nactualNumElems: %i\n\n",
-			vertSize, numVerticies, elementSize, numElements);
-
-		//for (int i = 0; i < actualNumElems; i++) printf("E%i ", elements[i]);
-		//for (int i = 0; i < actualNumVerts; i++) printf("V%f ", verticies[i]);
-
-		printf("\n\n");
+		printf("Created a mesh with:\n%i verticices\n%i indicicies\n\n", numVerticies / 3, numElements);
 	}
 
 	//Can draw itself

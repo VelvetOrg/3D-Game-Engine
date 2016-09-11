@@ -1,3 +1,4 @@
+/*
 #include "SoundManager.h"
 
 namespace SoundManager {
@@ -148,7 +149,7 @@ namespace SoundManager {
 		{
 			ALuint sourceID = AudioSources[i];
 			alGenBuffers(1, &sourceID);
-		}*/
+		} //'END MULTILINE COMMENT'
 
 		for (int i = 0; i < MAX_AUDIO_BUFFERS; i++)
 		{
@@ -645,3 +646,4 @@ bool LoadAudio(string path, unsigned int *audioID, bool loop){
 	}
 
 }
+*/

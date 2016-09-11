@@ -18,6 +18,9 @@
 //Transform
 #include "Transform.h"
 
+//Forward declare
+class Texture;
+
 //This class stores information about a mesh, including vericies, uvs and normals.
 class MeshRenderer
 {
@@ -27,6 +30,9 @@ public:
 
 	//Holds a mesh - temp, will soon store multiple meshes
 	Mesh mesh;
+
+	//Holds the objects texture element in a dictionary
+	GLuint tex_index = 0;
 
 	//Pointer to the objects transform
 	Transform* objectTransform;
@@ -46,7 +52,6 @@ public:
 			glm::mat4_cast(rotation) *
 			glm::translate(objectTransform->pivot) * //Actualy move based on transform.position
 			glm::translate(objectTransform->position); //No longer move to privot point
-
 
 		//Done
 		return model_matrix;

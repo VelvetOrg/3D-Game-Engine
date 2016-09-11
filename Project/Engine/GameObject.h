@@ -2,9 +2,8 @@
 #pragma once
 
 //Classes
-#include "Transform.h"
 #include "MeshRenderer.h"
-
+#include "Transform.h"
 #include "Graphics.h"
 
 //Forward definition

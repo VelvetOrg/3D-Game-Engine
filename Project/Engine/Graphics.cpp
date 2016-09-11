@@ -4,63 +4,127 @@
 //STD
 #include <stdio.h>
 
+//Loading images into textures
+#include <SOIL\SOIL.h>
+
+//Errors
+#include "Console.h"
+
 //In namespace
 namespace Graphics
 {
 	//Allocate memory for extern defines
+	GLuint ebo;
 	GLint vertex_pos_location;
 	GLint model_colour_location;
 	GLuint model_matrix_projection;
 	GLuint view_projection_location;
+	GLuint texture_coords_location;
+	GLuint texture_diffuse_location;
 
 	glm::mat4 view_projection_mat_value;
 
 	std::vector<MeshRenderer*> renderers;
 
+	//Holds all texture buffers
+	std::map<GLuint, Texture> all_textures;
+	GLuint current_tex_index = 0;
+	GLuint total_textures = 0;
+
 	//Stores memory for the verticies
-	void createBuffers(GLuint* vbo, GLuint* ebo)
+	void createBuffers()
 	{
-		//To find the size in bytes of all mesh data
-		int total_vertex_data = 0;
-		int total_element_data = 0;
+		//Load all textures
+		//Find the number of textures needed
+		total_textures = all_textures.size();
 
-		for (int i = 0; i < renderers.size(); i++) { total_vertex_data += renderers[i]->mesh.vertSize; total_element_data += renderers[i]->mesh.elementSize; }
-		printf("Creating buffers of size: \nVBO: %d\nEBO: %d\n", total_vertex_data, total_element_data);
+		//Create the right number of buffers
+		GLuint* texture_ids = new GLuint[total_textures];
+		glGenTextures(total_textures, texture_ids);
 
-		//Create a vbo large enough to store every vertex in the call
-		glGenBuffers(1, vbo); //Tell OPEN GL of vbo existance
-		glBindBuffer(GL_ARRAY_BUFFER, *vbo); //Store VBO in array buffer
-		glBufferData(GL_ARRAY_BUFFER, total_vertex_data, NULL, GL_STATIC_DRAW); //Parse vertex data to array buffer
-
-		//Needs to calcualte how to offset components of the vbo & ebo data
-		int vertex_data_offset = 0;
-
-		//Finally send data to the vertex array buffer
-		for (int i = 0; i < renderers.size(); i++)
+		//Loop though
+		int i = 0;
+		for (auto const element : all_textures)
 		{
-			//Parse
-			glBufferSubData(GL_ARRAY_BUFFER, vertex_data_offset, renderers[i]->mesh.vertSize, renderers[i]->mesh.verticies);
+			//Set the id for that element
+			all_textures[element.first].value = &texture_ids[i];
 
-			//Add previous size of bytes
-			vertex_data_offset += renderers[i]->mesh.vertSize;
+			//Cone values until later
+			int width = all_textures[element.first].width;
+			int height = all_textures[element.first].width;
+			const char* path = all_textures[element.first].file_path;
+			unsigned char* _img;
+
+			//Load the image
+			_img = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGBA);
+
+			//Check if image loaded successfully
+			if (_img == 0) Console::error(("Could not load the texture: " + std::string(path)).c_str());
+
+			//Create texture in open gl memory
+			glBindTexture(GL_TEXTURE_2D, *all_textures[element.first].value);
+
+			//Send texture to the GPU - temporarily use no mid mapping
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, _img);
+
+			//Set texture properties - temp
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			//Filtering mode - temp
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			//Check if texture was created properly
+			if (*all_textures[element.first].value == -1) Console::error("Could not convert image to texture.");
+
+			//Free
+			SOIL_free_image_data(_img);
+
+			//For debugging purposes
+			printf("Successfully loaded a texture of:\nWidth: %i\nHeight: %i\n\n", width, height);
+
+			//Actually change texture data
+			all_textures[element.first].image_data = _img;
+			all_textures[element.first].file_path = path;
+			all_textures[element.first].height = height;
+			all_textures[element.first].width = width;
+
+			//Count up
+			i++;
 		}
 
-		//Declare the existance of a index buffer
-		glGenBuffers(1, ebo);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, total_element_data, NULL, GL_STATIC_DRAW);
-
-		//Stores the current starting byte of the data
-		int index_starting_byte = 0;
-
-		//Finally send data to the vertex array buffer
+		//Create a vbo large enough to store every vertex in the call for a mesh
 		for (int i = 0; i < renderers.size(); i++)
 		{
-			//Parse
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, index_starting_byte, renderers[i]->mesh.elementSize, renderers[i]->mesh.elements);
+			glGenBuffers(1, &renderers[i]->mesh.vbo); //Tell OPEN GL of vbo existance
+			glBindBuffer(GL_ARRAY_BUFFER, renderers[i]->mesh.vbo); //Store VBO in array buffer
+			glBufferData(GL_ARRAY_BUFFER, renderers[i]->mesh.vertSize, NULL, GL_STATIC_DRAW); //Parse vertex data to array buffer
 
-			//Add previous size of bytes
-			index_starting_byte += renderers[i]->mesh.elementSize;
+			//Parse vertex and uv data - temp
+			glBufferSubData(GL_ARRAY_BUFFER, 0, renderers[i]->mesh.vertSize, renderers[i]->mesh.verticies);
+		}
+
+		//Find total index buffer size
+		int total_element_size = 0;
+		for (int i = 0; i < renderers.size(); i++) total_element_size += renderers[i]->mesh.elementSize;
+
+		//Create the ebo
+		glGenBuffers(1, &ebo);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, total_element_size, NULL, GL_STATIC_DRAW);
+
+		//Stores the current data offset
+		int element_offset = 0;
+
+		//Declare the existance of a index buffer
+		for (int i = 0; i < renderers.size(); i++)
+		{
+			//Parse - temp
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, element_offset, renderers[i]->mesh.elementSize, renderers[i]->mesh.elements);
+
+			//Next
+			element_offset += renderers[i]->mesh.elementSize;
 		}
 
 		//Enable depth testing
@@ -69,17 +133,17 @@ namespace Graphics
 	}
 
 	//Joins GLSL uniforms and attributes with graphics variables
-	void bindShaderData(GLuint* vbo, GLuint* ebo, GLuint &shader)
+	void bindShaderData(GLuint &shader)
 	{
 		//Find shader locations
+		//Graphics::model_uv_location = glGetAttribLocation(shader, "uvVertex"); //UV coord vec 2
 		Graphics::vertex_pos_location = glGetAttribLocation(shader, "vertPosition"); //Vertex position input
+		Graphics::texture_coords_location = glGetAttribLocation(shader, "textureCoords"); //Stores UV map
 
+		Graphics::texture_diffuse_location = glGetUniformLocation(shader, "diffuse"); //Stores pixel data refernce
 		Graphics::model_matrix_projection = glGetUniformLocation(shader, "model"); //Model matrix
 		Graphics::model_colour_location = glGetUniformLocation(shader, "modelColour"); //Colour of a mesh
 		Graphics::view_projection_location = glGetUniformLocation(shader, "viewProjection"); //Projection and view mat
-
-		//Data needs an offset
-		int data_offset = 0;
 
 		//Create vertex array object for each renderer
 		for (int i = 0; i < renderers.size(); i++) glGenVertexArrays(1, &(renderers[i]->mesh.vao));
@@ -91,19 +155,20 @@ namespace Graphics
 			glBindVertexArray(renderers[i]->mesh.vao);
 
 			//Set vertex formatting
+			glBindBuffer(GL_ARRAY_BUFFER, renderers[i]->mesh.vbo);
+
 			glEnableVertexAttribArray(Graphics::vertex_pos_location);
-			glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+			glVertexAttribPointer(Graphics::vertex_pos_location, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
 
-			glVertexAttribPointer(Graphics::vertex_pos_location, 3, GL_FLOAT, GL_FALSE, /*3 * sizeof(GLfloat)*/0, (void*)(data_offset));
+			//Temp
+			glEnableVertexAttribArray(Graphics::texture_coords_location);
+			glVertexAttribPointer(Graphics::texture_coords_location, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *ebo);
-
-			//Add the current offset
-			data_offset += renderers[i]->mesh.vertSize;
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
 		}
 
 		//Delete meshes
-		//Not bothered
+		//Not bothered lol
 		//....
 	}
 
@@ -112,8 +177,9 @@ namespace Graphics
 	{
 		//Clear colours on screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.0f, 1.0f, 0.5f, 0.0f);
 		glClearDepth(1.0f);
+		glCullFace(GL_BACK);
 
 		glViewport(0, 0, screen_size.x, screen_size.y);
 
@@ -135,11 +201,16 @@ namespace Graphics
 
 			//Set colour of cont. verts
 			glUniform3f(Graphics::model_colour_location, renderers[i]->colour.r, renderers[i]->colour.g, renderers[i]->colour.b);
+			//glUniform1i(Graphics::texture_diffuse_location, renderers[i]->tex->_tex);
+
+			//Set the current texture to use
+			//glActiveTexture(GL_TEXTURE0 + val);
+			glBindTexture(GL_TEXTURE_2D, *all_textures[renderers[i]->tex_index].value);
 
 			//Actually draw
 			renderers[i]->mesh.draw(draw_offset);
 
-			//Addativly increase offset - left to right reading
+			//Add the current element size
 			draw_offset += renderers[i]->mesh.elementSize;
 		}
 	}

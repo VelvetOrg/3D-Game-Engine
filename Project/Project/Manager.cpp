@@ -5,12 +5,11 @@
 //Engine specific
 #include <Engine\Time.h>
 #include <Engine\Input.h>
+#include <Engine\Loader.h>
 #include <Engine\Shader.h>
 #include <Engine\Console.h>
 #include <Engine\Graphics.h>
 #include <Engine\Primitives.h>
-#include <Engine\ModelLoader.h>
-#include <Engine\SoundManager.h>
 
 //GLM
 #include <glm\common.hpp>
@@ -68,6 +67,9 @@ void Manager::init()
 	//Set double buffer interval
 	glfwSwapInterval(1);
 
+	//Allow for back face culling
+	glEnable(GL_CULL_FACE);
+
 	//Init GLEW
 	glewExperimental = GL_TRUE;
 	GLenum glewStatus = glewInit();
@@ -75,26 +77,25 @@ void Manager::init()
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
 
 	//Create the camera
-	cam.Init(glm::vec3(0, 10, 10));
-	cam.pitch = -50;
+	cam.Init(glm::vec3(0, 7.5f, 10));
+	cam.pitch = -20;
 	cam.yaw = -90;
 
-	//Parse the mesh renderer mesh data from the externs header
-	plane.meshRenderer.mesh.Init(sizeof(Primitives::PLANE_VERT_DATA),
-		Primitives::PLANE_VERT_DATA,
-		sizeof(Primitives::PLANE_ELEMENT_DATA),
-		Primitives::PLANE_ELEMENT_DATA);
+	//Setup the man
+	man.meshRenderer.tex_index = Loader::loadTexture(MAN_TEX); //Load in the texture
+	man.meshRenderer.mesh = Loader::loadModel(MAN_MODEL_FILE); //Load in the model
+	man.meshRenderer.colour = glm::vec3(1, 1, 1); //Make (secondary) colour white
+	man.transform.position = glm::vec3(0, 0, 0); //Sit on origin
 
-	//Set properties of the plane
-	plane.transform.scale = glm::vec3(5, 1, 5);
-	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
-
-	//Load tree data
-	torus.meshRenderer.mesh = ModelLoader::load(BOX_FILE);
-	torus.transform.position.y += 0.5f;
+	//Setup the plane
+	plane.meshRenderer.tex_index = Loader::loadTexture(CHECKER_TEX); //Load in the texture
+	plane.meshRenderer.mesh = Loader::loadModel(PLANE_MODEL_FILE); //Load in the model
+	plane.meshRenderer.colour = glm::vec3(1, 1, 1); //Make (secondary) colour white
+	plane.transform.position = glm::vec3(0, 0, 0); //Sit on origin
 
 	//Create object buffers
-	Graphics::createBuffers(&vbo, &ebo);
+	//Also loads up textures
+	Graphics::createBuffers();
 
 	//Load shaders
 	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -102,15 +103,7 @@ void Manager::init()
 
 	shader_program = Shader::bind(vertex_shader, fragment_shader);
 
-	Graphics::bindShaderData(&vbo, &ebo, shader_program);
-
-	SoundManager::Init(Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, -1), Vec3(0, 1, 0));
-	unsigned int TEST = 500;
-	SoundManager::LoadAudio("C:\\Users\\Ruchir\\Documents\\GitHub\\Velvet Org\\3D-Game\\Assets\\Bomb.ogg", &TEST, true);
-	SoundManager::SetListenerPosition(Vec3(0, 0, 0), Vec3(0, 0, 0), glm::quat(0, 1, 0, 0));
-	SoundManager::SetSound(TEST, Vec3(0, 0, 0), Vec3(0, 0, 0), Vec3(0, 0, 0), 100, true, true, 0.9);
-	SoundManager::PlayAudio(TEST, true);
-	Console::message("THE AUDIO IS PLAYING");
+	Graphics::bindShaderData(shader_program);
 
 	//State can now be changed
 	state = programState::Running;
@@ -177,9 +170,9 @@ void Manager::input()
 //Main game logic
 void Manager::logic()
 {
-	//Rotate the torus
-	torus.transform.rotation.y += Time::delta;
-	
+	//Rotate the model
+	man.transform.rotation.y += Time::delta;
+
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
 }
@@ -188,7 +181,7 @@ void Manager::logic()
 void Manager::draw()
 {
 	//Set the shader uniforms
-	Graphics::view_projection_mat_value = cam.getViewProjection(); //Set view matrix based on camera object
+	Graphics::view_projection_mat_value = cam.getViewProjection(GAME_WIDTH / GAME_HEIGHT); //Set view matrix based on camera object
 
 	//Draw
 	Graphics::draw(shader_program, glm::vec2(GAME_WIDTH, GAME_HEIGHT));

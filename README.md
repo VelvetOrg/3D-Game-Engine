@@ -34,6 +34,6 @@ This project's goals to be implemented:
 - [ ] Bullet integrated physics for collision detection
 - [ ] Simple lighting
 - [ ] Lightmaps
-- [ ] Uvs
-- [ ] Textures (but probably won't be necessary)
+- [x] Uvs
+- [x] Textures
 - [ ] Shadow mapping

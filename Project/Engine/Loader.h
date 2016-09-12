@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Graphics.h"
 #include "ModelLoader.h"
+#include "SoundManager.h"
 
 //This is a static singleton for loading anything
 namespace Loader
@@ -66,4 +67,19 @@ namespace Loader
 		//Return
 		return mesh;
 	}
+    
+	 //This will play a 2D sound
+    	void Play(const char* path, bool loop)
+	{
+		//Plays the sound
+		SoundManager::Engine->play2D(path, loop);
+	}
+    
+    	//This will play a 3D sound
+	void Play(const char* path, bool loop, vec3df position)
+	{
+        	//Plays the sound
+		SoundManager::Engine->play3D(path, position, loop);
+	}
+
 }

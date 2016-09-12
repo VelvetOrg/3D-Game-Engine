@@ -30,6 +30,7 @@ namespace Graphics
 	std::map<GLuint, Texture> all_textures;
 	GLuint current_tex_index = 0;
 	GLuint total_textures = 0;
+	GLuint white_value;
 
 	//Stores memory for the verticies
 	void createBuffers()
@@ -40,10 +41,26 @@ namespace Graphics
 
 		//Create the right number of buffers
 		GLuint* texture_ids = new GLuint[total_textures];
-		glGenTextures(total_textures, texture_ids);
+		glGenTextures(total_textures + 1, texture_ids);
+
+		//In location '0' create a white pixel
+		white_value = texture_ids[0];
+
+		//Create the image data for the pixel
+		float white_pixel_img[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+		//Bind the texture to open gl
+		glBindTexture(GL_TEXTURE_2D, white_value);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_FLOAT, white_pixel_img);
+
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		//Loop though
-		int i = 0;
+		int i = 1;
 		for (auto const element : all_textures)
 		{
 			//Set the id for that element
@@ -55,7 +72,7 @@ namespace Graphics
 			const char* path = all_textures[element.first].file_path;
 			unsigned char* _img;
 
-			//Load the image
+			//Use SOIL to load file
 			_img = SOIL_load_image(path, &width, &height, 0, SOIL_LOAD_RGBA);
 
 			//Check if image loaded successfully
@@ -204,8 +221,8 @@ namespace Graphics
 			//glUniform1i(Graphics::texture_diffuse_location, renderers[i]->tex->_tex);
 
 			//Set the current texture to use
-			//glActiveTexture(GL_TEXTURE0 + val);
-			glBindTexture(GL_TEXTURE_2D, *all_textures[renderers[i]->tex_index].value);
+			if (renderers[i]->tex_index != 0) glBindTexture(GL_TEXTURE_2D, *all_textures[renderers[i]->tex_index].value);
+			else							  glBindTexture(GL_TEXTURE_2D, white_value);
 
 			//Actually draw
 			renderers[i]->mesh.draw(draw_offset);

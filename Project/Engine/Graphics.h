@@ -11,22 +11,8 @@
 #include <map>
 
 //Needs renderering objects
+#include "Texture.h"
 #include "MeshRenderer.h"
-
-//Type of a texture
-class Texture
-{
-public:
-	int width;
-	int height;
-
-	GLuint* value; //Buffer ID
-	const char* file_path; //Location on disk
-	unsigned char* image_data; //Stores pixel image in memory
-
-	//Set on constructor
-	Texture() { value = 0; file_path = "\0"; width = -1; height = -1; }
-};
 
 //Can just be static, no need for a class
 //This will handel all of the OPEN GL drawing, including interactign with shaders
@@ -58,6 +44,9 @@ namespace Graphics
 	extern std::map<GLuint, Texture> all_textures;
 	extern GLuint current_tex_index;
 	extern GLuint total_textures;
+
+	//Stores a white pixel buffer
+	extern GLuint white_value;
 
 	//Holds values inside a uniform shader variable - needs to be set by manager
 	extern glm::mat4 view_projection_mat_value;

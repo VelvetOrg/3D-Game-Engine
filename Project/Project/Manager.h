@@ -36,6 +36,8 @@ private:
 	Camera cam;
 
 	//Testing
+	GameObject* trees;
 	GameObject plane;
-	GameObject man;
+
+	const GLuint NUM_TREES = 100;
 };

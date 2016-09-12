@@ -17,7 +17,7 @@ namespace SoundManager
 		Engine = createIrrKlangDevice();
 	}
 
-	void Play(const char* path, bool loop)
+	void Play(const char* path, bool loop = false)
 	{
         //Plays the sound with the Engine
 		Engine->play2D(path, loop);

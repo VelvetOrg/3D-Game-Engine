@@ -17,6 +17,7 @@
 
 //Mahty
 #include <math.h>
+#include <time.h>
 
 //Create memory for externs that are not set, oly declared
 GLFWwindow *win;
@@ -27,6 +28,9 @@ GLuint shader_program;
 //Setup all of the program
 void Manager::init()
 {
+	//Set random seed
+	srand(time(NULL));
+
 	//Init GLFW
 	GLboolean init_status = glfwInit();
 
@@ -78,21 +82,34 @@ void Manager::init()
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
 
 	//Create the camera
-	cam.Init(glm::vec3(0, 7.5f, 10));
+	cam.Init(glm::vec3(0, 20, 10));
+	cam.far_clipping = 300;
 	cam.pitch = -20;
 	cam.yaw = -90;
 
-	//Setup the man
-	man.meshRenderer.tex_index = Loader::loadTexture(MAN_TEX); //Load in the texture
-	man.meshRenderer.mesh = Loader::loadModel(MAN_MODEL_FILE); //Load in the model
-	man.meshRenderer.colour = glm::vec3(1, 1, 1); //Make (secondary) colour white
-	man.transform.position = glm::vec3(0, 0, 0); //Sit on origin
-
 	//Setup the plane
-	plane.meshRenderer.tex_index = Loader::loadTexture(CHECKER_TEX); //Load in the texture
+	plane.meshRenderer.tex_index = Loader::loadTexture(CHECKER_TEX); //To prove that models can have textures
 	plane.meshRenderer.mesh = Loader::loadModel(PLANE_MODEL_FILE); //Load in the model
 	plane.meshRenderer.colour = glm::vec3(1, 1, 1); //Make (secondary) colour white
 	plane.transform.position = glm::vec3(0, 0, 0); //Sit on origin
+	plane.transform.scale = glm::vec3(15, 1, 15); //Big AF
+
+	//Create trees
+	Mesh tree_model = Loader::loadModel(TREE_MODEL_FILE);
+	trees = new GameObject[NUM_TREES];
+	for (int i = 0; i < NUM_TREES; i++)
+	{
+		//Simple tree generator
+		trees[i].meshRenderer.colour = glm::vec3(0, 0, 1);
+		trees[i].meshRenderer.mesh = tree_model;
+		trees[i].transform.position.x = (rand() % (NUM_TREES / 10)) * 10;
+		trees[i].transform.position.z = (rand() % (NUM_TREES / 10)) * 10;
+
+		trees[i].transform.position.x -= 100 / 2;
+		trees[i].transform.position.z -= 100 / 2;
+
+		trees[i].transform.rotation.y = rand() % 360;
+	}
 
 	//Create object buffers
 	//Also loads up textures
@@ -107,7 +124,7 @@ void Manager::init()
 	Graphics::bindShaderData(shader_program);
 
 	SoundManager::Init();
-	SoundManager::Play("../../Assets/Bomb.ogg", true);
+	SoundManager::Play(SONG_PATH, true);
 
 	//State can now be changed
 	state = programState::Running;
@@ -174,9 +191,6 @@ void Manager::input()
 //Main game logic
 void Manager::logic()
 {
-	//Rotate the model
-	man.transform.rotation.y += Time::delta;
-
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
 }

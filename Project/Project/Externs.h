@@ -23,16 +23,19 @@ extern const float FAR_CLIPPING = 100.0f;
 
 //Model data
 const char* PLANE_MODEL_FILE = "../../Assets/Plane.obj";
+const char* TREE_MODEL_FILE = "../../Assets/Tree.obj";
 const char* MAN_MODEL_FILE = "../../Assets/Test.obj";
 
 //Textures
 const char* CHECKER_TEX = "../../Assets/Checker.png";
 const char* MAN_TEX = "../../Assets/Man.png";
 
+//Sounds
+const char* SONG_PATH = "../../Assets/Song.mp3";
+
 //Camera controller consts
 extern const float MOUSE_SENSITIVITY = 0.05f;
-extern const float CAMERA_MOVE_SPEED = 5.0f;
-
+extern const float CAMERA_MOVE_SPEED = 25.0f;
 
 //Declare externs and game consts
 //Things that are global to the app

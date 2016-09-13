@@ -15,8 +15,8 @@
 //GLM
 #include <glm\common.hpp>
 
-//Mahty
-#include <math.h>
+//Math
+#include <Engine\Mathf.h>
 #include <time.h>
 
 //Create memory for externs that are not set, oly declared
@@ -28,9 +28,6 @@ GLuint shader_program;
 //Setup all of the program
 void Manager::init()
 {
-	//Set random seed
-	srand(time(NULL));
-
 	//Init GLFW
 	GLboolean init_status = glfwInit();
 
@@ -80,35 +77,45 @@ void Manager::init()
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
-
+	printf("%f\n", Mathf::TRUNCATION_LIMITS);
 	//Create the camera
 	cam.Init(glm::vec3(0, 20, 10));
 	cam.far_clipping = 300;
 	cam.pitch = -20;
 	cam.yaw = -90;
 
-	//Setup the plane
-	plane.meshRenderer.tex_index = Loader::loadTexture(CHECKER_TEX); //To prove that models can have textures
-	plane.meshRenderer.mesh = Loader::loadModel(PLANE_MODEL_FILE); //Load in the model
-	plane.meshRenderer.colour = glm::vec3(1, 1, 1); //Make (secondary) colour white
-	plane.transform.position = glm::vec3(0, 0, 0); //Sit on origin
-	plane.transform.scale = glm::vec3(15, 1, 15); //Big AF
+	//Initialize the randomizer
+	Random::seed();
 
-	//Create trees
-	Mesh tree_model = Loader::loadModel(TREE_MODEL_FILE);
-	trees = new GameObject[NUM_TREES];
-	for (int i = 0; i < NUM_TREES; i++)
+	//Setup the cube model
+	Mesh box_mesh = Loader::loadModel(BOX_MODEL_FILE);
+	GLuint test = Loader::loadTexture(CHECKER_TEX);
+
+	//Generate an array of boxes
+	boxes = new GameObject[LEVEL_WIDTH * LEVEL_HEIGHT];
+
+	for (int y = 0; y < LEVEL_HEIGHT; y++)
 	{
-		//Simple tree generator
-		trees[i].meshRenderer.colour = glm::vec3(0, 0, 1);
-		trees[i].meshRenderer.mesh = tree_model;
-		trees[i].transform.position.x = (rand() % (NUM_TREES / 10)) * 10;
-		trees[i].transform.position.z = (rand() % (NUM_TREES / 10)) * 10;
+		for (int x = 0; x < LEVEL_WIDTH; x++)
+		{
+			//Find the current list index
+			int index = y * LEVEL_WIDTH + x;
 
-		trees[i].transform.position.x -= 100 / 2;
-		trees[i].transform.position.z -= 100 / 2;
+			int nx = x - LEVEL_WIDTH / 2;
+			int ny = y - LEVEL_HEIGHT / 2;
 
-		trees[i].transform.rotation.y = rand() % 360;
+			//Set general properties
+			boxes[index].meshRenderer.colour = glm::vec3(0, 1, 0.5);
+			boxes[index].meshRenderer.mesh = box_mesh;
+			boxes[index].meshRenderer.tex_index = test;
+
+			//Set the position based
+			boxes[index].transform.position.x = nx;
+			boxes[index].transform.position.z = ny;
+
+			//Find y position based on noise map
+			boxes[index].transform.position.y = (GLint)(Mathf::perlinNoise(((GLfloat)x) / LEVEL_WIDTH, ((GLfloat)y) / LEVEL_HEIGHT) * 10.0f);
+		}
 	}
 
 	//Create object buffers
@@ -124,7 +131,7 @@ void Manager::init()
 	Graphics::bindShaderData(shader_program);
 
 	SoundManager::Init();
-	SoundManager::Play(SONG_PATH, true);
+	//SoundManager::Play(SONG_PATH, true);
 
 	//State can now be changed
 	state = programState::Running;
@@ -191,6 +198,10 @@ void Manager::input()
 //Main game logic
 void Manager::logic()
 {
+	//Test the math class
+	//box.transform.position.x = Mathf::cos(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
+	//box.transform.position.z = Mathf::sin(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
+	
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
 }

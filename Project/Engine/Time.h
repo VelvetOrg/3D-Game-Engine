@@ -9,6 +9,7 @@ namespace Time
 {
 	//Values to return
 	int framesPassed = 0;
+	float seconds = 0.0f;
 	float delta = 0.0f;
 	float time = 0.0f;
 	float fps = 0.0f;
@@ -32,6 +33,7 @@ namespace Time
 
 		//Done
 		framesPassed++;
+		seconds += delta;
 		last_frame = current_frame;
 	}
 }

@@ -25,6 +25,7 @@ extern const float FAR_CLIPPING = 100.0f;
 const char* PLANE_MODEL_FILE = "../../Assets/Plane.obj";
 const char* TREE_MODEL_FILE = "../../Assets/Tree.obj";
 const char* MAN_MODEL_FILE = "../../Assets/Test.obj";
+const char* BOX_MODEL_FILE = "../../Assets/Box.obj";
 
 //Textures
 const char* CHECKER_TEX = "../../Assets/Checker.png";

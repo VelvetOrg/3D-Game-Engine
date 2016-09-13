@@ -1,15 +1,21 @@
-﻿Build started 12-Sep-16 8:29:10 PM.
+﻿Build started 13-Sep-16 9:19:26 PM.
      1>Project "D:\Code\Github\3D-Game\Project\Project\Project.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          D:\Programs\VisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Manager.cpp
          Manager.cpp
-     1>d:\code\github\3d-game\project\project\manager.cpp(32): warning C4244: 'argument' : conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>d:\code\github\3d-game\project\project\manager.cpp(100): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\code\github\3d-game\project\project\manager.cpp(105): warning C4244: '=' : conversion from 'const GLuint' to 'float', possible loss of data
-     1>d:\code\github\3d-game\project\project\manager.cpp(106): warning C4244: '=' : conversion from 'const GLuint' to 'float', possible loss of data
-     1>d:\code\github\3d-game\project\project\manager.cpp(111): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(37): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>d:\code\github\3d-game\project\engine\mathf.h(67): warning C4244: 'return' : conversion from 'GLfloat' to 'GLint', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(99): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(154): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(230): warning C4244: 'argument' : conversion from 'GLint' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(243): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\code\github\3d-game\project\engine\mathf.h(258): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\code\github\3d-game\project\engine\mathf.h(314): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\project\manager.cpp(113): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\project\manager.cpp(114): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
+     1>d:\code\github\3d-game\project\project\manager.cpp(117): warning C4244: '=' : conversion from 'GLint' to 'float', possible loss of data
        Link:
-         D:\Programs\VisualStudio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\Github\3D-Game\Project\Debug\Project.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\Code\Github\3D-Game\Project\Deps\Libs\\" opengl32.lib glew32.lib glfw3.lib irrKlang.lib SOIL.lib Engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\Github\3D-Game\Project\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\Github\3D-Game\Project\Debug\Project.lib" /MACHINE:X86 Debug\Main.obj
+         D:\Programs\VisualStudio\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Code\Github\3D-Game\Project\Debug\Project.exe" /INCREMENTAL /NOLOGO /LIBPATH:"D:\Code\Github\3D-Game\Project\Deps\Libs\\" opengl32.lib glew32.lib glfw3.lib irrKlang.lib SOIL.lib libnoise.lib Engine.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"D:\Code\Github\3D-Game\Project\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Code\Github\3D-Game\Project\Debug\Project.lib" /MACHINE:X86 Debug\Main.obj
          Debug\Manager.obj
      1>LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
          Project.vcxproj -> D:\Code\Github\3D-Game\Project\Debug\Project.exe
@@ -17,4 +23,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.08
+Time Elapsed 00:00:01.09

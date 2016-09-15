@@ -36,3 +36,6 @@ This project's goals to be implemented:
 - [x] UV Mapping
 - [x] Textures
 - [ ] Shadow Mapping
+- [ ] Instancing
+- [x] Math class
+- [x] Perlin noise integration

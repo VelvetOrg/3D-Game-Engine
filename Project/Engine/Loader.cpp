@@ -1,6 +1,9 @@
 //Needs header
 #include "Loader.h"
 
+//Needs soil for image loading
+#include <SOIL\SOIL.h>
+
 //In namespace
 namespace Loader
 {
@@ -12,8 +15,15 @@ namespace Loader
 		//Generate a new texture object
 		Texture temp;
 		temp.file_path = path;
-		temp.value = &Graphics::current_tex_index;
+		temp.ID = Graphics::current_tex_index;
 
+		//Use SOIL to load file
+		temp.image_data = SOIL_load_image(path, &temp.width, &temp.height, 0, SOIL_LOAD_RGBA);
+
+		//Check if image loaded successfully
+		if (temp.image_data == 0) Console::error(("Could not load the texture: " + std::string(path)).c_str());
+
+		//Add to the list
 		Graphics::all_textures[Graphics::current_tex_index] = temp;
 
 		//Done

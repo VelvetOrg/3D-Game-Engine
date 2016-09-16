@@ -8,6 +8,7 @@
 class Texture
 {
 public:
+	int ID;
 	int width;
 	int height;
 
@@ -15,6 +16,6 @@ public:
 	const char* file_path; //Location on disk
 	unsigned char* image_data; //Stores pixel image in memory
 
-	//Set on constructor
+	//Set on constructor to white pixel
 	Texture() { value = 0; file_path = "\0"; width = 1; height = 1; }
 };

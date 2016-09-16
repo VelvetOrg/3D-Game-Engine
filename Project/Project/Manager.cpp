@@ -77,7 +77,7 @@ void Manager::init()
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
-	printf("%f\n", Mathf::TRUNCATION_LIMITS);
+	
 	//Create the camera
 	cam.Init(glm::vec3(0, 20, 10));
 	cam.far_clipping = 300;
@@ -85,11 +85,15 @@ void Manager::init()
 	cam.yaw = -90;
 
 	//Initialize the randomizer
+	Mathf::seed = time(NULL);
 	Random::seed();
+
+	//Create a noise map
+	Mathf::createMap();
 
 	//Setup the cube model
 	Mesh box_mesh = Loader::loadModel(BOX_MODEL_FILE);
-	GLuint test = Loader::loadTexture(CHECKER_TEX);
+	GLuint checker_id = Loader::loadTexture(CHECKER_TEX);
 
 	//Generate an array of boxes
 	boxes = new GameObject[LEVEL_WIDTH * LEVEL_HEIGHT];
@@ -106,8 +110,8 @@ void Manager::init()
 
 			//Set general properties
 			boxes[index].meshRenderer.colour = glm::vec3(0, 1, 0.5);
+			boxes[index].meshRenderer.tex_index = checker_id;
 			boxes[index].meshRenderer.mesh = box_mesh;
-			boxes[index].meshRenderer.tex_index = test;
 
 			//Set the position based
 			boxes[index].transform.position.x = nx;

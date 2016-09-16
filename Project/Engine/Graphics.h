@@ -14,6 +14,9 @@
 #include "Texture.h"
 #include "MeshRenderer.h"
 
+class Texture;
+class MeshRenderer;
+
 //Can just be static, no need for a class
 //This will handel all of the OPEN GL drawing, including interactign with shaders
 namespace Graphics
@@ -28,6 +31,7 @@ namespace Graphics
 
 	//Contains all active mesh renderers
 	extern std::vector<MeshRenderer*> renderers;
+	extern GLuint current_mesh_id_count;
 
 	//Holds shader locations
 	extern GLint vertex_pos_location; //Vertex position input
@@ -46,7 +50,7 @@ namespace Graphics
 	extern GLuint total_textures;
 
 	//Stores a white pixel buffer
-	extern GLuint white_value;
+	extern Texture white_tex;
 
 	//Holds values inside a uniform shader variable - needs to be set by manager
 	extern glm::mat4 view_projection_mat_value;

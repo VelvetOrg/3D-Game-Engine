@@ -16,6 +16,7 @@ The following dependencies are used:
 4. `AmBIERA irrKlang` - For 3D and 2D audio managment
 5. `SOIL` - For loading images as textures
 6. `libnoise` - For perlin noise
+7. `Bullet` - For physics and collision detection
 
 ---
 

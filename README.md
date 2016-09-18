@@ -1,5 +1,5 @@
 # 3D-Game
-> This is a C++ based 3D game. Currently the idea and gamplay of this project is yet to be decided, but some basic features have already been implemented including:
+> This is a C++ based 3D game. Currently the idea and gamplay of this project is yet to be decided, but some features have already been implemented including:
 
 1. Input management - Mouse and keyboard including modifiers and all key states
 2. Sound management - 3D and 2D audio. Including audio listeners, SFX and music

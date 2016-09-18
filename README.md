@@ -5,7 +5,13 @@
 2. Sound management - 3D and 2D audio. Including audio listeners, SFX and music
 3. Simple graphics - Drawing an array of vertices
 4. Shaders - Support for any type of GLSL shader
-
+5. OBJ File Loading - For custom 3D models
+6. Camera management
+7. GameObjects
+8. UV Mapping
+9. Textures
+10. A Math class
+11. Perlin Noise - For procedural generation
 ---
 
 The following dependencies are used:

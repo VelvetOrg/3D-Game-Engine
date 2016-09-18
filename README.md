@@ -12,6 +12,7 @@
 9. Textures
 10. A Math class
 11. Perlin Noise - For procedural generation
+
 ---
 
 The following dependencies are used:

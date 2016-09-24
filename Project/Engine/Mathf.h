@@ -24,21 +24,22 @@
 //https://docs.unity3d.com/ScriptReference/Mathf.html
 //But in C++ with opengl values
 
-namespace Mathf
+static class cMathf
 {
+public:
 	/*
 		Missing functions (This that should be added but I couldnt figure out):
 		- Inverse learping - find the iterpolant between a and b based on t
 		- Negative infinity - C++ does not support (I think)
 		*/
-
+	
 	/* ----- Constant values ----- */
 	const GLfloat PI = 3.1415926f; //The circumference to the perimeter of a circle
 	const GLfloat TAU = 6.2831852; //Double 'pi'
 	const GLfloat TRUNCATION_LIMITS = 0.005f; //Temp
 	const GLfloat INFINITE = std::numeric_limits<float>::infinity(); //Like: HUGE_VALF
-	const GLfloat DEG_TO_RAD = (Mathf::PI * 2) / 360; //For converting degrees to radians
-	const GLfloat RAD_TO_DEG = 360 / (Mathf::PI * 2); //For converting radians to degrees
+	const GLfloat DEG_TO_RAD = (6.2831852) / 360; //For converting degrees to radians
+	const GLfloat RAD_TO_DEG = 360 / (6.2831852); //For converting radians to degrees
 
 	/* ----- Wrapper functions ----- */
 
@@ -64,14 +65,14 @@ namespace Mathf
 	inline GLfloat max(GLfloat a, GLfloat b) { return std::max(a, b); }
 	inline GLfloat min(GLfloat a, GLfloat b) { return std::min(a, b); }
 	inline GLfloat round(GLfloat f) { return roundf(f); }
-	inline GLint roundInt(GLfloat f) { return (GLfloat)Mathf::round(f); }
+	inline GLint roundInt(GLfloat f) { return (GLint)roundf(f); }
 
 	/* ----- Useful functions ----- */
 
 	//Smooth step a
 
 	//Since the C++ '%' doesnt support floats
-	static GLfloat mod(GLfloat num, GLfloat div) { return div * ((num / div) - Mathf::floor(num / div)); }
+	GLfloat mod(GLfloat num, GLfloat div) { return div * ((num / div) - Mathf.floor(num / div)); }
 
 	//Returns a value inbetween min and max
 	inline GLfloat clamp(GLfloat value, GLfloat minimum, GLfloat maximum)
@@ -81,7 +82,7 @@ namespace Mathf
 	}
 
 	//Clamps between 0 and 1
-	inline GLfloat clamp01(GLfloat value) { return Mathf::clamp(value, 0.0f, 1.0f); }
+	inline GLfloat clamp01(GLfloat value) { return Mathf.clamp(value, 0.0f, 1.0f); }
 
 	//Smoothdamp, much like lerp interpolates between values
 	//But smoothing (much like a broad cubic function)
@@ -93,12 +94,12 @@ namespace Mathf
 	GLfloat smoothstep(GLfloat left, GLfloat right, GLfloat x)
 	{
 		//Clamp the value
-		x = Mathf::clamp01((x - left) / (right - left));
+		x = Mathf.clamp01((x - left) / (right - left));
 
 		//Evaluate quadratic
 		return x * x * (3.0 - 2.0 * x);
 	}
-	GLfloat smoothstep(GLfloat x) { return Mathf::smoothstep(0.0f, 1.0f, x); }
+	GLfloat smoothstep(GLfloat x) { return Mathf.smoothstep(0.0f, 1.0f, x); }
 
 	//This applies a combination of lerping and smooth stepping
 	//By haveint a smooth interpolation to a result
@@ -106,14 +107,14 @@ namespace Mathf
 	//https://docs.unity3d.com/ScriptReference/Mathf.SmoothDamp.html
 	GLfloat SmoothDamp(GLfloat current, GLfloat target, GLfloat vel, float smoothTime, float maxSpeed, float deltaTime)
 	{
-		smoothTime = Mathf::max(0.0001f, smoothTime);
+		smoothTime = Mathf.max(0.0001f, smoothTime);
 		float num = 2.0f / smoothTime;
 		float num2 = num * deltaTime;
 		float num3 = 1.0f / (1.0f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
 		float num4 = current - target;
 		float num5 = target;
 		float num6 = maxSpeed * smoothTime;
-		num4 = Mathf::clamp(num4, -num6, num6);
+		num4 = Mathf.clamp(num4, -num6, num6);
 		target = current - num4;
 		float num7 = (vel + num * num4) * deltaTime;
 		vel = (vel - num * num7) * num3;
@@ -132,12 +133,12 @@ namespace Mathf
 	GLfloat smootherstep(GLfloat left, GLfloat right, GLfloat x)
 	{
 		//Scale and clamp
-		GLfloat nx = Mathf::clamp01((x - left) / (right - left));
+		GLfloat nx = Mathf.clamp01((x - left) / (right - left));
 
 		//Evaluate
 		return nx * nx * nx * (nx * (nx * 6 - 15) + 10);
 	}
-	GLfloat smootherstep(GLfloat x) { return Mathf::smootherstep(0.0f, 1.0f, x); }
+	GLfloat smootherstep(GLfloat x) { return Mathf.smootherstep(0.0f, 1.0f, x); }
 
 	//A simplified version of smotherstep
 	//This is used for perlin noise interpolation between seed vector
@@ -167,17 +168,17 @@ namespace Mathf
 
 		return (1 - t) * a + t * b;
 	}
-	inline GLfloat lerp(GLfloat a, GLfloat b, GLfloat t) { return Mathf::lerpUnclamped(a, b, Mathf::clamp01(t)); }
+	inline GLfloat lerp(GLfloat a, GLfloat b, GLfloat t) { return Mathf.lerpUnclamped(a, b, Mathf.clamp01(t)); }
 	inline GLfloat noiseLerp(GLfloat t, GLfloat a, GLfloat b) { return a + t * (b - a); }
 
 	//Like lerping but the value will never exceed a delta
 	GLfloat moveTowards(GLfloat current, GLfloat target, GLfloat delta)
 	{
 		//Make sure distance is less than delta
-		if (Mathf::abs(target - current) <= delta) return target;
+		if (Mathf.abs(target - current) <= delta) return target;
 
 		//Otherwise apply a lerp
-		return current + Mathf::sign(target - current) * delta;
+		return current + Mathf.sign(target - current) * delta;
 	}
 
 	//Ping pong will loop a value between 0 and the upper limit
@@ -192,8 +193,8 @@ namespace Mathf
 		return state + min;
 	}
 	//Overload
-	GLfloat bounce(GLfloat value, GLfloat max) { return Mathf::bounce(value, 0.0f, max); }
-	GLfloat bounce(GLfloat value)			   { return Mathf::bounce(value, 0.0f, 1.0f); }
+	GLfloat bounce(GLfloat value, GLfloat max) { return Mathf.bounce(value, 0.0f, max); }
+	GLfloat bounce(GLfloat value)			   { return Mathf.bounce(value, 0.0f, 1.0f); }
 
 	//Logarithmics...
 	inline GLfloat log(GLfloat f, GLfloat base)
@@ -203,8 +204,8 @@ namespace Mathf
 		return logf(f) / logf(base);
 	}
 	inline GLfloat log(GLfloat f) { return logf(f); }
-	inline GLfloat log2(GLfloat f) { return Mathf::log(f, 2); }
-	inline GLfloat log10(GLfloat f) { return Mathf::log(f, 10); }
+	inline GLfloat log2(GLfloat f) { return Mathf.log(f, 2); }
+	inline GLfloat log10(GLfloat f) { return Mathf.log(f, 10); }
 
 	//This will find the percentage trhough a lerp based on paramters
 	//Inverse lerp - not done
@@ -227,7 +228,7 @@ namespace Mathf
 	inline GLint closestBinaryPower(GLint value)
 	{
 		//Needs	 the find the 2 root of the value then round that to an int
-		return Mathf::roundInt(Mathf::pow(Mathf::round(Mathf::sqrt(value)), 2));
+		return Mathf.roundInt(Mathf.pow(Mathf.round(Mathf.sqrt(value)), 2));
 	}
 	inline bool isBinaryPower(GLint value) { return closestBinaryPower(value) == value; }
 
@@ -262,31 +263,10 @@ namespace Mathf
 	}
 
 	//Because of slight round errors in floats, this should be used when comparing
-	inline bool approximatly(GLfloat a, GLfloat b, GLfloat rounding = Mathf::TRUNCATION_LIMITS) { return Mathf::abs(a - b) < rounding; }
-}
+	bool approximatly(GLfloat a, GLfloat b) { return Mathf.abs(a - b) < Mathf.TRUNCATION_LIMITS; }
 
-//Some simple functions for random number generation
-//This is so perlin noise is easier
-namespace Random
-{
-	//Seed the random value
-	void seed(GLuint s = time(NULL)) { srand(s); }
-	
-	//Random number between min and max
-	GLfloat range(GLfloat min, GLfloat max) { return min + (GLfloat)(rand()) / ((GLfloat)(RAND_MAX / (max - min))); }
-	
-	//Generates a random number between 0 and 1
-	GLfloat value() { return Random::range(0.0f, 1.0f); }
-
-	//Generate a random integer 
-	GLint randInt(GLint min, GLint max) { return rand() % (max - min) + min; }
-	GLint randBin() { return Random::randInt(0, 2); }
-}
-
-namespace Mathf
-{
 	/* ----- Perlin noise ----- */
-	
+
 	//Create an instance of a perlin noise object
 	noise::module::Perlin modual;
 
@@ -321,76 +301,95 @@ namespace Mathf
 
 	void seedPerlinNoise(GLuint seed)
 	{
-		// Duplicate the permutation vector
-		permutations.insert(permutations.end(), permutations.begin(), permutations.end());
+	// Duplicate the permutation vector
+	permutations.insert(permutations.end(), permutations.begin(), permutations.end());
 
-		//Generate an array of possible versions of the perlin noise
-		permutations.resize(256);
-		
-		//This will sequentiall fill the vector with increasing values
-		//Alternitives are:
-		//std::generate
-		//for (int i = 0; i < permutations.size(); i++) permutations[i] = i;
-		std::iota(permutations.begin(), permutations.end(), 0);
+	//Generate an array of possible versions of the perlin noise
+	permutations.resize(256);
 
-		// Initialize a random engine with seed
-		//The default random engine is: mt19937
-		std::default_random_engine engine(seed);
-		
-		//This means that each member of the array is ordered with an equal spread of probability
-		//So and number choosen will seem random
-		std::shuffle(permutations.begin(), permutations.end(), engine);
-		
-		//Duplicate the vector
-		permutations.insert(permutations.end(), permutations.begin(), permutations.end());
+	//This will sequentiall fill the vector with increasing values
+	//Alternitives are:
+	//std::generate
+	//for (int i = 0; i < permutations.size(); i++) permutations[i] = i;
+	std::iota(permutations.begin(), permutations.end(), 0);
+
+	// Initialize a random engine with seed
+	//The default random engine is: mt19937
+	std::default_random_engine engine(seed);
+
+	//This means that each member of the array is ordered with an equal spread of probability
+	//So and number choosen will seem random
+	std::shuffle(permutations.begin(), permutations.end(), engine);
+
+	//Duplicate the vector
+	permutations.insert(permutations.end(), permutations.begin(), permutations.end());
 	}
 
 	GLfloat perlinNoise(GLfloat x, GLfloat y, GLfloat z = 0.0f)
 	{
-		//Find the cube (of size 1, 1, 1) that contains the point mentionsed in the parameters
-		glm::vec3 unit_cube;
+	//Find the cube (of size 1, 1, 1) that contains the point mentionsed in the parameters
+	glm::vec3 unit_cube;
 
-		//This will clamp the value to an edge of the cube because:
-		//0000000 & x = 0
-		//1111111 & x = x
-		unit_cube.x = (GLint) floor(x) & 255;
-		unit_cube.y = (GLint) floor(y) & 255;
-		unit_cube.z = (GLint) floor(z) & 255;
+	//This will clamp the value to an edge of the cube because:
+	//0000000 & x = 0
+	//1111111 & x = x
+	unit_cube.x = (GLint) floor(x) & 255;
+	unit_cube.y = (GLint) floor(y) & 255;
+	unit_cube.z = (GLint) floor(z) & 255;
 
-		//Make relative to that point in the square
-		unit_cube.x -= floor(x);
-		unit_cube.y -= floor(y);
-		unit_cube.z -= floor(z);
+	//Make relative to that point in the square
+	unit_cube.x -= floor(x);
+	unit_cube.y -= floor(y);
+	unit_cube.z -= floor(z);
 
-		//Interpolate the vector seed values
-		glm::vec3 interpolation_point;
+	//Interpolate the vector seed values
+	glm::vec3 interpolation_point;
 
-		interpolation_point.x = Mathf::interpolateNoiseCurve(unit_cube.x);
-		interpolation_point.y = Mathf::interpolateNoiseCurve(unit_cube.y);
-		interpolation_point.z = Mathf::interpolateNoiseCurve(unit_cube.z);
+	interpolation_point.x = Mathf.interpolateNoiseCurve(unit_cube.x);
+	interpolation_point.y = Mathf.interpolateNoiseCurve(unit_cube.y);
+	interpolation_point.z = Mathf.interpolateNoiseCurve(unit_cube.z);
 
-		//Find the coordinates of each corner of the cube
-		//Remembering the perlin notation of 00, 01, 10, 11...
-		GLint A = permutations[(GLint)unit_cube.x] + (GLint)unit_cube.y;
-		GLint AA = permutations[A] + (GLint)unit_cube.z;
-		GLint AB = permutations[A + 1] + (GLint)unit_cube.z;
-		GLint B = permutations[(GLint)unit_cube.x + 1] + (GLint)unit_cube.y;
-		GLint BA = permutations[B] + (GLint)unit_cube.z;
-		GLint BB = permutations[B + 1] + (GLint)unit_cube.z;
+	//Find the coordinates of each corner of the cube
+	//Remembering the perlin notation of 00, 01, 10, 11...
+	GLint A = permutations[(GLint)unit_cube.x] + (GLint)unit_cube.y;
+	GLint AA = permutations[A] + (GLint)unit_cube.z;
+	GLint AB = permutations[A + 1] + (GLint)unit_cube.z;
+	GLint B = permutations[(GLint)unit_cube.x + 1] + (GLint)unit_cube.y;
+	GLint BA = permutations[B] + (GLint)unit_cube.z;
+	GLint BB = permutations[B + 1] + (GLint)unit_cube.z;
 
-		//Using the formula found:
-		//https://en.wikipedia.org/wiki/Perlin_noise
-		//Each normalized corner must be added
-		double result = Mathf::noiseLerp(interpolation_point.z, Mathf::noiseLerp(interpolation_point.y, 
-			Mathf::noiseLerp(interpolation_point.x, Mathf::noiseGradient(permutations[AA], x, y, z), Mathf::noiseGradient(permutations[BA], x - 1, y, z)), 
-			Mathf::noiseLerp(interpolation_point.x, Mathf::noiseGradient(permutations[AB], x, y - 1, z), Mathf::noiseGradient(permutations[BB], x - 1, y - 1, z))), 
-			Mathf::noiseLerp(interpolation_point.y, Mathf::noiseLerp(interpolation_point.x, Mathf::noiseGradient(permutations[AA + 1], x, y, z - 1), 
-			Mathf::noiseGradient(permutations[BA + 1], x - 1, y, z - 1)), 
-			Mathf::noiseLerp(interpolation_point.x, Mathf::noiseGradient(permutations[AB + 1], x, y - 1, z - 1), 
-			Mathf::noiseGradient(permutations[BB + 1], x - 1, y - 1, z - 1))));
+	//Using the formula found:
+	//https://en.wikipedia.org/wiki/Perlin_noise
+	//Each normalized corner must be added
+	double result = Mathf.noiseLerp(interpolation_point.z, Mathf.noiseLerp(interpolation_point.y,
+	Mathf.noiseLerp(interpolation_point.x, Mathf.noiseGradient(permutations[AA], x, y, z), Mathf.noiseGradient(permutations[BA], x - 1, y, z)),
+	Mathf.noiseLerp(interpolation_point.x, Mathf.noiseGradient(permutations[AB], x, y - 1, z), Mathf.noiseGradient(permutations[BB], x - 1, y - 1, z))),
+	Mathf.noiseLerp(interpolation_point.y, Mathf.noiseLerp(interpolation_point.x, Mathf.noiseGradient(permutations[AA + 1], x, y, z - 1),
+	Mathf.noiseGradient(permutations[BA + 1], x - 1, y, z - 1)),
+	Mathf.noiseLerp(interpolation_point.x, Mathf.noiseGradient(permutations[AB + 1], x, y - 1, z - 1),
+	Mathf.noiseGradient(permutations[BB + 1], x - 1, y - 1, z - 1))));
 
-		//Done
-		return (result + 1.0) / 2.0;
+	//Done
+	return (result + 1.0) / 2.0;
 	}
 	*/
-}
+} Mathf;
+
+//Some simple functions for random number generation
+//This is so perlin noise is easier
+static class cRandom
+{
+public:
+	//Seed the random value
+	void seed(GLuint s = time(NULL)) { srand(s); }
+	
+	//Random number between min and max
+	GLfloat range(GLfloat min, GLfloat max) { return min + (GLfloat)(rand()) / ((GLfloat)(RAND_MAX / (max - min))); }
+	
+	//Generates a random number between 0 and 1
+	GLfloat value() { return Random.range(0.0f, 1.0f); }
+
+	//Generate a random integer 
+	GLint randInt(GLint min, GLint max) { return rand() % (max - min) + min; }
+	GLint randBin() { return Random.randInt(0, 2); }
+} Random;

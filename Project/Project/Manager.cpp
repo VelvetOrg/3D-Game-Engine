@@ -78,15 +78,15 @@ void Manager::init()
 	cam.yaw = -90;
 
 	//Initialize the randomizer
-	Mathf::seed = time(NULL);
-	Random::seed();
+	Mathf.seed = time(NULL);
+	Random.seed();
 
 	//Create a noise map
-	Mathf::createMap();
+	Mathf.createMap();
 
 	//Setup the cube model
-	Mesh box_mesh = Loader::loadModel(BOX_MODEL_FILE);
-	GLuint checker_id = Loader::loadTexture(CHECKER_TEX);
+	Mesh box_mesh = Loader.loadModel(BOX_MODEL_FILE);
+	GLuint checker_id = Loader.loadTexture(CHECKER_TEX);
 
 	//Generate an array of boxes
 	boxes = new GameObject[LEVEL_WIDTH * LEVEL_HEIGHT];
@@ -111,7 +111,7 @@ void Manager::init()
 			boxes[index].transform.position.z = ny;
 
 			//Find y position based on noise map
-			boxes[index].transform.position.y = (GLint)(Mathf::perlinNoise(((GLfloat)x) / LEVEL_WIDTH, ((GLfloat)y) / LEVEL_HEIGHT) * 10.0f);
+			boxes[index].transform.position.y = (GLint)(Mathf.perlinNoise(((GLfloat)x) / LEVEL_WIDTH, ((GLfloat)y) / LEVEL_HEIGHT) * 10.0f);
 		}
 	}
 
@@ -120,15 +120,16 @@ void Manager::init()
 	Graphics::createBuffers();
 
 	//Load shaders
-	GLuint vertex_shader = Shader::load(VERTEX_PATH, GL_VERTEX_SHADER);
-	GLuint fragment_shader = Shader::load(FRAGMENT_PATH, GL_FRAGMENT_SHADER);
+	GLuint vertex_shader = Shader.load(VERTEX_PATH, GL_VERTEX_SHADER);
+	GLuint fragment_shader = Shader.load(FRAGMENT_PATH, GL_FRAGMENT_SHADER);
 
-	shader_program = Shader::bind(vertex_shader, fragment_shader);
+	shader_program = Shader.bind(vertex_shader, fragment_shader);
 
 	Graphics::bindShaderData(shader_program);
 
-	SoundManager::Init();
-	//SoundManager::Play(SONG_PATH, true);
+	//Play
+	SoundManager.Init();
+	SoundManager.Play(SONG_PATH, true);
 
 	//State can now be changed
 	state = programState::Running;

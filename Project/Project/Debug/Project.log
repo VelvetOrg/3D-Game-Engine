@@ -1,16 +1,17 @@
-﻿Build started 24-Sep-16 7:37:25 PM.
+﻿Build started 24-Sep-16 8:14:50 PM.
      1>Project "D:\Code\Github\3D-Game\Project\Project\Project.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          D:\Programs\VisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Manager.cpp
          Manager.cpp
-     1>d:\code\github\3d-game\project\engine\mathf.h(37): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
-     1>d:\code\github\3d-game\project\engine\mathf.h(67): warning C4244: 'return' : conversion from 'GLfloat' to 'GLint', possible loss of data
-     1>d:\code\github\3d-game\project\engine\mathf.h(99): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>d:\code\github\3d-game\project\engine\mathf.h(154): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
-     1>d:\code\github\3d-game\project\engine\mathf.h(230): warning C4244: 'argument' : conversion from 'GLint' to 'GLfloat', possible loss of data
-     1>d:\code\github\3d-game\project\engine\mathf.h(243): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\code\github\3d-game\project\engine\mathf.h(258): warning C4018: '<' : signed/unsigned mismatch
-     1>d:\code\github\3d-game\project\engine\mathf.h(314): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(38): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>d:\code\github\3d-game\project\engine\mathf.h(41): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>d:\code\github\3d-game\project\engine\mathf.h(42): warning C4305: 'initializing' : truncation from 'double' to 'const GLfloat'
+     1>d:\code\github\3d-game\project\engine\mathf.h(100): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(155): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(231): warning C4244: 'argument' : conversion from 'GLint' to 'GLfloat', possible loss of data
+     1>d:\code\github\3d-game\project\engine\mathf.h(244): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\code\github\3d-game\project\engine\mathf.h(259): warning C4018: '<' : signed/unsigned mismatch
+     1>d:\code\github\3d-game\project\engine\mathf.h(294): warning C4244: 'return' : conversion from 'double' to 'GLfloat', possible loss of data
      1>d:\code\github\3d-game\project\project\manager.cpp(81): warning C4244: '=' : conversion from 'time_t' to 'int', possible loss of data
      1>d:\code\github\3d-game\project\project\manager.cpp(110): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
      1>d:\code\github\3d-game\project\project\manager.cpp(111): warning C4244: '=' : conversion from 'int' to 'float', possible loss of data
@@ -24,4 +25,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.05
+Time Elapsed 00:00:01.11

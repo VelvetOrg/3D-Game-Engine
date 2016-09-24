@@ -38,6 +38,6 @@ private:
 	//Testing
 	GameObject* boxes;
 
-	const int LEVEL_WIDTH = 50;
-	const int LEVEL_HEIGHT = 50;
+	const int LEVEL_WIDTH = 25;
+	const int LEVEL_HEIGHT = 25;
 };

@@ -21,7 +21,7 @@ namespace Loader
 		temp.image_data = SOIL_load_image(path, &temp.width, &temp.height, 0, SOIL_LOAD_RGBA);
 
 		//Check if image loaded successfully
-		if (temp.image_data == 0) Console::error(("Could not load the texture: " + std::string(path)).c_str());
+		if (temp.image_data == 0) Console.error(("Could not load the texture: " + std::string(path)).c_str());
 
 		//Add to the list
 		Graphics::all_textures[Graphics::current_tex_index] = temp;

@@ -17,6 +17,20 @@
 class Texture;
 class MeshRenderer;
 
+//Data type that holds information about a group of renderers
+class UniqueRenderer
+{
+public:
+	//List of renderer instances
+	std::vector<MeshRenderer*> renderers;
+
+	//Renderer that stores data about all
+	MeshRenderer data_renderer;
+
+	//A vbo for all of the data
+	GLuint vbo;
+};
+
 //Can just be static, no need for a class
 //This will handel all of the OPEN GL drawing, including interactign with shaders
 namespace Graphics
@@ -65,4 +79,8 @@ namespace Graphics
 
 	//Actually draws the loaded vericies, in main loop - temp
 	void draw(GLuint &shader_program, glm::vec2 screen_size);
+
+	//Helper functions
+	GLuint generateNewVbo(GLuint float_count);
+	void addInstancedAttrib(GLuint vao, GLuint vbo, GLint attribute_index, GLint size, GLint instanceLength, GLint offset);
 };

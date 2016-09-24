@@ -34,7 +34,7 @@ namespace Graphics
 	GLuint total_textures = 0;
 	GLuint white_value;
 
-	std::map<GLuint, std::vector<MeshRenderer*>> unique_renderers;
+	std::map<GLuint, UniqueRenderer> urenderers;
 
 	//Stores memory for the verticies
 	void createBuffers()
@@ -96,7 +96,7 @@ namespace Graphics
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 			//Check if texture was created properly
-			if (*all_textures[element.first].value == -1) Console::error("Could not convert image to texture.");
+			if (*all_textures[element.first].value == -1) Console.error("Could not convert image to texture.");
 
 			//Free
 			if (all_textures[element.first].file_path != "") SOIL_free_image_data(_img);
@@ -115,23 +115,28 @@ namespace Graphics
 		}
 
 		//Find the number of unique renderers
-		for (int i = 0; i < renderers.size(); i++) unique_renderers[renderers[i]->mesh.ID].push_back(renderers[i]);
+		for (int i = 0; i < renderers.size(); i++) urenderers[renderers[i]->mesh.ID].renderers.push_back(renderers[i]);
 
 		//Create a vbo large enough to store every vertex in the call for a unique mesh
-		for (const auto &rend : unique_renderers)
+		for (const auto &rend : urenderers)
 		{
+			//Clone the data renderer from the first slot (This will always exist)
+			urenderers[rend.first].data_renderer = *urenderers[rend.first].renderers[0];
+
 			//Data is only bound to the first renderer
-			glGenBuffers(1, &unique_renderers[rend.first][0]->mesh.vbo); //Tell OPEN GL of vbo existance
-			glBindBuffer(GL_ARRAY_BUFFER, unique_renderers[rend.first][0]->mesh.vbo); //Store VBO in array buffer
-			glBufferData(GL_ARRAY_BUFFER, unique_renderers[rend.first][0]->mesh.vertSize, NULL, GL_STATIC_DRAW); //Parse vertex data to array buffer
+			glGenBuffers(1, &urenderers[rend.first].data_renderer.mesh.vbo); //Tell OPEN GL of vbo existance
+			glBindBuffer(GL_ARRAY_BUFFER, urenderers[rend.first].data_renderer.mesh.vbo); //Store VBO in array buffer
+			glBufferData(GL_ARRAY_BUFFER, urenderers[rend.first].data_renderer.mesh.vertSize, NULL, GL_STATIC_DRAW); //Parse vertex data to array buffer
 
 			//Parse vertex and uv data - temp
-			glBufferSubData(GL_ARRAY_BUFFER, 0, unique_renderers[rend.first][0]->mesh.vertSize, unique_renderers[rend.first][0]->mesh.verticies);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, 
+				urenderers[rend.first].data_renderer.mesh.vertSize, //Size
+				urenderers[rend.first].data_renderer.mesh.verticies); //Data
 		}
 
 		//Find total index buffer size
 		int total_element_size = 0;
-		for (const auto &rend : unique_renderers) total_element_size += unique_renderers[rend.first][0]->mesh.elementSize;
+		for (const auto &rend : urenderers) total_element_size += urenderers[rend.first].data_renderer.mesh.elementSize;
 
 		//Create the ebo
 		glGenBuffers(1, &ebo);
@@ -142,13 +147,15 @@ namespace Graphics
 		int element_offset = 0;
 
 		//Declare the existance of a index buffer
-		for (const auto &rend : unique_renderers)
+		for (const auto &rend : urenderers)
 		{
 			//Parse - temp
-			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, element_offset, unique_renderers[rend.first][0]->mesh.elementSize, unique_renderers[rend.first][0]->mesh.elements);
+			glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, element_offset, 
+				urenderers[rend.first].data_renderer.mesh.elementSize, //Size 
+				urenderers[rend.first].data_renderer.mesh.elements); //Data
 
 			//Next
-			element_offset += unique_renderers[rend.first][0]->mesh.elementSize;
+			element_offset += urenderers[rend.first].data_renderer.mesh.elementSize;
 		}
 
 		//Enable depth testing
@@ -170,16 +177,16 @@ namespace Graphics
 		Graphics::view_projection_location = glGetUniformLocation(shader, "viewProjection"); //Projection and view mat
 
 		//Create vertex array object for each renderer
-		for (const auto &rend : unique_renderers) glGenVertexArrays(1, &(unique_renderers[rend.first][0]->mesh.vao));
+		for (const auto &rend : urenderers) glGenVertexArrays(1, &(urenderers[rend.first].data_renderer.mesh.vao));
 
 		//Loop through
-		for (const auto &rend : unique_renderers)
+		for (const auto &rend : urenderers)
 		{
 			//Parse
-			glBindVertexArray(unique_renderers[rend.first][0]->mesh.vao);
+			glBindVertexArray(urenderers[rend.first].data_renderer.mesh.vao);
 
 			//Set vertex formatting
-			glBindBuffer(GL_ARRAY_BUFFER, unique_renderers[rend.first][0]->mesh.vbo);
+			glBindBuffer(GL_ARRAY_BUFFER, urenderers[rend.first].data_renderer.mesh.vbo);
 
 			glEnableVertexAttribArray(Graphics::vertex_pos_location);
 			glVertexAttribPointer(Graphics::vertex_pos_location, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (void*)0);
@@ -214,35 +221,69 @@ namespace Graphics
 		int draw_offset = 0;
 
 		//Draw meshes
-		for (const auto &rend : unique_renderers)
+		for (const auto &rend : urenderers)
 		{
 			//Bind the VAO only if the data is unique
-			glBindVertexArray(unique_renderers[rend.first][0]->mesh.vao);
+			glBindVertexArray(urenderers[rend.first].data_renderer.mesh.vao);
 			glUniformMatrix4fv(Graphics::view_projection_location, 1, GL_FALSE, &Graphics::view_projection_mat_value[0][0]); //Set view matrix based on camera object
 			
 			//Loop through individial meshs
-			for (int m = 0; m < unique_renderers[rend.first].size(); m++)
+			for (int m = 0; m < urenderers[rend.first].renderers.size(); m++)
 			{
 				//Each individual model has its own model matrix set
-				glUniformMatrix4fv(Graphics::model_matrix_projection, 1, GL_FALSE, &unique_renderers[rend.first][m]->genModelMatrix()[0][0]); //Set model matrix
+				glUniformMatrix4fv(Graphics::model_matrix_projection, 1, GL_FALSE, &urenderers[rend.first].renderers[m]->genModelMatrix()[0][0]); //Set model matrix
 
 				//Set colour of cont. verts
 				glUniform3f(Graphics::model_colour_location, 
-					unique_renderers[rend.first][m]->colour.r,
-					unique_renderers[rend.first][m]->colour.g,
-					unique_renderers[rend.first][m]->colour.b);
+					urenderers[rend.first].renderers[m]->colour.r,
+					urenderers[rend.first].renderers[m]->colour.g,
+					urenderers[rend.first].renderers[m]->colour.b);
 
 				//Set the current texture to use
-				if (unique_renderers[rend.first][m]->tex_index != 0) glBindTexture(GL_TEXTURE_2D, *all_textures[unique_renderers[rend.first][m]->tex_index].value);
-				else												 glBindTexture(GL_TEXTURE_2D, white_value);
+				if (urenderers[rend.first].renderers[m]->tex_index != 0) 
+					glBindTexture(GL_TEXTURE_2D, *all_textures[urenderers[rend.first].renderers[m]->tex_index].value);
+				else glBindTexture(GL_TEXTURE_2D, white_value);
 
 				//Actually draw
-				unique_renderers[rend.first][m]->mesh.draw(draw_offset);
+				urenderers[rend.first].renderers[m]->mesh.draw(draw_offset);
 			}
 
 			//Add the current element size
-			draw_offset += unique_renderers[rend.first][0]->mesh.elementSize;
+			draw_offset += urenderers[rend.first].data_renderer.mesh.elementSize;
 		}
+	}
+
+	//Helper functions
+	//This creates an empty VBO of a certain size
+	GLuint generateNewVbo(GLuint float_count)
+	{
+		//Create the VBO
+		GLuint resultingVbo;
+		glGenBuffers(1, &resultingVbo);
+
+		//Create empty data width
+		glBindBuffer(GL_ARRAY_BUFFER, resultingVbo);
+		glBufferData(GL_ARRAY_BUFFER, float_count * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+
+		//Unbind and return
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+
+		return resultingVbo;
+	}
+
+	//Will create an attribute for an instanced vbo
+	void addInstancedAttrib(GLuint vao, GLuint vbo, GLint attribute_index, GLint size, GLint instanceLength, GLint offset)
+	{
+		//Bind
+		glBindBuffer(GL_ARRAY_BUFFER, vbo);
+		glBindVertexArray(vao);
+
+		//Parse data
+		glVertexAttribPointer(attribute_index, size, GL_FLOAT, false, instanceLength * sizeof(GLfloat), (void*)(offset * sizeof(GLfloat)));
+
+		//Unbind
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+		glBindVertexArray(NULL);
 	}
 }
 

@@ -31,7 +31,7 @@ void Manager::init()
 	//Init GLFW
 	GLboolean init_status = glfwInit();
 
-	if (!init_status) Console::error("Could not initialize GLFW.");
+	if (!init_status) Console.error("Could not initialize GLFW.");
 
 	//Try to use OPEN GL 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -47,24 +47,17 @@ void Manager::init()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	//All GLFW error messages go though error class
-	glfwSetErrorCallback(Console::glfwError);
+	glfwSetErrorCallback(&(cConsole::glfwError));
 
 	//Create window based on externs
 	win = glfwCreateWindow(GAME_WIDTH, GAME_HEIGHT, GAME_TITLE, NULL, NULL);
-	if (!win) Console::error("Could not create the game window.");
-
-	//No mouse should be visible
-	//glfwSetInputMode(win, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPos(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
-	Input::cursorCallback(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
-
-	//Make sure events are passed though engine input manager
-	glfwSetKeyCallback(win, Input::keyCallback);
-	glfwSetCursorPosCallback(win, Input::cursorCallback);
-	glfwSetMouseButtonCallback(win, Input::mouseClickCallback);
+	if (!win) Console.error("Could not create the game window.");
 
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
+
+	//No mouse should be visible
+	Input.initCalbacks(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
 	//Set double buffer interval
 	glfwSwapInterval(1);
@@ -76,7 +69,7 @@ void Manager::init()
 	glewExperimental = GL_TRUE;
 	GLenum glewStatus = glewInit();
 
-	if (glewStatus != GLEW_OK) Console::error("GLEW failed to setup.");
+	if (glewStatus != GLEW_OK) Console.error("GLEW failed to setup.");
 	
 	//Create the camera
 	cam.Init(glm::vec3(0, 20, 10));
@@ -141,7 +134,7 @@ void Manager::init()
 	state = programState::Running;
 
 	//Test console message
-	Console::message("Started program...");
+	Console.message("Started program...");
 }
 
 //Start of update
@@ -155,11 +148,11 @@ void Manager::early()
 void Manager::input()
 {
 	//Close on escape
-	if (Input::getKey(GLFW_KEY_ESCAPE).released) quit();
-	Input::lockCustorToPos(win, glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2));
+	if (Input.getKey(GLFW_KEY_ESCAPE).released) quit();
+	Input.lockCustorToPos(win, glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2));
 
 	//Find delta between mouse position
-	glm::vec2 m_pos = Input::mousePos - glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2);
+	glm::vec2 m_pos = Input.getmousePos() - glm::vec2(GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
 	//Affect cameras rotation
 	cam.pitch -= m_pos.y * MOUSE_SENSITIVITY;
@@ -178,12 +171,12 @@ void Manager::input()
 	float depth = 0.0f;
 
 	//Determine the direction of each exis
-	if (Input::getKey(GLFW_KEY_A).held) horizontal -= 1.0f;
-	if (Input::getKey(GLFW_KEY_D).held) horizontal += 1.0f;
-	if (Input::getKey(GLFW_KEY_W).held) vertical += 1.0f;
-	if (Input::getKey(GLFW_KEY_S).held) vertical -= 1.0f;
-	if (Input::getKey(GLFW_KEY_SPACE).held) depth += 1.0f;
-	if (Input::getKey(GLFW_KEY_LEFT_SHIFT).held) depth -= 1.0f;
+	if (Input.getKey(GLFW_KEY_A).held) horizontal -= 1.0f;
+	if (Input.getKey(GLFW_KEY_D).held) horizontal += 1.0f;
+	if (Input.getKey(GLFW_KEY_W).held) vertical += 1.0f;
+	if (Input.getKey(GLFW_KEY_S).held) vertical -= 1.0f;
+	if (Input.getKey(GLFW_KEY_SPACE).held) depth += 1.0f;
+	if (Input.getKey(GLFW_KEY_LEFT_SHIFT).held) depth -= 1.0f;
 
 	//Adjust speed based on how many keys are down
 	float total_val = abs(vertical) + abs(horizontal) + abs(depth);
@@ -227,7 +220,7 @@ void Manager::late()
 	if (glfwWindowShouldClose(win)) quit();
 
 	//Update input manager
-	Input::update();
+	Input.update();
 
 	//Swap the OPEN GL buffers:
 	//Uese double buffering to prevent flickers

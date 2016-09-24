@@ -32,7 +32,7 @@ namespace Shader
 		std::ifstream shader_stream(filePath, std::ios::in); //Use binary reading
 
 		//Check for error when opening
-		if (!shader_stream.is_open()) Console::error(("Could not find the requested shader file: " + std::string(filePath)).c_str());
+		if (!shader_stream.is_open()) Console.error(("Could not find the requested shader file: " + std::string(filePath)).c_str());
 
 		else
 		{
@@ -63,7 +63,7 @@ namespace Shader
 		if (info_log > 0)
 		{
 			//Show there is an error in current file
-			Console::error(("Error in: " + shader_type_string + " shader").c_str());
+			Console.error(("Error in: " + shader_type_string + " shader").c_str());
 
 			//Stores a vector of chars - the error message
 			std::vector<char> shader_error_message(info_log + 1);
@@ -106,7 +106,7 @@ namespace Shader
 		if (info_log > 0)
 		{
 			//Show there is an error in current file
-			Console::error("Error when linking the shader program.");
+			Console.error("Error when linking the shader program.");
 
 			//Stores a vector of chars - the error message
 			std::vector<char> program_error_message(info_log + 1);

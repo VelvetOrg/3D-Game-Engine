@@ -56,6 +56,8 @@ void Manager::init()
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
 
+	Physics.Init(glm::vec3(0, -10, 0));
+
 	//No mouse should be visible
 	Input.initCalbacks(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
@@ -70,50 +72,33 @@ void Manager::init()
 	GLenum glewStatus = glewInit();
 
 	if (glewStatus != GLEW_OK) Console.error("GLEW failed to setup.");
-	
+
 	//Create the camera
-	cam.Init(glm::vec3(0, 20, 10));
+	cam.Init(glm::vec3(0, 0, 10));
 	cam.far_clipping = 300;
 	cam.pitch = -20;
 	cam.yaw = -90;
 
-	//Initialize the randomizer
-	Mathf.seed = time(NULL);
-	Random.seed();
+	cam.type = Camera::cameraType::Perspective;
 
-	//Create a noise map
-	Mathf.createMap();
+	torus.meshRenderer.mesh = Loader.loadModel(BOX_MODEL_FILE);
+	torus.meshRenderer.tex_index = Loader.loadTexture(MAN_TEX);
+	torus.transform.position = glm::vec3(0, 0, 0);
+	torus.collider.Init(glm::vec3(1000, 1000, 1000));
+	torus.rigidbody.Init(torus.transform.position, glm::vec3(1000, 1000, 1000), 1000);
+	torus.rigidbody.SetRotation(glm::vec3(0, 45, 0));
+	torus.rigidbody.rigidbody->activate(true);
+	Physics.Add(&torus);
 
-	//Setup the cube model
-	Mesh box_mesh = Loader.loadModel(BOX_MODEL_FILE);
-	GLuint checker_id = Loader.loadTexture(CHECKER_TEX);
+	tor2.meshRenderer.mesh = Loader.loadModel(BOX_MODEL_FILE);
+	tor2.meshRenderer.tex_index = Loader.loadTexture(MAN_TEX);
+	tor2.transform.position = glm::vec3(0, 10, 0);
+	tor2.collider.Init(glm::vec3(1000, 1000, 1000));
+	tor2.rigidbody.Init(torus.transform.position, glm::vec3(1000, 1000, 1000), 1000);
+	tor2.rigidbody.SetVelocity(glm::vec3(0, 10, 0));
+	tor2.rigidbody.rigidbody->activate(true);
+	
 
-	//Generate an array of boxes
-	boxes = new GameObject[LEVEL_WIDTH * LEVEL_HEIGHT];
-
-	for (int y = 0; y < LEVEL_HEIGHT; y++)
-	{
-		for (int x = 0; x < LEVEL_WIDTH; x++)
-		{
-			//Find the current list index
-			int index = y * LEVEL_WIDTH + x;
-
-			int nx = x - LEVEL_WIDTH / 2;
-			int ny = y - LEVEL_HEIGHT / 2;
-
-			//Set general properties
-			boxes[index].meshRenderer.colour = glm::vec3(0, 1, 0.5);
-			boxes[index].meshRenderer.tex_index = checker_id;
-			boxes[index].meshRenderer.mesh = box_mesh;
-
-			//Set the position based
-			boxes[index].transform.position.x = nx;
-			boxes[index].transform.position.z = ny;
-
-			//Find y position based on noise map
-			boxes[index].transform.position.y = (GLint)(Mathf.perlinNoise(((GLfloat)x) / LEVEL_WIDTH, ((GLfloat)y) / LEVEL_HEIGHT) * 10.0f);
-		}
-	}
 
 	//Create object buffers
 	//Also loads up textures

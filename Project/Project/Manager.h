@@ -10,6 +10,10 @@
 #include <Engine\GameObject.h>
 #include <Engine\MeshRenderer.h>
 
+#include <Engine\Collider.h>
+#include <Engine\Rigidbody.h>
+#include <Engine\Physics.h>
+
 //Enum shows all the possible states of the program
 enum programState { Starting, Running, Closing };
 
@@ -37,6 +41,7 @@ private:
 
 	//Testing
 	GameObject* boxes;
+	GameObject torus, tor2;
 
 	const int LEVEL_WIDTH = 25;
 	const int LEVEL_HEIGHT = 25;

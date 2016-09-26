@@ -71,11 +71,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LeveGenerator.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Externs.h" />
+    <ClInclude Include="LeveGenerator.h" />
     <ClInclude Include="Manager.h" />
   </ItemGroup>
   <ItemGroup>

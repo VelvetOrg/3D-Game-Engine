@@ -1,4 +1,4 @@
-﻿Build started 26-Sep-16 2:46:00 PM.
+﻿Build started 26-Sep-16 4:23:05 PM.
      1>Project "D:\Code\Github\3D-Game\Project\Engine\Engine.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          D:\Programs\VisualStudio\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MD /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Graphics.cpp Loader.cpp Mesh.cpp
@@ -35,4 +35,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.73
+Time Elapsed 00:00:02.17

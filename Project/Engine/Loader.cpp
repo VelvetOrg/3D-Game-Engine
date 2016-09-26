@@ -12,12 +12,12 @@
 GLuint cLoader::loadTexture(const char* path)
 {
 	//Find the next index
-	Graphics::current_tex_index++;
+	Graphics.incrementTexIndex();
 
 	//Generate a new texture object
 	Texture temp;
 	temp.file_path = path;
-	temp.ID = Graphics::current_tex_index;
+	temp.ID = Graphics.getTexIndex();
 
 	//Use SOIL to load file
 	temp.image_data = SOIL_load_image(path, &temp.width, &temp.height, 0, SOIL_LOAD_RGBA);
@@ -26,10 +26,10 @@ GLuint cLoader::loadTexture(const char* path)
 	if (temp.image_data == 0) Console.error(("Could not load the texture: " + std::string(path)).c_str());
 
 	//Add to the list
-	Graphics::all_textures[Graphics::current_tex_index] = temp;
+	Graphics.addTexture(Graphics.getTexIndex(), temp);
 
 	//Done
-	return Graphics::current_tex_index;
+	return Graphics.getTexIndex();
 }
 
 Mesh cLoader::loadModel(const char* path)

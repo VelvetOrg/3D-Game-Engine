@@ -117,7 +117,7 @@ void Manager::init()
 
 	//Create object buffers
 	//Also loads up textures
-	Graphics::createBuffers();
+	Graphics.createBuffers();
 
 	//Load shaders
 	GLuint vertex_shader = Shader.load(VERTEX_PATH, GL_VERTEX_SHADER);
@@ -125,7 +125,7 @@ void Manager::init()
 
 	shader_program = Shader.bind(vertex_shader, fragment_shader);
 
-	Graphics::bindShaderData(shader_program);
+	Graphics.bindShaderData(shader_program);
 
 	//Play
 	SoundManager.Init();
@@ -142,7 +142,7 @@ void Manager::init()
 void Manager::early()
 {
 	//Timer timers need to be updated
-	Time::start();
+	Time.start();
 }
 
 //Get input from user
@@ -164,7 +164,7 @@ void Manager::input()
 	if (cam.pitch < -89.0f) cam.pitch = -89.0f;
 
 	//Move based on input relative to camera rotation
-	float speed = CAMERA_MOVE_SPEED * Time::delta;
+	float speed = CAMERA_MOVE_SPEED * Time.delta;
 
 	//Stores the movement axis
 	float horizontal = 0.0f;
@@ -201,17 +201,17 @@ void Manager::logic()
 	//box.transform.position.z = Mathf::sin(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
 	
 	//Show fps
-	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time::fps)).c_str());
+	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time.fps)).c_str());
 }
 
 //Draw the game using engine
 void Manager::draw()
 {
 	//Set the shader uniforms
-	Graphics::view_projection_mat_value = cam.getViewProjection(GAME_WIDTH / GAME_HEIGHT); //Set view matrix based on camera object
+	Graphics.setViewProjection(cam.getViewProjection(GAME_WIDTH / GAME_HEIGHT)); //Set view matrix based on camera object
 
 	//Draw
-	Graphics::draw(shader_program, glm::vec2(GAME_WIDTH, GAME_HEIGHT));
+	Graphics.draw(shader_program, glm::vec2(GAME_WIDTH, GAME_HEIGHT));
 }
 
 //Any post drawing things

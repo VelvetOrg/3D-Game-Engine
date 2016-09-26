@@ -27,8 +27,8 @@ void Mesh::Init(int numVers, GLfloat* verts, int numIndicies, GLushort* indicies
 	verticies = verts;
 
 	//Find the ID
-	ID = Graphics::current_mesh_id_count; 
-	Graphics::current_mesh_id_count++;
+	ID = Graphics.getMeshIndex();
+	Graphics.incrementMeshIndex();
 
 	//Testing
 	printf("Created a mesh with:\n%i verticices\n%i indicicies\nID: %i\n\n", numVerticies / 3, numElements, ID);

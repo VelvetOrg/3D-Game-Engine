@@ -82,6 +82,13 @@
     <Text Include="fragment.txt" />
     <Text Include="vertex.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Assets\Checker.png" />
+    <Image Include="..\..\Assets\Man.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\Assets\Song.mp3" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

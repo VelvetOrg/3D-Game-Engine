@@ -24,6 +24,6 @@ public:
 		meshRenderer.objectTransform = &transform;
 
 		//Add the objects mesh renderer to the graphics class
-		Graphics::renderers.push_back(&(this->meshRenderer));
+		Graphics.addMeshRenderer(&(this->meshRenderer));
 	}
 };

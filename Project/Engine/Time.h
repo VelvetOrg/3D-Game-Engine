@@ -5,8 +5,9 @@
 #include <GLFW\glfw3.h>
 
 //Make static
-namespace Time
+static class cTime
 {
+public:
 	//Values to return
 	int framesPassed = 0;
 	float seconds = 0.0f;
@@ -29,11 +30,11 @@ namespace Time
 		time = (float)glfwGetTime();
 
 		//Find FPS
-		fps = framesPassed / time;
+		fps = 1 / delta;
 
 		//Done
 		framesPassed++;
 		seconds += delta;
 		last_frame = current_frame;
 	}
-}
+} Time;

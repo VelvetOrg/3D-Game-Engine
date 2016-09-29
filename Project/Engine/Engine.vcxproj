@@ -91,6 +91,7 @@
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Physics.h" />
+    <ClInclude Include="PhysicsConstants.h" />
     <ClInclude Include="Primitives.h" />
     <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Shader.h" />
@@ -101,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Collider.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="Loader.cpp" />

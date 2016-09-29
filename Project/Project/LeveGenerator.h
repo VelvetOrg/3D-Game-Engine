@@ -8,7 +8,7 @@
 #include <Engine\Mesh.h>
 
 //For colours
-#include <glm\vec3.hpp>
+#include <glm\glm.hpp>
 
 //This is a class used bu the manager to generate static gameobjects in the scene
 static class cLevelGenerator
@@ -17,11 +17,7 @@ public:
 	//Creates the level made up of an array of gameobjects
 	GameObject* generate();
 
-private:
-	GameObject* level_objects; //Holds a list of gameobjects
-	GLuint grid_texture_id; //Holds the texture shared among the level
-	Mesh* all_mesh; //Holds all the level meshes - Temporary
-
+protected:
 	//Texture path
 	const char* TEX_PATH = "../../Assets/Prefs/Grid.png";
 

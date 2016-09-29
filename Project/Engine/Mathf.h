@@ -35,11 +35,11 @@ public:
 	
 	/* ----- Constant values ----- */
 	const GLfloat PI = 3.1415926f; //The circumference to the perimeter of a circle
-	const GLfloat TAU = 6.2831852; //Double 'pi'
+	const GLfloat TAU = 6.2831852f; //Double 'pi'
 	const GLfloat TRUNCATION_LIMITS = 0.005f; //Temp
 	const GLfloat INFINITE = std::numeric_limits<float>::infinity(); //Like: HUGE_VALF
-	const GLfloat DEG_TO_RAD = (6.2831852) / 360; //For converting degrees to radians
-	const GLfloat RAD_TO_DEG = 360 / (6.2831852); //For converting radians to degrees
+	const GLfloat DEG_TO_RAD = (TAU) / 360; //For converting degrees to radians
+	const GLfloat RAD_TO_DEG = 360 / (TAU); //For converting radians to degrees
 
 	/* ----- Wrapper functions ----- */
 
@@ -97,7 +97,7 @@ public:
 		x = Mathf.clamp01((x - left) / (right - left));
 
 		//Evaluate quadratic
-		return x * x * (3.0 - 2.0 * x);
+		return (GLfloat)(x * x * (3.0 - 2.0 * x));
 	}
 	GLfloat smoothstep(GLfloat x) { return Mathf.smoothstep(0.0f, 1.0f, x); }
 
@@ -152,7 +152,7 @@ public:
 
 		double u = h < 8 ? x : y,
 			v = h < 4 ? y : h == 12 || h == 14 ? x : z;
-		return ((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v);
+		return (GLfloat)(((h & 1) == 0 ? u : -u) + ((h & 2) == 0 ? v : -v));
 	}
 
 	//Find the sign (posative of negative) of a number
@@ -225,12 +225,12 @@ public:
 	}
 
 	//Find the value as a power of two
-	inline GLint closestBinaryPower(GLint value)
+	inline GLint closestBinaryPower(GLfloat value)
 	{
 		//Needs	 the find the 2 root of the value then round that to an int
-		return Mathf.roundInt(Mathf.pow(Mathf.round(Mathf.sqrt(value)), 2));
+		return Mathf.roundInt(Mathf.pow(Mathf.round(Mathf.sqrt(value)), 2.0f));
 	}
-	inline bool isBinaryPower(GLint value) { return closestBinaryPower(value) == value; }
+	inline bool isBinaryPower(GLfloat value) { return closestBinaryPower(value) == value; }
 
 	//Find the max where:
 	//Arr is a heap array
@@ -241,7 +241,7 @@ public:
 		GLfloat current_highest = 0;
 
 		//Go through and set based on max
-		for (int i = 0; i < size / sizeof(GLfloat); i++) { if (arr[i] > current_highest || i == 0) current_highest = arr[i]; }
+		for (unsigned int i = 0; i < size / sizeof(GLfloat); i++) { if (arr[i] > current_highest || i == 0) current_highest = arr[i]; }
 
 		//Done
 		return current_highest;
@@ -256,7 +256,7 @@ public:
 		GLfloat current_lowest = 0;
 
 		//Go through and set based on max
-		for (int i = 0; i < size / sizeof(GLfloat); i++) { if (arr[i] < current_lowest || i == 0) current_lowest = arr[i]; }
+		for (unsigned int i = 0; i < size / sizeof(GLfloat); i++) { if (arr[i] < current_lowest || i == 0) current_lowest = arr[i]; }
 
 		//Done
 		return current_lowest;
@@ -291,7 +291,7 @@ public:
 	}
 
 	//Just a wrapper
-	GLfloat perlinNoise(GLfloat x, GLfloat y, GLfloat z = 0.0f) { return modual.GetValue(x, y, z); }
+	GLfloat perlinNoise(GLfloat x, GLfloat y, GLfloat z = 0.0f) { return (GLfloat)modual.GetValue(x, y, z); }
 
 	//Other wrappers
 

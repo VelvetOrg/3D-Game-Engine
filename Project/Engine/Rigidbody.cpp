@@ -1,4 +1,83 @@
+//Header
 #include "Rigidbody.h"
+#include "Console.h"
+
+//Make sure that rigidbody is constructed properly
+Rigidbody::Rigidbody() { collider = nullptr; }
+
+//Constructor sets up bullet to use the rigidbody
+Rigidbody::Rigidbody(BoxCollider* c)
+{
+	//Set
+	collider = c;
+
+	//Use default values
+	setMass(PhysicsConstants.MASS);
+	setKinematic(PhysicsConstants.KINEMATIC);
+
+	//Create a transform
+	r_transform.position = collider->getCenter();
+	r_transform.rotation = glm::vec3(0, 0, 0);
+	r_transform.scale = collider->getSize();
+	r_transform.pivot = glm::vec3(0, 0, 0);
+
+	//Delete pointer if they already exist
+	delete motion;
+	motion = NULL;
+
+	//Set for bullet
+	motion = new btDefaultMotionState(btTransform(
+		btQuaternion(0, 0, 0, 1), //Rotation is constructed as euler angles
+		Physics.convertVector(r_transform.position))); //Position
+
+	//Actually setup the bullet body
+	initialize();
+
+	//Debugging
+	Console.message("Created a rigidbody with a mass of: " + std::to_string(mass));
+}
+
+//Sets up the body based on private variables
+void Rigidbody::initialize()
+{
+	//Check if body already exists
+	if (body != nullptr) Physics.removeBulletBody(body);
+
+	//Delete pointer if they already exist
+	delete body;
+	body = NULL;
+
+	//For now make the object have a downwards inertia
+	//This is temporary
+	inertia = glm::vec3(0, 0, 0);
+	collider->shape->calculateLocalInertia(Physics.convertScalar(mass), Physics.convertVector(inertia));
+
+	//Construct
+	btRigidBody::btRigidBodyConstructionInfo construction(mass, motion, collider->shape, Physics.convertVector(inertia));
+	body = new btRigidBody(construction);
+
+	//Add to the world
+	Physics.addBulletBody(body);
+}
+
+//Setters
+void Rigidbody::setMass(float m) { mass = m; }
+void Rigidbody::setKinematic(bool val) 
+{ 
+	//Bool 
+	kinematic = val; 
+
+	//Kinematic mean that the mass is 0
+	if(kinematic == true) mass = 0;
+	initialize();
+}
+
+//Getters
+float Rigidbody::getMass() { return mass; }
+bool Rigidbody::getKinematic() { return kinematic; }
+
+/* ---- Old Implementation ---- */
+/*
 
 /*Rigidbody::Rigidbody()
 {
@@ -26,7 +105,7 @@ btRigidBody::btRigidBodyConstructionInfo info(mass, motion, shape, inertia);
 rigidbody = new btRigidBody(info);
 
 Console.message("Rigidbody created with position and mass");
-}*/
+}
 
 void Rigidbody::Init(glm::vec3 _pos, float _mass) // Plane (ground);
 {
@@ -128,12 +207,12 @@ void Rigidbody::SetRotation(glm::vec3 rot)
 {
 glm::vec3 tempPos(rigidbody->getCenterOfMassPosition().x, rigidbody->getCenterOfMassPosition().y, rigidbody->getCenterOfMassPosition().z);
 return tempPos;
-}*/
+}
 
 /*glm::quat Rigidbody::GetOrientation()
 {
 return glm::quat((float)rigidbody->getOrientation().x, (float)rigidbody->getOrientation().y, (float)rigidbody->getOrientation().z, (float)rigidbody->getOrientation().w);
-}*/
+}
 
 void Rigidbody::SetPosition(glm::vec3 pos)
 {
@@ -151,3 +230,4 @@ void Rigidbody::SetVelocity(glm::vec3 vel)
 
 	rigidbody->activate(true);
 }
+*/

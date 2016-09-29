@@ -56,7 +56,7 @@ void Manager::init()
 	//Make OPEN GL context
 	glfwMakeContextCurrent(win);
 
-	Physics.Init(glm::vec3(0, -10, 0));
+	//Physics.Init(glm::vec3(0, -10, 0));
 
 	//No mouse should be visible
 	Input.initCalbacks(win, GAME_WIDTH / 2, GAME_HEIGHT / 2);
@@ -80,25 +80,23 @@ void Manager::init()
 	cam.yaw = -90;
 
 	cam.type = Camera::cameraType::Perspective;
-
-	torus.meshRenderer.mesh = Loader.loadModel(BOX_MODEL_FILE);
-	torus.meshRenderer.tex_index = Loader.loadTexture(MAN_TEX);
-	torus.transform.position = glm::vec3(0, 0, 0);
-	torus.collider.Init(glm::vec3(1000, 1000, 1000));
-	torus.rigidbody.Init(torus.transform.position, glm::vec3(1000, 1000, 1000), 1000);
-	torus.rigidbody.SetRotation(glm::vec3(0, 45, 0));
-	torus.rigidbody.rigidbody->activate(true);
-	Physics.Add(&torus);
-
-	tor2.meshRenderer.mesh = Loader.loadModel(BOX_MODEL_FILE);
-	tor2.meshRenderer.tex_index = Loader.loadTexture(MAN_TEX);
-	tor2.transform.position = glm::vec3(0, 10, 0);
-	tor2.collider.Init(glm::vec3(1000, 1000, 1000));
-	tor2.rigidbody.Init(torus.transform.position, glm::vec3(1000, 1000, 1000), 1000);
-	tor2.rigidbody.SetVelocity(glm::vec3(0, 10, 0));
-	tor2.rigidbody.rigidbody->activate(true);
 	
+	//Loading
+	Mesh plane_mesh = Loader.loadModel(PLANE_MODEL_FILE);
+	Mesh box_mesh = Loader.loadModel(BOX_MODEL_FILE);
+	GLuint tex_id = Loader.loadTexture(CHECKER_TEX);
 
+	//Create a Box to fall
+	box.transform.position = glm::vec3(0, 10, 0);
+	box.meshRenderer.tex_index = tex_id;
+	box.meshRenderer.mesh = box_mesh;
+	box.body->setMass(1);
+	
+	//Create a plane for it to fall on
+	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
+	plane.transform.position = glm::vec3(0, 0, 0);
+	plane.meshRenderer.mesh = plane_mesh;
+	plane.body->setKinematic(true);
 
 	//Create object buffers
 	//Also loads up textures
@@ -113,8 +111,8 @@ void Manager::init()
 	Graphics.bindShaderData(shader_program);
 
 	//Play
-	SoundManager.Init();
-	SoundManager.Play(SONG_PATH, true);
+	//SoundManager.Init();
+	//SoundManager.Play(SONG_PATH, true);
 
 	//State can now be changed
 	state = programState::Running;
@@ -127,7 +125,7 @@ void Manager::init()
 void Manager::early()
 {
 	//Timer timers need to be updated
-	Time.start();
+	Time.update();
 }
 
 //Get input from user
@@ -149,7 +147,7 @@ void Manager::input()
 	if (cam.pitch < -89.0f) cam.pitch = -89.0f;
 
 	//Move based on input relative to camera rotation
-	float speed = CAMERA_MOVE_SPEED * Time.delta;
+	float speed = CAMERA_MOVE_SPEED * Time.getDelta();
 
 	//Stores the movement axis
 	float horizontal = 0.0f;
@@ -186,7 +184,7 @@ void Manager::logic()
 	//box.transform.position.z = Mathf::sin(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
 	
 	//Show fps
-	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time.fps)).c_str());
+	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time.getFps())).c_str());
 }
 
 //Draw the game using engine
@@ -202,6 +200,9 @@ void Manager::draw()
 //Any post drawing things
 void Manager::late()
 {
+	//Physics update
+	Physics.Update();
+
 	//Set stae of program
 	if (glfwWindowShouldClose(win)) quit();
 

@@ -40,8 +40,9 @@ private:
 	Camera cam;
 
 	//Testing
-	GameObject* boxes;
-	GameObject torus, tor2;
+	GameObject box;
+	GameObject plane;
+	//GameObject* tower;
 
 	const int LEVEL_WIDTH = 25;
 	const int LEVEL_HEIGHT = 25;

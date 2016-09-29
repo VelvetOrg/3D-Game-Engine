@@ -32,11 +32,11 @@ const char* CHECKER_TEX = "../../Assets/Checker.png";
 const char* MAN_TEX = "../../Assets/Man.png";
 
 //Sounds
-const char* SONG_PATH = "../../Assets/Song.mp3";
+const char* SONG_PATH = "../../Assets/Dilbert 2 Soundtrack.mp3";
 
 //Camera controller consts
 extern const float MOUSE_SENSITIVITY = 0.05f;
-extern const float CAMERA_MOVE_SPEED = 25.0f;
+extern const float CAMERA_MOVE_SPEED = 15.0f;
 
 //Declare externs and game consts
 //Things that are global to the app

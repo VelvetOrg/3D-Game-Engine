@@ -31,7 +31,7 @@ void Mesh::Init(int numVers, GLfloat* verts, int numIndicies, GLushort* indicies
 	Graphics.incrementMeshIndex();
 
 	//Testing
-	printf("Created a mesh with:\n%i verticices\n%i indicicies\nID: %i\n\n", numVerticies / 3, numElements, ID);
+	printf("Created a mesh with:\n%i verticices\n%i indicicies\nID: %i\n\n", numVerticies / 5, numElements, ID);
 }
 
 //Draw the buffered elements

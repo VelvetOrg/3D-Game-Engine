@@ -1,5 +1,98 @@
+//Parent
 #include "Physics.h"
+#include "Rigidbody.h"
 
+#include "Mathf.h" //Some calculations are made easier
+#include "Time.h" //For finding delta time
+#include "Console.h" //Printing warnings
+
+//Constructor and destructor
+cPhysics::cPhysics(float G) { init(G); }
+cPhysics::~cPhysics() { kill(); }
+
+//Instancites all bullet class objects and sets physics up
+void cPhysics::init(float G)
+{
+	//Initialize the broad phase, where the broad phase means:
+	//Bullet quickly removes objects that cannot concievably collide, from the search
+	//Like quadtrees but 3D
+	broadphase = new btDbvtBroadphase();
+
+	//Use defaults
+	config = new btDefaultCollisionConfiguration();
+	dispatcher = new btCollisionDispatcher(config);
+
+	//The solver allows objects to interact properly
+	//Forces, gravity etc...
+	solver = new btSequentialImpulseConstraintSolver;
+
+	//Create the physics Physics.Physics.world, like a big config file
+	//Uses all the other objects
+	Physics.world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, config);
+	setGravity(G);
+	
+	//For debugging purposes
+	Console.message("Initialized the physics engine.");
+}
+
+//Set Physics.Physics.world gravity
+void cPhysics::setGravity(float G)
+{
+	//Actually change
+	gravity = G;
+
+	//Make sure that gravity is always down
+	Physics.world->setGravity(convertVector(glm::vec3(0, -gravity, 0)));
+}
+
+//Get
+float cPhysics::getGravity() { return gravity; }
+
+//Adds a rigidbody enabled gameobject to the list of updateable objects
+void cPhysics::addRigidbody(GameObject* g) 
+{
+	//Only add if it has a collider and rigidbody - temporary
+	if (g->body != nullptr && g->collider != nullptr) Physics.physics_objects.push_back(g);
+	else Console.warning("Object does not have a collider or rigidbody - ignored.");
+}
+
+//For adding a body to the Physics.world
+void cPhysics::addBulletBody(btRigidBody* r) { Physics.world->addRigidBody(r); }
+void cPhysics::removeBulletBody(btRigidBody* r) { Physics.world->removeRigidBody(r); }
+
+//Since pointer were used
+void cPhysics::kill()
+{
+	//Remove
+	delete Physics.world; delete broadphase; delete config; delete dispatcher; delete solver;
+	Physics.world = NULL; broadphase = NULL; config = NULL; dispatcher = NULL; solver = NULL;
+}
+
+void cPhysics::Update()
+{
+	//Move
+	Physics.world->stepSimulation(Time.getDelta(), 10);
+	
+	//All physics rigidbodys need there updated position to refelect what bullet decides
+	for (int i = 0; i < Physics.physics_objects.size(); i++)
+	{
+		//Update the rigidbody transform based on bullet
+		btTransform trans;
+		Physics.physics_objects[i]->body->body->getMotionState()->getWorldTransform(trans);
+
+		Physics.physics_objects[i]->body->r_transform.position = Physics.physics_objects[i]->body->getBulletPosition();
+		Physics.physics_objects[i]->body->r_transform.rotation = Physics.physics_objects[i]->body->getBulletRotation();
+
+		//The actual position is a combination of the rigidbodys position and the transform position
+		Physics.physics_objects[i]->draw_transform.position = Physics.physics_objects[i]->body->r_transform.position + Physics.physics_objects[i]->transform.position;
+		Physics.physics_objects[i]->draw_transform.rotation = Physics.physics_objects[i]->body->r_transform.rotation + Physics.physics_objects[i]->transform.rotation;
+		Physics.physics_objects[i]->draw_transform.scale = Physics.physics_objects[i]->transform.scale;
+		Physics.physics_objects[i]->draw_transform.pivot = Physics.physics_objects[i]->transform.pivot;
+	}
+}
+
+/* ---- Old Implementation ---- */
+/*
 void tickCallBackWrapper(btDynamicsWorld *world, btScalar timeStep)
 {
 	Physics.tickCallBack(world, timeStep);
@@ -149,3 +242,4 @@ void cPhysics::tickCallBack(btDynamicsWorld *world, btScalar timeStep)
 		}
 	}
 }
+*/

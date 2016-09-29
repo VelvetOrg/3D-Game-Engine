@@ -7,9 +7,9 @@
 //Make static
 static class cTime
 {
-public:
+private:
 	//Values to return
-	int framesPassed = 0;
+	int frames_passed = 0;
 	float seconds = 0.0f;
 	float delta = 0.0f;
 	float time = 0.0f;
@@ -19,22 +19,33 @@ public:
 	float last_frame = 0.0f;
 	float current_frame = 0.0f;
 
+public:
 	//Called at the start of the main loop
-	void start()
+	void update()
 	{
 		//Find delta time
-		current_frame = (float)glfwGetTime();
-		delta = current_frame - last_frame;
+		Time.current_frame = (float)glfwGetTime();
+		Time.delta = Time.current_frame - Time.last_frame;
 
 		//Update time
-		time = (float)glfwGetTime();
+		Time.time = (float)glfwGetTime();
 
 		//Find FPS
-		fps = 1 / delta;
+		Time.fps = 1 / Time.delta;
 
 		//Done
-		framesPassed++;
-		seconds += delta;
-		last_frame = current_frame;
+		Time.frames_passed++;
+		Time.seconds += Time.delta;
+		Time.last_frame = Time.current_frame;
 	}
+
+	//Since all values should be read only they need getters
+	float getCurrentFrame() { return Time.current_frame; }
+	int getFramesPassed() { return Time.frames_passed; }
+	float getLastFrame() { return Time.last_frame; }
+	float getSeconds() { return Time.seconds; }
+	float getDelta() { return Time.delta; }
+	float getTime() { return Time.time; }
+	float getFps() { return Time.fps; }
+
 } Time;

@@ -1,1 +1,14 @@
-﻿  Engine.vcxproj -> C:\Users\Ruchir\Documents\GitHub\3D-Game\Project\Deps\Libs\Engine.lib
+﻿  Collider.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Rigidbody.cpp
+  Physics.cpp
+  GameObject.cpp
+glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+irrKlang.lib(irrKlang.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+irrKlang.lib(irrKlang.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+libnoise.lib(libnoise.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in opengl32.lib(OPENGL32.dll); second definition ignored
+libnoise.lib(libnoise.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+BulletCollision.lib(btBroadphaseProxy.obj) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+  Engine.vcxproj -> C:\Users\Ruchir\Documents\GitHub\3D-Game\Project\Deps\Libs\Engine.lib

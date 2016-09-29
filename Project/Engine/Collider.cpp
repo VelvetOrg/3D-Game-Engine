@@ -18,16 +18,25 @@ BoxCollider::BoxCollider() { size = PhysicsConstants.CUBE_SIZE; center = Physics
 BoxCollider::BoxCollider(glm::vec3 s, glm::vec3 c) { size = s; center = c; generateShape(); }
 SphereCollider::SphereCollider() { radius = PhysicsConstants.RADIUS; center = PhysicsConstants.CENTER; generateShape(); }
 SphereCollider::SphereCollider(float r, glm::vec3 c) { radius = r; center = c; generateShape(); }
+CylinderCollider::CylinderCollider() { diameter = PhysicsConstants.DIAMETER; center = PhysicsConstants.CENTER; size = glm::vec3(diameter / 2.0, height / 2.0, diameter / 2.0); generateShape(); }
+CylinderCollider::CylinderCollider(float d, float h, glm::vec3 c) { diameter = d; height = h; center = c; generateShape(); }
 
 //Recreates the bullet collision shape based on properties
 void BoxCollider::generateShape() { shape = new btBoxShape(Physics.convertVector(size)); }
 void SphereCollider::generateShape() { shape = new btSphereShape(radius); }
+void CylinderCollider::generateShape() { shape = new btCylinderShape(btVector3(size.x, size.y, size.z)); }
 
 //Setters and getters
 void BoxCollider::setSize(glm::vec3 s) { size = s; generateShape(); }
 glm::vec3 BoxCollider::getSize() { return size; }
 void SphereCollider::setRadius(float r) { radius = r; }
-float SphereCollider::GetRadius() { return radius; }
+float SphereCollider::getRadius() { return radius; }
+void CylinderCollider::setDiameter(float d) { diameter = d; }
+float CylinderCollider::getDiameter() { return diameter; }
+void CylinderCollider::setHeight(float h) { height = h; }
+float CylinderCollider::getHeight() { return height; }
+void CylinderCollider::setSize(glm::vec3 s) { size = s; }
+glm::vec3 CylinderCollider::getSize() { return size; }
 
 /* ---- Old Implementation ---- */
 /*

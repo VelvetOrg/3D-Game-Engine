@@ -97,7 +97,7 @@ public:
 	void setRadius(float r);
 
 	//Getters
-	float GetRadius();
+	float getRadius();
 
 private:
 	//Properties that can be directly modified
@@ -106,6 +106,31 @@ private:
 	//Recreates the bullet collision shape based on properties
 	void generateShape();
 
+};
+
+class CylinderCollider : public Collider
+{
+public:
+	//Create some default values
+	CylinderCollider();
+	CylinderCollider(float d, float h, glm::vec3 c);
+
+	//Setters
+	void setDiameter(float d);
+	void setHeight(float h);
+	void setSize(glm::vec3 s);
+
+	//Getters
+	float getDiameter();
+	float getHeight();
+	glm::vec3 getSize();
+	
+private:
+	float diameter;
+	float height;
+	glm::vec3 size;
+
+	void generateShape();
 };
 
 

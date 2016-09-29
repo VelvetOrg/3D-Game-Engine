@@ -17,5 +17,6 @@ public:
 	const float FRICTION = 0.6f;
 	const glm::vec3 CUBE_SIZE = glm::vec3(1, 1, 1);
 	const glm::vec3 CENTER = glm::vec3(0, 0, 0);
+	const float RADIUS = 10;
 
 } PhysicsConstants;

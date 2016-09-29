@@ -16,13 +16,18 @@ Collider::~Collider() { delete shape; shape = NULL; }
 //Create some default values
 BoxCollider::BoxCollider() { size = PhysicsConstants.CUBE_SIZE; center = PhysicsConstants.CENTER; generateShape(); }
 BoxCollider::BoxCollider(glm::vec3 s, glm::vec3 c) { size = s; center = c; generateShape(); }
+SphereCollider::SphereCollider() { radius = PhysicsConstants.RADIUS; center = PhysicsConstants.CENTER; generateShape(); }
+SphereCollider::SphereCollider(float r, glm::vec3 c) { radius = r; center = c; generateShape(); }
 
 //Recreates the bullet collision shape based on properties
 void BoxCollider::generateShape() { shape = new btBoxShape(Physics.convertVector(size)); }
+void SphereCollider::generateShape() { shape = new btSphereShape(radius); }
 
 //Setters and getters
 void BoxCollider::setSize(glm::vec3 s) { size = s; generateShape(); }
 glm::vec3 BoxCollider::getSize() { return size; }
+void SphereCollider::setRadius(float r) { radius = r; }
+float SphereCollider::GetRadius() { return radius; }
 
 /* ---- Old Implementation ---- */
 /*

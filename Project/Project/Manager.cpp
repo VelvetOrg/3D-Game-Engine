@@ -91,13 +91,13 @@ void Manager::init()
 	box.meshRenderer.tex_index = tex_id;
 	box.meshRenderer.mesh = box_mesh;
 	box.body->setMass(1);
-	
+	box.collider->setSize(glm::vec3(1, 1, 1));
+
 	//Create a plane for it to fall on
 	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
 	plane.transform.position = glm::vec3(0, 0, 0);
 	plane.meshRenderer.mesh = plane_mesh;
 	plane.body->setKinematic(true);
-
 	//Create object buffers
 	//Also loads up textures
 	Graphics.createBuffers();

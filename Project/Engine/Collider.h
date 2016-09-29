@@ -85,6 +85,29 @@ private:
 	void generateShape();
 };
 
+//Sphere Collider type
+class SphereCollider : public Collider
+{
+public:
+	//Create some default values
+	SphereCollider();
+	SphereCollider(float r, glm::vec3 c);
+
+	//Setters
+	void setRadius(float r);
+
+	//Getters
+	float GetRadius();
+
+private:
+	//Properties that can be directly modified
+	float radius; //Sphere radius
+	 
+	//Recreates the bullet collision shape based on properties
+	void generateShape();
+
+};
+
 
 /* ---- Old Implementation ---- */
 

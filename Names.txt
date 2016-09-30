@@ -1,80 +1,77 @@
 Contains all (possible) company names:
 
-Velvet org
-Purple sky games
-Dead dog games
-Mad Dog Games
-Pointer Studios
-Plastic puppy games
-Red planet games
-Tiny planet games
-Flat colour games
-Vertex studios
-Cup plant games
-Cactus games
-Coffee plant games
-Wild Scorpion Entertainment
-The 4th Leaf
-The 4th Leaf Games / Entertainment / Studio
-Golden Pirate Games / Entertainment / Studios
-Freedoor Game Studio
-Isolate / ISOLATE
-Intersphere Games / Entertainment / Studios
-Immortality Arts / Games / Entertainment / Studios
-Twin Demon Games / Entertainment / Studios
-Here's a classic: Byte Games / Entertainment / Studios / Art
-The 112 series is based off the multiplication of our birthdays day
-Studio 112
-112 Entertainment
-112 Games
-112 Studios
-Halflab Studios / Entertainment / Games
-Miracle Productions
-Thunderpunch Studios / Entertainment / Games
-Paradox Studios / Entertainment / Games
-Tofu studios
-Obtuse studios
-Ripple studios
-Pixel paste games
-Pixel parent games
-Pixel people
-Pixel person sutiods
-Salamander studios
-Wireframe enterprises
-Convex games
-Concave games
-LNK2001 studios
-Leaking tap games
-Leaking faucet games
-Red sponge games
-Orange heart
-Null pointer games
-Iconosphere games
-Blob games
-Squidgy studios
-Walter games
-CRBB Inc
-Prototype games
-Fat book games
-Womp games
-This Studio / Entertainment / Games / Art
-Concave hull inc
-Convex studios
-0x000000 games
-Quaternion studios
-Rainbow train games
-Scroll lock games
-A-1 Games / Entertainment / Studios
-B star game
-Priscilla studios
-Inline games
-AABB Games
-Overload games
-Overlap games
-F*cking games
-Commit games
-Branching triangle studios
-Circular dependecies
-Bowie games
-Orangotang games
-The Dribbler Studios
+-+ Velvet org
+++ Purple sky games
++- Dead dog games
+-- Mad Dog Games
+-+ Pointer Studios
+-- Plastic puppy games
+++ Red planet games
++- Tiny planet games
+-- Flat colour games
+++ Vertex studios
++- Cup plant games
++- Cactus games
+++ Coffee plant games
+-+ Wild Scorpion Entertainment
+-+ The 4th Leaf
+-- Golden Pirate Games
+++ Freedoor Game Studio
+++ Isolate
+++ Intersphere Games
+-+ Immortality Arts
+-+ Twin Demon Games
+-- Byte Games
+++ Studio 112
+-- 112 Entertainment
+-- 112 Games
+-- 112 Studios
+-- Miracle Productions
+-- Thunderpunch Studios / Entertainment / Games
+-- Paradox Studios / Entertainment / Games
++- Tofu studios
++- Obtuse studios
+-- Ripple studios
++- Pixel paste games
++- Pixel parent games
++- Pixel people
+-- Pixel person studios
+-- Salamander studios
+-- Wireframe enterprises
+++ Convex games
+-- Concave games
+-- LNK2001 studios
+-- Leaking tap games
++- Leaking faucet games
+-- Red sponge games
+-- Orange heart
+-- Null pointer games
+-- Iconosphere games
+++ Blob games
+-- Squidgy studios
+-- Walter games
+++ CRBB Inc
++- Prototype games
+-- Fat book games
++- Womp games
+++ This Studio
++- Concave hull inc
+-- Convex studios
++- 0x000000 games
++- Quaternion studios
+-- Rainbow train games
+++ Scroll lock games
+++ A-1 Games / Entertainment / Studios
+-- B star game
+-- Priscilla studios
++- Inline games
+-- AABB Games
++- Overload games
+-- Overlap games
+-+ F*cking games
+-- Commit games
++- Branching triangle studios
+-- Circular dependecies
++- Bowie games
+-- Orangotang games
++- The Dribbler Studios

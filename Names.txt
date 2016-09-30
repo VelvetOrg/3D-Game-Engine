@@ -1,77 +1,87 @@
 Contains all (possible) company names:
 
--+ Velvet org
+++ 
+-->
 ++ Purple sky games
-+- Dead dog games
--- Mad Dog Games
--+ Pointer Studios
--- Plastic puppy games
 ++ Red planet games
-+- Tiny planet games
--- Flat colour games
 ++ Vertex studios
-+- Cup plant games
-+- Cactus games
-++ Coffee plant games
--+ Wild Scorpion Entertainment
--+ The 4th Leaf
--- Golden Pirate Games
 ++ Freedoor Game Studio
 ++ Isolate
+++ Coffee plant games
 ++ Intersphere Games
+++ Studio 112
+++ Convex games
+++ Blob games
+++ Scroll lock games
+++ A-1 Games
+++ CRBB Inc
+++ This Studio
+
+
++-
+-->
+-+ Velvet org
++- Dead dog games
+-+ Pointer Studios
++- Tiny planet games
++- Cup plant games
++- Cactus games
+-+ Wild Scorpion Entertainment
+-+ The 4th Leaf
 -+ Immortality Arts
 -+ Twin Demon Games
--- Byte Games
-++ Studio 112
--- 112 Entertainment
--- 112 Games
--- 112 Studios
--- Miracle Productions
--- Thunderpunch Studios / Entertainment / Games
--- Paradox Studios / Entertainment / Games
 +- Tofu studios
 +- Obtuse studios
--- Ripple studios
 +- Pixel paste games
 +- Pixel parent games
 +- Pixel people
++- Leaking faucet games
++- Prototype games
++- Womp games
++- Concave hull inc
++- 0x000000 games
++- Quaternion studios
++- Inline games
++- Overload games
+-+ F*cking games
++- Branching triangle studios
++- Bowie games
++- The Dribbler Studios
+
+
+--
+-->
+-- Flat colour games
+-- Byte Games
+-- 112 Entertainment
+-- Plastic puppy games
+-- 112 Games
+-- 112 Studios
+-- Golden Pirate Games
+-- Miracle Productions
+-- Thunderpunch Studios
+-- Paradox Studios
+-- Ripple studios
 -- Pixel person studios
 -- Salamander studios
 -- Wireframe enterprises
-++ Convex games
 -- Concave games
 -- LNK2001 studios
 -- Leaking tap games
-+- Leaking faucet games
+-- Fat book games
 -- Red sponge games
 -- Orange heart
 -- Null pointer games
 -- Iconosphere games
-++ Blob games
 -- Squidgy studios
 -- Walter games
-++ CRBB Inc
-+- Prototype games
--- Fat book games
-+- Womp games
-++ This Studio
-+- Concave hull inc
 -- Convex studios
-+- 0x000000 games
-+- Quaternion studios
 -- Rainbow train games
-++ Scroll lock games
-++ A-1 Games / Entertainment / Studios
 -- B star game
 -- Priscilla studios
-+- Inline games
 -- AABB Games
-+- Overload games
 -- Overlap games
--+ F*cking games
 -- Commit games
-+- Branching triangle studios
--- Circular dependecies
-+- Bowie games
+-- Mad Dog Games
 -- Orangotang games
-+- The Dribbler Studios
+-- Circular dependecies

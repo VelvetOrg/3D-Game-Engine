@@ -25,12 +25,12 @@ static class pGraphics
 {
 public:
 	/*          <------- NOTE ------->
-		VAO is stored as interleaving data, in this format:
-		
-		... X Y Z T S ... 
-		
-		Where xyz refers to a vertex position
-		Where ts refers to a texture uv coord
+	VAO is stored as interleaving data, in this format:
+
+	... X Y Z T S ...
+
+	Where xyz refers to a vertex position
+	Where ts refers to a texture uv coord
 	*/
 
 	void createBuffers(); //Will create OPEN GL buffers for the vericicies indicies and textures
@@ -46,7 +46,7 @@ public:
 	void addTexture(GLuint index, Texture tex); //Adds a texture to the all textures map, where the key is 'index'
 	void addMeshRenderer(MeshRenderer* rend); //Pushed back a mesh renderer pointer to a list of meshrenderers
 	void setViewProjection(glm::mat4 m); //Sets the v * p projection map used by the camera
-	
+
 	void incrementMeshIndex(); //Add one to mesh count - not relivent to the graphics class
 	void incrementTexIndex(); //Add one to tex count - not relivent to the graphics class
 

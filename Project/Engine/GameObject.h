@@ -11,9 +11,9 @@ class Rigidbody;
 
 class GameObject
 {
-//These need protected level access
-friend class cPhysics;
-friend class MeshRenderer;
+	//These need protected level access
+	friend class cPhysics;
+	friend class MeshRenderer;
 
 public:
 	//It must contain a transform and mesh renderer
@@ -26,8 +26,4 @@ public:
 	//Setup references with constructor
 	GameObject();
 	~GameObject();
-
-protected:
-	//The transform that is used after all modifications
-	Transform draw_transform;
 };

@@ -114,7 +114,7 @@ void pGraphics::createBuffers()
 		glBufferData(GL_ARRAY_BUFFER, urenderers[rend.first].data_renderer.mesh.vertSize, NULL, GL_STATIC_DRAW); //Parse vertex data to array buffer
 
 		//Parse vertex and uv data - temp
-		glBufferSubData(GL_ARRAY_BUFFER, 0, 
+		glBufferSubData(GL_ARRAY_BUFFER, 0,
 			urenderers[rend.first].data_renderer.mesh.vertSize, //Size
 			urenderers[rend.first].data_renderer.mesh.verticies); //Data
 	}
@@ -135,7 +135,7 @@ void pGraphics::createBuffers()
 	for (const auto &rend : urenderers)
 	{
 		//Parse - temp
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, element_offset, 
+		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, element_offset,
 			urenderers[rend.first].data_renderer.mesh.elementSize, //Size 
 			urenderers[rend.first].data_renderer.mesh.elements); //Data
 
@@ -211,7 +211,7 @@ void pGraphics::draw(GLuint &shader_program, glm::vec2 screen_size)
 		//Bind the VAO only if the data is unique
 		glBindVertexArray(urenderers[rend.first].data_renderer.mesh.vao);
 		glUniformMatrix4fv(view_projection_location, 1, GL_FALSE, &view_projection_mat_value[0][0]); //Set view matrix based on camera object
-			
+
 		//Loop through individial meshs
 		for (int m = 0; m < urenderers[rend.first].renderers.size(); m++)
 		{
@@ -219,13 +219,13 @@ void pGraphics::draw(GLuint &shader_program, glm::vec2 screen_size)
 			glUniformMatrix4fv(model_matrix_projection, 1, GL_FALSE, &urenderers[rend.first].renderers[m]->genModelMatrix()[0][0]); //Set model matrix
 
 			//Set colour of cont. verts
-			glUniform3f(model_colour_location, 
+			glUniform3f(model_colour_location,
 				urenderers[rend.first].renderers[m]->colour.r,
 				urenderers[rend.first].renderers[m]->colour.g,
 				urenderers[rend.first].renderers[m]->colour.b);
 
 			//Set the current texture to use
-			if (urenderers[rend.first].renderers[m]->tex_index != 0) 
+			if (urenderers[rend.first].renderers[m]->tex_index != 0)
 				glBindTexture(GL_TEXTURE_2D, *Graphics.all_textures[urenderers[rend.first].renderers[m]->tex_index].value);
 			else glBindTexture(GL_TEXTURE_2D, white_value);
 

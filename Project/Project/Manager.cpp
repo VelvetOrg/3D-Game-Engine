@@ -74,17 +74,35 @@ void Manager::init()
 	if (glewStatus != GLEW_OK) Console.error("GLEW failed to setup.");
 
 	//Create the camera
-	cam.Init(glm::vec3(0, 0, 10));
+	cam.Init(glm::vec3(0, 5, 10));
 	cam.far_clipping = 300;
 	cam.pitch = -20;
 	cam.yaw = -90;
 
 	cam.type = Camera::cameraType::Perspective;
-	
+
 	//Loading
 	Mesh plane_mesh = Loader.loadModel(PLANE_MODEL_FILE);
 	Mesh box_mesh = Loader.loadModel(BOX_MODEL_FILE);
 	GLuint tex_id = Loader.loadTexture(CHECKER_TEX);
+
+	//Create a Box to fall
+	box.transform.position = glm::vec3(0, 10, 0);
+	box.meshRenderer.tex_index = tex_id;
+	box.meshRenderer.mesh = box_mesh;
+
+	//Create a plane for it to fall on
+	plane.transform.position = glm::vec3(0, 0, 0);
+	plane.meshRenderer.colour = glm::vec3(1, 1, 1);
+	plane.meshRenderer.mesh = plane_mesh;
+
+	//plane.collider->setCenter(glm::vec3(0, -1, 0)); //Not working
+	plane.collider->setSize(glm::vec3(10, 0, 10));
+	plane.body->setKinematic(true);
+
+	//Done setting up
+	plane.body->init();
+	box.body->init();
 
 	//Create a Box to fall
 	box.transform.position = glm::vec3(0, 10, 0);
@@ -98,6 +116,7 @@ void Manager::init()
 	plane.transform.position = glm::vec3(0, 0, 0);
 	plane.meshRenderer.mesh = plane_mesh;
 	plane.body->setKinematic(true);
+
 	//Create object buffers
 	//Also loads up textures
 	Graphics.createBuffers();
@@ -182,7 +201,7 @@ void Manager::logic()
 	//Test the math class
 	//box.transform.position.x = Mathf::cos(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
 	//box.transform.position.z = Mathf::sin(Mathf::lerp(-Mathf::PI, Mathf::PI, Mathf::smoothstep((Mathf::bounce(Time::seconds))))) * 5.0f;
-	
+
 	//Show fps
 	glfwSetWindowTitle(win, ("3D Game, FPS: " + std::to_string(Time.getFps())).c_str());
 }

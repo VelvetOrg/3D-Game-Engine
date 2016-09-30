@@ -32,7 +32,8 @@ public:
 //Holds data shared among all collider types
 class Collider
 {
-friend class Rigidbody;
+	friend class Rigidbody;
+	friend class cPhysics;
 
 public:
 	//Deallocate the shape
@@ -43,7 +44,7 @@ public:
 	void setCenter(glm::vec3 c);
 	glm::vec3 getCenter();
 
-//Since values are protected, all colliders recieve these properties
+	//Since values are protected, all colliders recieve these properties
 protected:
 	//These properties will later be expanded
 	//Every type of rigidbody inherits from this class
@@ -56,11 +57,11 @@ protected:
 
 
 /* Different types of colliders:
- - Box
- - Sphere
- - Capsule
- - Mesh
- - ect...
+- Box
+- Sphere
+- Capsule
+- Mesh
+- ect...
 */
 
 //Collider type
@@ -70,7 +71,7 @@ public:
 	//Create some default values
 	BoxCollider();
 	BoxCollider(glm::vec3 s, glm::vec3 c);
-	
+
 	//Setters
 	void setSize(glm::vec3 s);
 
@@ -102,7 +103,7 @@ public:
 private:
 	//Properties that can be directly modified
 	float radius; //Sphere radius
-	 
+
 	//Recreates the bullet collision shape based on properties
 	void generateShape();
 
@@ -124,7 +125,7 @@ public:
 	float getDiameter();
 	float getHeight();
 	glm::vec3 getSize();
-	
+
 private:
 	float diameter;
 	float height;
@@ -147,26 +148,26 @@ enum ColliderType { Box, ConvexHull, Sphere, MeshCollider, Cylinder, Capsule, Co
 class Collider
 {
 private:
-	float radius = 0;
-	float mass = 0;
-	glm::vec3 size;
-	btCollisionObject obj;
-	float height = 0;
-	float diameter = 0;
+float radius = 0;
+float mass = 0;
+glm::vec3 size;
+btCollisionObject obj;
+float height = 0;
+float diameter = 0;
 
 public:
-	glm::vec3 position;
+glm::vec3 position;
 
-	Collider() {};
-	Collider(glm::vec3 _pos);
-	//Plane
-	void Init(); // Plane (ground);
-				 //Sphere
-	void Init(float _rad); // Sphere
-						   //Cylinder
-	void Init(float _diameter, float _height); // Cylinder
-											   //Box
-	void Init(glm::vec3 _size); // Box
-								//btCollisionObject* GetCollisionObject() { return obj; };
+Collider() {};
+Collider(glm::vec3 _pos);
+//Plane
+void Init(); // Plane (ground);
+//Sphere
+void Init(float _rad); // Sphere
+//Cylinder
+void Init(float _diameter, float _height); // Cylinder
+//Box
+void Init(glm::vec3 _size); // Box
+//btCollisionObject* GetCollisionObject() { return obj; };
 };
 */

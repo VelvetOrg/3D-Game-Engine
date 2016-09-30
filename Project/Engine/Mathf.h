@@ -28,11 +28,11 @@ static class cMathf
 {
 public:
 	/*
-		Missing functions (This that should be added but I couldnt figure out):
-		- Inverse learping - find the iterpolant between a and b based on t
-		- Negative infinity - C++ does not support (I think)
-		*/
-	
+	Missing functions (This that should be added but I couldnt figure out):
+	- Inverse learping - find the iterpolant between a and b based on t
+	- Negative infinity - C++ does not support (I think)
+	*/
+
 	/* ----- Constant values ----- */
 	const GLfloat PI = 3.1415926f; //The circumference to the perimeter of a circle
 	const GLfloat TAU = 6.2831852f; //Double 'pi'
@@ -382,10 +382,10 @@ static class cRandom
 public:
 	//Seed the random value
 	void seed(GLuint s = time(NULL)) { srand(s); }
-	
+
 	//Random number between min and max
 	GLfloat range(GLfloat min, GLfloat max) { return min + (GLfloat)(rand()) / ((GLfloat)(RAND_MAX / (max - min))); }
-	
+
 	//Generates a random number between 0 and 1
 	GLfloat value() { return Random.range(0.0f, 1.0f); }
 

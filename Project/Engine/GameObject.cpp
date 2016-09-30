@@ -13,12 +13,12 @@ GameObject::GameObject()
 	transform = Transform();
 
 	//Here a check would be doen for weather this object need physics
-	meshRenderer.objectTransform = &draw_transform;
+	meshRenderer.objectTransform = &transform;
 
 	//Constuct the physics
 	//Temporary
 	collider = new BoxCollider();
-	body = new Rigidbody(collider);
+	body = new Rigidbody(this, collider);
 
 	//Add the objects mesh renderer to the graphics class
 	Graphics.addMeshRenderer(&(this->meshRenderer));
@@ -28,6 +28,6 @@ GameObject::GameObject()
 //Delete objects
 GameObject::~GameObject()
 {
-	//delete collider; delete body;
+	delete collider; delete body;
 	collider = NULL; body = NULL;
 }

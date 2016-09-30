@@ -3,53 +3,51 @@
 #include "Console.h"
 
 //Make sure that rigidbody is constructed properly
-Rigidbody::Rigidbody() { collider = nullptr; }
-
-//Constructor sets up bullet to use the rigidbody
-Rigidbody::Rigidbody(BoxCollider* c)
+Rigidbody::Rigidbody() { collider = nullptr; attached = nullptr; }
+Rigidbody::Rigidbody(GameObject* g, BoxCollider* c) { collider = c; attached = g; }
+Rigidbody::~Rigidbody()
 {
-	//Set
-	collider = c;
+	//Remove
+	//Physics.removeBulletBody(body);
 
-	//Use default values
-	setMass(PhysicsConstants.MASS);
-	setKinematic(PhysicsConstants.KINEMATIC);
-
-	//Create a transform
-	r_transform.position = collider->getCenter();
-	r_transform.rotation = glm::vec3(0, 0, 0);
-	r_transform.scale = collider->getSize();
-	r_transform.pivot = glm::vec3(0, 0, 0);
-
-	//Delete pointer if they already exist
-	delete motion;
-	motion = NULL;
-
-	//Set for bullet
-	motion = new btDefaultMotionState(btTransform(
-		btQuaternion(0, 0, 0, 1), //Rotation is constructed as euler angles
-		Physics.convertVector(r_transform.position))); //Position
-
-	//Actually setup the bullet body
-	initialize();
-
-	//Debugging
-	Console.message("Created a rigidbody with a mass of: " + std::to_string(mass));
+	//Not working
+	//delete collider; delete attached; delete body;
+	//collider = NULL; attached = NULL; body = NULL;
 }
 
-//Sets up the body based on private variables
-void Rigidbody::initialize()
+//For getting bullet physics properties
+//Used by the physics class
+btTransform Rigidbody::getWorldTransform() { btTransform result; body->getMotionState()->getWorldTransform(result); return result; }
+glm::vec3 Rigidbody::getBulletPosition() { return Physics.convertVectorBack(getWorldTransform().getOrigin()); }
+glm::vec3 Rigidbody::getBulletRotation() { return glm::vec3(0, 0, 0); } //Does not work for now
+
+//Setters
+void Rigidbody::setMass(float m) { mass = m; }
+void Rigidbody::setForce(glm::vec3 f) { inertia = f; }
+void Rigidbody::setKinematic(bool val) { kinematic = val; if (kinematic == true) { setMass(0); } }
+
+//Getters
+float Rigidbody::getMass() { return mass; }
+glm::vec3 Rigidbody::getForce() { return inertia; }
+bool Rigidbody::getKinematic() { return kinematic; }
+
+//Create the rigidbody
+void Rigidbody::init()
 {
-	//Check if body already exists
-	if (body != nullptr) Physics.removeBulletBody(body);
+	//Assumes that a collider has been set
+	if (collider == nullptr || attached == nullptr) { return; }
 
 	//Delete pointer if they already exist
 	delete body;
 	body = NULL;
 
+	//Set for bullet
+	btDefaultMotionState* motion = new btDefaultMotionState(btTransform(
+		btQuaternion(attached->transform.rotation.x, attached->transform.rotation.y, attached->transform.rotation.z),
+		Physics.convertVector(attached->transform.position))); //Position
+
 	//For now make the object have a downwards inertia
 	//This is temporary
-	inertia = glm::vec3(0, 0, 0);
 	collider->shape->calculateLocalInertia(Physics.convertScalar(mass), Physics.convertVector(inertia));
 
 	//Construct
@@ -58,23 +56,10 @@ void Rigidbody::initialize()
 
 	//Add to the world
 	Physics.addBulletBody(body);
+
+	//Debugging
+	Console.message("Created a rigidbody.");
 }
-
-//Setters
-void Rigidbody::setMass(float m) { mass = m; }
-void Rigidbody::setKinematic(bool val) 
-{ 
-	//Bool 
-	kinematic = val; 
-
-	//Kinematic mean that the mass is 0
-	if(kinematic == true) mass = 0;
-	initialize();
-}
-
-//Getters
-float Rigidbody::getMass() { return mass; }
-bool Rigidbody::getKinematic() { return kinematic; }
 
 /* ---- Old Implementation ---- */
 /*
@@ -109,98 +94,98 @@ Console.message("Rigidbody created with position and mass");
 
 void Rigidbody::Init(glm::vec3 _pos, float _mass) // Plane (ground);
 {
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
-	btVector3 inertia(0, 0, 0);
-	btMotionState* motion = new btDefaultMotionState(transform);
-	btStaticPlaneShape *shape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
-	btRigidBody::btRigidBodyConstructionInfo info(_mass, motion, shape, inertia);
-	rigidbody = new btRigidBody(info);
-	Console.message("Empty Rigidbody created.");
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
+btVector3 inertia(0, 0, 0);
+btMotionState* motion = new btDefaultMotionState(transform);
+btStaticPlaneShape *shape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
+btRigidBody::btRigidBodyConstructionInfo info(_mass, motion, shape, inertia);
+rigidbody = new btRigidBody(info);
+Console.message("Empty Rigidbody created.");
 }
 
 void Rigidbody::Init(glm::vec3 _pos, float _rad, float _mass) // Sphere
 {
-	radius = _rad;
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
-	btSphereShape *sphereShape = new btSphereShape(_rad);
+radius = _rad;
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
+btSphereShape *sphereShape = new btSphereShape(_rad);
 
-	btVector3 intertia = btVector3(0, 0, 0);
-	if (mass != 0.0)
-	{
-		sphereShape->calculateLocalInertia(mass, intertia);
-	}
+btVector3 intertia = btVector3(0, 0, 0);
+if (mass != 0.0)
+{
+sphereShape->calculateLocalInertia(mass, intertia);
+}
 
-	btMotionState *motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo information(mass, motion, sphereShape, intertia);
-	rigidbody = new btRigidBody(information);
+btMotionState *motion = new btDefaultMotionState(transform);
+btRigidBody::btRigidBodyConstructionInfo information(mass, motion, sphereShape, intertia);
+rigidbody = new btRigidBody(information);
 }
 
 void Rigidbody::Init(glm::vec3 _pos, float _diameter, float _height, float _mass) // Cylinder
 {
-	diameter = _diameter;
-	height = _height;
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
-	btCylinderShape* cylinder = new btCylinderShape(btVector3(_diameter / 2.0, _height / 2.0, _diameter / 2.0));
+diameter = _diameter;
+height = _height;
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
+btCylinderShape* cylinder = new btCylinderShape(btVector3(_diameter / 2.0, _height / 2.0, _diameter / 2.0));
 
-	btVector3 inertia(0, 0, 0);
-	if (mass != 0.0)
-	{
-		cylinder->calculateLocalInertia(mass, inertia);
-	}
-	btMotionState* motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cylinder, inertia);
-	rigidbody = new btRigidBody(info);
-	rigidbody->setDamping(0.2, 0.1);
+btVector3 inertia(0, 0, 0);
+if (mass != 0.0)
+{
+cylinder->calculateLocalInertia(mass, inertia);
+}
+btMotionState* motion = new btDefaultMotionState(transform);
+btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cylinder, inertia);
+rigidbody = new btRigidBody(info);
+rigidbody->setDamping(0.2, 0.1);
 }
 
 void Rigidbody::Init(glm::vec3 _pos, glm::vec3 _size, float _mass) // Box
 {
-	size.x = _size.x;
-	size.y = _size.y;
-	size.z = _size.z;
+size.x = _size.x;
+size.y = _size.y;
+size.z = _size.z;
 
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
-	btBoxShape* box = new btBoxShape(btVector3(_size.x / 2.0, _size.y / 2.0, _size.z / 2.0));
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(_pos.x, _pos.y, _pos.z));
+btBoxShape* box = new btBoxShape(btVector3(_size.x / 2.0, _size.y / 2.0, _size.z / 2.0));
 
-	btVector3 inertia(0, 0, 0);
-	if (mass != 0.0)
-	{
-		box->calculateLocalInertia(mass, inertia);
-	}
-	btMotionState* motion = new btDefaultMotionState(transform);
-	btRigidBody::btRigidBodyConstructionInfo info(mass, motion, box, inertia);
-	rigidbody = new btRigidBody(info);
+btVector3 inertia(0, 0, 0);
+if (mass != 0.0)
+{
+box->calculateLocalInertia(mass, inertia);
+}
+btMotionState* motion = new btDefaultMotionState(transform);
+btRigidBody::btRigidBodyConstructionInfo info(mass, motion, box, inertia);
+rigidbody = new btRigidBody(info);
 }
 
 btRigidBody* Rigidbody::GetRigidbody()
 {
-	return rigidbody;
-	Console.message("Rigidbody returned.");
+return rigidbody;
+Console.message("Rigidbody returned.");
 }
 
 int Rigidbody::GetColliderType()
 {
-	return rigidbody->getCollisionShape()->getShapeType();
-	Console.message("Collider Type returned.");
+return rigidbody->getCollisionShape()->getShapeType();
+Console.message("Collider Type returned.");
 }
 
 void Rigidbody::SetRotation(glm::vec3 rot)
 {
-	btTransform rotation;
-	rotation.setIdentity();
-	btQuaternion quaternion;
-	quaternion.setEuler(rot.x, rot.y, rot.z);
-	rotation.setRotation(quaternion);
-	rigidbody->setCenterOfMassTransform(rotation);
-	Console.message("A Rigidbody was rotated.");
+btTransform rotation;
+rotation.setIdentity();
+btQuaternion quaternion;
+quaternion.setEuler(rot.x, rot.y, rot.z);
+rotation.setRotation(quaternion);
+rigidbody->setCenterOfMassTransform(rotation);
+Console.message("A Rigidbody was rotated.");
 }
 
 /*glm::vec3 Rigidbody::GetPosition()
@@ -216,18 +201,18 @@ return glm::quat((float)rigidbody->getOrientation().x, (float)rigidbody->getOrie
 
 void Rigidbody::SetPosition(glm::vec3 pos)
 {
-	btTransform transform = rigidbody->getCenterOfMassTransform();
-	transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
-	rigidbody->setCenterOfMassTransform(transform);
-	rigidbody->activate(true);
-	Console.message("A Rigidbody's position was set.");
+btTransform transform = rigidbody->getCenterOfMassTransform();
+transform.setOrigin(btVector3(pos.x, pos.y, pos.z));
+rigidbody->setCenterOfMassTransform(transform);
+rigidbody->activate(true);
+Console.message("A Rigidbody's position was set.");
 }
 
 void Rigidbody::SetVelocity(glm::vec3 vel)
 {
-	rigidbody->setLinearVelocity(btVector3(vel.x, vel.y, vel.z));
+rigidbody->setLinearVelocity(btVector3(vel.x, vel.y, vel.z));
 
 
-	rigidbody->activate(true);
+rigidbody->activate(true);
 }
 */

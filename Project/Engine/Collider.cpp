@@ -6,12 +6,8 @@
 PhysicsMaterial::PhysicsMaterial(float f, float b) { friction = f; bounciness = b; }
 PhysicsMaterial::PhysicsMaterial() { friction = PhysicsConstants.FRICTION; bounciness = PhysicsConstants.BOUNCE; }
 
-//Collider getters and setters
-void Collider::setCenter(glm::vec3 c) { center = c; }
-glm::vec3 Collider::getCenter() { return center; }
-
 //Deallocate the shape
-Collider::~Collider() { delete shape; shape = NULL; }
+Collider::~Collider() { delete shape; shape = NULL; } //Not working
 
 //Create some default values
 BoxCollider::BoxCollider() { size = PhysicsConstants.CUBE_SIZE; center = PhysicsConstants.CENTER; generateShape(); }
@@ -27,7 +23,7 @@ void SphereCollider::generateShape() { shape = new btSphereShape(radius); }
 void CylinderCollider::generateShape() { shape = new btCylinderShape(btVector3(size.x, size.y, size.z)); }
 
 //Setters and getters
-void BoxCollider::setSize(glm::vec3 s) { size = s; generateShape(); }
+glm::vec3 Collider::getCenter() { return center; }
 glm::vec3 BoxCollider::getSize() { return size; }
 void SphereCollider::setRadius(float r) { radius = r; }
 float SphereCollider::getRadius() { return radius; }
@@ -38,93 +34,96 @@ float CylinderCollider::getHeight() { return height; }
 void CylinderCollider::setSize(glm::vec3 s) { size = s; }
 glm::vec3 CylinderCollider::getSize() { return size; }
 
+void BoxCollider::setSize(glm::vec3 s) { size = s; generateShape(); }
+void Collider::setCenter(glm::vec3 c) { center = c; } //Not working
+
 /* ---- Old Implementation ---- */
 /*
 
 Collider::Collider(glm::vec3 _pos)
 {
-	position = _pos;
+position = _pos;
 }
 
 //Plane
 void Collider::Init() // Plane (ground);
 {
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(position.x, position.y, position.z));
-	btStaticPlaneShape *planeShape = new btStaticPlaneShape((btVector3(0, 1, 0)), 0);
-	obj.setCollisionShape(planeShape);
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(position.x, position.y, position.z));
+btStaticPlaneShape *planeShape = new btStaticPlaneShape((btVector3(0, 1, 0)), 0);
+obj.setCollisionShape(planeShape);
 
-	//btMotionState *motion = new btDefaultMotionState(transform);
-	//btRigidBody::btRigidBodyConstructionInfo information(_mass, motion, planeShape);
-	//rb.rigidbody = new btRigidBody(information);
-	//rb.rigidbody->setCollisionFlags(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
-	Console.message("Static plane collider created.");
+//btMotionState *motion = new btDefaultMotionState(transform);
+//btRigidBody::btRigidBodyConstructionInfo information(_mass, motion, planeShape);
+//rb.rigidbody = new btRigidBody(information);
+//rb.rigidbody->setCollisionFlags(btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);
+Console.message("Static plane collider created.");
 }
 
 //Sphere
 void Collider::Init(float _rad) // Sphere
 {
-	radius = _rad;
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(position.x, position.y, position.z));
-	btSphereShape *sphereShape = new btSphereShape(_rad);
-	obj.setCollisionShape(sphereShape);
+radius = _rad;
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(position.x, position.y, position.z));
+btSphereShape *sphereShape = new btSphereShape(_rad);
+obj.setCollisionShape(sphereShape);
 
-	//btVector3 intertia = btVector3(0, 0, 0);
-	//if (mass != 0)
-	//{
-	//sphereShape->calculateLocalInertia(mass, intertia);
-	//}
-	//btMotionState *motion = new btDefaultMotionState(transform);
-	//btRigidBody::btRigidBodyConstructionInfo information(mass, motion, sphereShape, intertia);
-	//rb.rigidbody = new btRigidBody(information);
-	Console.message("Sphere collider created.");
+//btVector3 intertia = btVector3(0, 0, 0);
+//if (mass != 0)
+//{
+//sphereShape->calculateLocalInertia(mass, intertia);
+//}
+//btMotionState *motion = new btDefaultMotionState(transform);
+//btRigidBody::btRigidBodyConstructionInfo information(mass, motion, sphereShape, intertia);
+//rb.rigidbody = new btRigidBody(information);
+Console.message("Sphere collider created.");
 }
 
 //Cylinder
 void Collider::Init(float _diameter, float _height) // Cylinder
 {
-	diameter = _diameter;
-	height = _height;
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(position.x, position.y, position.z));
-	btCylinderShape* cylinder = new btCylinderShape(btVector3(_diameter / 2.0, _height / 2.0, _diameter / 2.0));
-	obj.setCollisionShape(cylinder);
+diameter = _diameter;
+height = _height;
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(position.x, position.y, position.z));
+btCylinderShape* cylinder = new btCylinderShape(btVector3(_diameter / 2.0, _height / 2.0, _diameter / 2.0));
+obj.setCollisionShape(cylinder);
 
-	//btVector3 inertia(0, 0, 0);
-	//if (mass != 0.0)
-	//cylinder->calculateLocalInertia(mass, inertia);
+//btVector3 inertia(0, 0, 0);
+//if (mass != 0.0)
+//cylinder->calculateLocalInertia(mass, inertia);
 
-	//btMotionState* motion = new btDefaultMotionState(transform);
-	//btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cylinder, inertia);
-	//rb.rigidbody = new btRigidBody(info);
-	//rb.rigidbody->setDamping(0.2, 0.1);
-	//Console.message("Cylinder collider created.");
+//btMotionState* motion = new btDefaultMotionState(transform);
+//btRigidBody::btRigidBodyConstructionInfo info(mass, motion, cylinder, inertia);
+//rb.rigidbody = new btRigidBody(info);
+//rb.rigidbody->setDamping(0.2, 0.1);
+//Console.message("Cylinder collider created.");
 }
 
 //Box
 void Collider::Init(glm::vec3 _size) // Box
 {
-	//size.x = _size.x;
-	//size.y = _size.y;
-	//size.z = _size.z;
-	
-	btTransform transform;
-	transform.setIdentity();
-	transform.setOrigin(btVector3(position.x, position.y, position.z));
-	btBoxShape* box = new btBoxShape(btVector3(_size.x / 2.0, _size.y / 2.0, _size.z / 2.0));
-	obj.setCollisionShape(box);
+//size.x = _size.x;
+//size.y = _size.y;
+//size.z = _size.z;
 
-	//btVector3 inertia(0, 0, 0);
-	//if (mass != 0.0)
-	//box->calculateLocalInertia(mass, inertia);
+btTransform transform;
+transform.setIdentity();
+transform.setOrigin(btVector3(position.x, position.y, position.z));
+btBoxShape* box = new btBoxShape(btVector3(_size.x / 2.0, _size.y / 2.0, _size.z / 2.0));
+obj.setCollisionShape(box);
 
-	//btMotionState* motion = new btDefaultMotionState(transform);
-	//btRigidBody::btRigidBodyConstructionInfo info(mass, motion, box, inertia);
-	//rb.rigidbody = new btRigidBody(info);
-	Console.message("Box collider created.");
+//btVector3 inertia(0, 0, 0);
+//if (mass != 0.0)
+//box->calculateLocalInertia(mass, inertia);
+
+//btMotionState* motion = new btDefaultMotionState(transform);
+//btRigidBody::btRigidBodyConstructionInfo info(mass, motion, box, inertia);
+//rb.rigidbody = new btRigidBody(info);
+Console.message("Box collider created.");
 }
 */

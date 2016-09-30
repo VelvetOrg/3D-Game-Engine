@@ -42,9 +42,6 @@
     <ClInclude Include="Camera.h">
       <Filter>Other\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Collider.h">
-      <Filter>Physics\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Physics.h">
       <Filter>Physics\Headers</Filter>
     </ClInclude>
@@ -93,10 +90,13 @@
     <ClInclude Include="SoundManager.h">
       <Filter>Other\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Time.h">
-      <Filter>Other\Source</Filter>
-    </ClInclude>
     <ClInclude Include="PhysicsConstants.h">
+      <Filter>Physics\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Other\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
       <Filter>Physics\Headers</Filter>
     </ClInclude>
   </ItemGroup>

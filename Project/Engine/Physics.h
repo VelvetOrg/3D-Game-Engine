@@ -17,11 +17,11 @@
 
 static class cPhysics
 {
-//Classes that have protected access
-friend class GameObject;
-friend class BoxCollider;
-friend class Rigidbody;
-friend class Collider;
+	//Classes that have protected access
+	friend class GameObject;
+	friend class BoxCollider;
+	friend class Rigidbody;
+	friend class Collider;
 
 public:
 	//Wrapper constructor
@@ -78,27 +78,27 @@ private:
 static class cPhysics
 {
 public:
-	void Init(glm::vec3 gravity);
-	void Kill();
-	void Add(GameObject *object);
-	void Remove(GameObject *object);
-	void Run();
-	void tickCallBack(btDynamicsWorld *world, btScalar timeStep);
-	//Sstatic void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
+void Init(glm::vec3 gravity);
+void Kill();
+void Add(GameObject *object);
+void Remove(GameObject *object);
+void Run();
+void tickCallBack(btDynamicsWorld *world, btScalar timeStep);
+//Sstatic void myTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
 protected:
 
 
-	btDynamicsWorld *World;
-	btDispatcher *Dispatcher;
-	btCollisionConfiguration *CollisionConfiguration;
-	btBroadphaseInterface *Broadphase;
-	btConstraintSolver *Solver;
+btDynamicsWorld *World;
+btDispatcher *Dispatcher;
+btCollisionConfiguration *CollisionConfiguration;
+btBroadphaseInterface *Broadphase;
+btConstraintSolver *Solver;
 
 private:
-	std::vector<btVector3> collisions;
-	std::vector<Rigidbody> rigidbodies;
-	std::vector<Collider> colliders;
+std::vector<btVector3> collisions;
+std::vector<Rigidbody> rigidbodies;
+std::vector<Collider> colliders;
 
 } Physics;
 */

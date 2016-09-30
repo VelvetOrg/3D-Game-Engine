@@ -24,7 +24,7 @@
     <ClCompile Include="Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LeveGenerator.cpp">
+    <ClCompile Include="LevelGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="Externs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="LeveGenerator.h">
+    <ClInclude Include="LevelGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

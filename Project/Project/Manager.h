@@ -42,8 +42,4 @@ private:
 	//Testing
 	GameObject box;
 	GameObject plane;
-	//GameObject* tower;
-
-	const int LEVEL_WIDTH = 25;
-	const int LEVEL_HEIGHT = 25;
 };

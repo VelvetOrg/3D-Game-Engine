@@ -68,7 +68,40 @@ public:
 	inline GLint roundInt(GLfloat f) { return (GLint)roundf(f); }
 
 	/* ----- Useful functions ----- */
+	//Converts a quaternion to an Euler Angle
+	glm::vec3 quatToEuler(glm::quat q)
+	{
+		glm::vec3 eulerAngle;
 
+		//Conversion algorithm
+		/*
+		eulerAngle.y = asin(2 * (q[1] * q[3] + q[2] * q[0]));
+
+		eulerAngle.z = atan2(2 * (q[3] * q[0] - q[1] * q[2]),
+		(q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]));
+
+		eulerAngle.x = atan2(2 * (q[1] * q[0] - q[2] * q[3]),
+			(q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]));
+		*/
+		/*
+		//Convert quaternion to Euler Angle
+		eulerAngle.y = atan2(2 * q.x * q.w - 2 * q.y * q.z, 1 - 2 * q.x * q.x - 2 * q.z * q.z);
+		eulerAngle.z = asin(2 * q.x * q.y + 2 * q.z * q.w);
+		eulerAngle.x = atan2(2 * q.y * q.w - 2 * q.x * q.z, 1 - 2 * q.y * q.y - 2 * q.z * q.z);	
+		*/
+
+		eulerAngle.y = asinf(2 * ((q[0] * q[2]) - (q[3] * q[1])));
+		eulerAngle.x = atan2f(2 * ((q[0] * q[3]) + (q[1] * q[2])), 1 - 2 * (powf(q[2], 2) + powf(q[3], 2)));
+		eulerAngle.z = atan2f(2 * ((q[0] * q[1]) + (q[2] * q[3])), 1 - 2 * (powf(q[1], 2) + powf(q[2], 2)));
+
+		//Convert back to degrees
+		eulerAngle.x *= RAD_TO_DEG;
+		eulerAngle.y *= RAD_TO_DEG;
+		eulerAngle.z *= RAD_TO_DEG;
+
+		//Finally return the quaternion as an Euler Angle
+		return eulerAngle;
+	}
 	//Smooth step a
 
 	//Since the C++ '%' doesnt support floats

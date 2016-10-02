@@ -12,6 +12,9 @@
 9. Textures
 10. A Math class
 11. Perlin Noise - For procedural generation
+12. Physics
+13. Collision Detection 
+14. Rigidbodies
 
 ---
 
@@ -23,7 +26,7 @@ The following dependencies are used:
 4. `AmBIERA irrKlang` - For 3D and 2D audio managment
 5. `SOIL` - For loading images as textures
 6. `libnoise` - For perlin noise
-7. `Bullet` - For physics and collision detection
+7. `Bullet` - For physics, collision detection and rigidbodies
 
 ---
 
@@ -38,8 +41,8 @@ This project's goals to be implemented:
 - [x] Camera support
 - [x] Rotation, projection and movement matricies
 - [x] Support for multiple unique GameObjects
-- [ ] Bullet's integrated physics for collision detection
-- [ ] RigidBodies
+- [x] Bullet's integrated physics for collision detection
+- [x] RigidBodies
 - [ ] Simple lighting
 - [ ] Lightmaps
 - [x] UV Mapping

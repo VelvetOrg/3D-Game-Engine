@@ -42,7 +42,7 @@ This project's goals to be implemented:
 - [x] Rotation, projection and movement matricies
 - [x] Support for multiple unique GameObjects
 - [x] Bullet's integrated physics for collision detection
-- [x] RigidBodies
+- [x] Rigidbodies
 - [ ] Simple lighting
 - [ ] Lightmaps
 - [x] UV Mapping

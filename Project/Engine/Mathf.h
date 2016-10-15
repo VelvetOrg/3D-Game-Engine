@@ -71,21 +71,20 @@ public:
 	//Converts a quaternion to an Euler Angle
 	glm::vec3 quatToEuler(glm::quat q)
 	{
-		//Rotation as a Vector3
+		//Create glm::vec3 to hold the converted glm::quat rotation
 		glm::vec3 eulerAngle;
 
-		//Conversion algorithm
+		//Implement Euler's algorithm for converting quaternions into vectors
 		eulerAngle.x = atan2((2) * (q.y * q.z + q.w * q.x), q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
 		eulerAngle.y = asin(clamp((-2) * (q.x * q.z - q.w * q.y), (-1), (1)));
 		eulerAngle.z = atan2((2) * (q.x * q.y + q.w * q.z), q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
 				
-		//Convert euler angles from radians into degrees
+		//Multply the angle as a glm::vec3 by (360 / 2 * PI) to convert radians back into degrees form
 		eulerAngle *= RAD_TO_DEG;
 		
-		//Finally return
+		//And then finally return the same rotation as a glm::vec3
 		return eulerAngle;
 	}
-	//Smooth step a
 
 	//Since the C++ '%' doesnt support floats
 	GLfloat mod(GLfloat num, GLfloat div) { return div * ((num / div) - Mathf.floor(num / div)); }
